@@ -1,23 +1,23 @@
 ---
-title: About Custom CA Root Certificates
+title: 自定义CA证书
 ---
 
-If you're using Rancher in an internal production environment where you aren't exposing apps publicly, use a certificate from a private certificate authority (CA).
+如果您在内部生产环境使用Rancher，而不需要在公网暴露应用，可以使用私有证书颁发机构（CA）的证书。
 
-Services that Rancher needs to access are sometimes configured with a certificate from a custom/internal CA root, also known as self signed certificate. If the presented certificate from the service cannot be validated by Rancher, the following error displays: `x509: certificate signed by unknown authority`.
+如果Rancher访问的服务使用的是自定义/内部CA根证书（也称为自签名证书）进行配置的，如果Rancher无法验证服务中提供的证书，会显示如下的错误信息：`x509: certificate signed by unknown authority`.
 
-To validate the certificate, the CA root certificates need to be added to Rancher. As Rancher is written in Go, we can use the environment variable `SSL_CERT_DIR` to point to the directory where the CA root certificates are located in the container. The CA root certificates directory can be mounted using the Docker volume option (`-v host-source-directory:container-destination-directory`) when starting the Rancher container.
+要正常验证应用证书，需要将CA根证书添加到Rancher。由于Rancher是用Go编写的，我们可以使用环境变量`SSL_CERT_DIR`指向容器中CA根证书所在的目录，并且在启动Rancher容器时，可以使用`-v host-source-directory:container-destination-directory`挂载主机上CA根证书目录到容器中。
 
-Examples of services that Rancher can access:
+Rancher需要访问的服务如下:
 
-- Catalogs
-- Authentication providers
-- Accessing hosting/cloud API when using Node Drivers
+- 自定义应用商店
+- 第三方认证平台
+- 使用节点驱动访问托管/云API
 
-### Installing with the custom CA Certificate
+### 使用自定义CA证书安装
 
-For details on starting a Rancher container with your private CA certificates mounted, refer to the installation docs:
+有关使用私有CA证书启动Rancher容器的详细信息，请参阅安装文档：
 
-- [Docker Install](/docs/installation/other-installation-methods/single-node-docker/#custom-ca-certificate)
+- [Docker 安装方式](/docs/installation/other-installation-methods/single-node-docker/#custom-ca-certificate)
 
-- [Kubernetes Install](/docs/installation/options/chart-options/#additional-trusted-cas)
+- [Kubernetes 安装方式](/docs/installation/options/chart-options/#additional-trusted-cas)
