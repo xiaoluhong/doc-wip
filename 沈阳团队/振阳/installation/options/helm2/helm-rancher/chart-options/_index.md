@@ -1,8 +1,8 @@
 ---
-title: Chart Options
+title: Chart 选项
 ---
 
-#### Common Options
+#### 通用选项
 
 | Option                    | Default Value | Description                                                                        |
 | ------------------------- | ------------- | ---------------------------------------------------------------------------------- |
@@ -14,7 +14,7 @@ title: Chart Options
 
 <br/>
 
-#### Advanced Options
+#### 高级选项
 
 | Option                         | Default Value                                         | Description                                                                                                                                       |
 | ------------------------------ | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -44,119 +44,119 @@ title: Chart Options
 
 <br/>
 
-#### API Audit Log
+#### API审计日志
 
-Enabling the [API Audit Log](/docs/installation/api-auditing/).
+开启 [API审计日志](/docs/installation/api-auditing/)。
 
-You can collect this log as you would any container log. Enable the [Logging service under Rancher Tools](/docs/tools/logging/) for the `System` Project on the Rancher server cluster.
+您可以像收集任何容器日志一样收集此日志。 为Rancher Server群集上的`System`项目启用 [Logging service under Rancher Tools](/docs/tools/logging/)。
 
 ```plain
 --set auditLog.level=1
 ```
 
-By default enabling Audit Logging will create a sidecar container in the Rancher pod. This container (`rancher-audit-log`) will stream the log to `stdout`. You can collect this log as you would any container log. When using the sidecar as the audit log destination, the `hostPath`, `maxAge`, `maxBackups`, and `maxSize` options do not apply. It's advised to use your OS or Docker daemon's log rotation features to control disk space use. Enable the [Logging service under Rancher Tools](/docs/tools/logging/) for the Rancher server cluster or System Project.
+默认情况下，启用`审计日志`将在Rancher pod中创建一个sidecar容器。 这个容器（`rancher-audit-log`）会将日志流传输到`stdout`。 您可以像收集任何容器日志一样收集此日志。 将sidecar用作审计日志时，`hostPath`，`maxAge`，`maxBackups`和`maxSize`选项不适用。 建议使用您的操作系统或Docker守护进程的日志轮换功能来控制磁盘空间的使用。 为Rancher Server集群或系统项目启用[Rancher Tools下的日志记录服务](/docs/tools/logging/)。
 
-Set the `auditLog.destination` to `hostPath` to forward logs to volume shared with the host system instead of streaming to a sidecar container. When setting the destination to `hostPath` you may want to adjust the other auditLog parameters for log rotation.
+将`auditLog.destination`设置为`hostPath`的值，以将日志转发至与主机系统共享的卷，而不是流至Sidecar容器。 将目标设置为`hostPath`时，您可能需要调整其他auditLog参数以进行日志轮换。
 
-#### Setting Extra Environment Variables
+#### 设置扩展环境变量
 
-_Available as of v2.2.0_
+_自v2.2.0起可用_
 
-You can set extra environment variables for Rancher server using `extraEnv`. This list uses the same `name` and `value` keys as the container manifest definitions. Remember to quote the values.
-
-```plain
---set 'extraEnv[0].name=CATTLE_TLS_MIN_VERSION'
---set 'extraEnv[0].value=1.0'
-```
-
-#### TLS settings
-
-_Available as of v2.2.0_
-
-To set a different TLS configuration, you can use the `CATTLE_TLS_MIN_VERSION` and `CATTLE_TLS_CIPHERS` environment variables. For example, to configure TLS 1.0 as minimum accepted TLS version:
+您可以使用`extraEnv`为Rancher Server设置额外的环境变量。 该列表使用与容器清单定义相同的`name`和`value`键。 记住需要给值加上双引号。
 
 ```plain
 --set 'extraEnv[0].name=CATTLE_TLS_MIN_VERSION'
 --set 'extraEnv[0].value=1.0'
 ```
 
-See [TLS settings](/docs/admin-settings/tls-settings) for more information and options.
+#### TLS设置
 
-#### Import `local` Cluster
+_自v2.2.0起可用_
 
-By default Rancher server will detect and import the `local` cluster it's running on. User with access to the `local` cluster will essentially have "root" access to all the clusters managed by Rancher server.
+要设置不同的TLS配置，可以使用`CATTLE_TLS_MIN_VERSION`和`CATTLE_TLS_CIPHERS`环境变量。 例如，将TLS 1.0配置为接受的最低TLS版本:
 
-If this is a concern in your environment you can set this option to "false" on your initial install.
+```plain
+--set 'extraEnv[0].name=CATTLE_TLS_MIN_VERSION'
+--set 'extraEnv[0].value=1.0'
+```
 
-> Note: This option is only effective on the initial Rancher install. See [Issue 16522](https://github.com/rancher/rancher/issues/16522) for more information.
+参阅 [TLS 配置](/docs/admin-settings/tls-settings) 获取更多信息和选项。
+
+#### 导入`local`集群
+
+默认情况下，Rancher服务器将检测并导入正在运行的`local`集群。有权访问`local`集群的用户实际上将具有对Rancher Server管理的所有集群的`root`访问权。
+
+如果您的环境中存在此问题，则可以在初次安装时将此选项设置为`false`。
+
+> 注意事项: 此选项仅对Rancher的初始安装有效。 参阅 [Issue 16522](https://github.com/rancher/rancher/issues/16522) 获取更多信息。
 
 ```plain
 --set addLocal="false"
 ```
 
-#### Customizing your Ingress
+#### 自定义您的Ingress
 
-To customize or use a different ingress with Rancher server you can set your own Ingress annotations.
+要使用Rancher Server自定义或使用其他Ingress，您可以设置自己的Ingress注释。
 
-Example on setting a custom certificate issuer:
+设置自定义证书颁发者的示例:
 
 ```plain
 --set ingress.extraAnnotations.'certmanager\.k8s\.io/cluster-issuer'=ca-key-pair
 ```
 
-_Available as of v2.0.15, v2.1.10 and v2.2.4_
+_v2.0.15, v2.1.10 和 v2.2.4可用_
 
-Example on setting a static proxy header with `ingress.configurationSnippet`. This value is parsed like a template so variables can be used.
+使用`ingress.configurationSnippet`设置静态代理头的示例。 该值像模板一样进行解析，因此可以使用变量。
 
 ```plain
 --set ingress.configurationSnippet='more_set_input_headers X-Forwarded-Host {{ .Values.hostname }};'
 ```
 
-#### HTTP Proxy
+#### HTTP代理
 
-Rancher requires internet access for some functionality (helm charts). Use `proxy` to set your proxy server.
+Rancher需要Internet访问才能使用某些功能 (helm charts)。 使用`proxy`设置您的代理服务器。
 
-Add your IP exceptions to the `noProxy` list. Make sure you add the Service cluster IP range (default: 10.43.0.1/16) and any worker cluster `controlplane` nodes. Rancher supports CIDR notation ranges in this list.
+在`noProxy`添加例外的IP。确保添加了Service cluster IP(默认: 10.43.0.1/16)和任何worker群集`controlplane`节点。Rancher在此列表中支持CIDR范围表示法。
 
 ```plain
 --set proxy="http://<username>:<password>@<proxy_url>:<proxy_port>/"
 --set noProxy="127.0.0.0/8\,10.0.0.0/8\,172.16.0.0/12\,192.168.0.0/16"
 ```
 
-#### Additional Trusted CAs
+#### 附加授信CAs
 
-If you have private registries, catalogs or a proxy that intercepts certificates, you may need to add additional trusted CAs to Rancher.
+如果您有私有registries，catalogs或拦截证书的代理，则可能需要向Rancher添加额外的受信任的CA。
 
 ```plain
 --set additionalTrustedCAs=true
 ```
 
-Once the Rancher deployment is created, copy your CA certs in pem format into a file named `ca-additional.pem` and use `kubectl` to create the `tls-ca-additional` secret in the `cattle-system` namespace.
+创建完Rancher deployment后，将pem格式的CA证书复制到一个名为`ca-additional.pem`的文件中，并使用`kubectl`在`cattle-system`命名空间中创建`tls-ca-additional` secret。
 
 ```plain
 kubectl -n cattle-system create secret generic tls-ca-additional --from-file=ca-additional.pem
 ```
 
-#### Private Registry and Air Gap Installs
+#### 私有镜像仓库(Registry)和离线安装
 
-For details on installing Rancher with a private registry, see:
+有关使用私有registry安装Rancher的详细信息，请参阅:
 
-- [Air Gap: Docker Install](/docs/installation/air-gap-single-node/)
-- [Air Gap: Kubernetes Install](/docs/installation/air-gap-high-availability/)
+- [离线环境: 安装Docker](/docs/installation/air-gap-single-node/)
+- [离线环境: 安装Kubernetes](/docs/installation/air-gap-high-availability/)
 
-#### External TLS Termination
+#### 外部 TLS Termination
 
-We recommend configuring your load balancer as a Layer 4 balancer, forwarding plain 80/tcp and 443/tcp to the Rancher Management cluster nodes. The Ingress Controller on the cluster will redirect http traffic on port 80 to https on port 443.
+我们建议将负载平衡器配置为4层平衡器，将普通80/tcp和443/tcp转发到Rancher管理集群节点。 集群上的Ingress Controller会将端口80上的http通信重定向到端口443上的https。
 
-You may terminate the SSL/TLS on a L7 load balancer external to the Rancher cluster (ingress). Use the `--set tls=external` option and point your load balancer at port http 80 on all of the Rancher cluster nodes. This will expose the Rancher interface on http port 80. Be aware that clients that are allowed to connect directly to the Rancher cluster will not be encrypted. If you choose to do this we recommend that you restrict direct access at the network level to just your load balancer.
+您可以在Rancher集群（ingress）外部的L7负载平衡器上终止SSL/TLS。 使用`--set tls=external`选项，将负载均衡器指向所有Rancher群集节点上的端口http 80。 这将在http端口80上公开Rancher接口。 请注意，允许直接连接到Rancher集群的客户端将不会被加密。 如果您选择这样做，我们建议您将网络级别上的直接访问限制为仅用于您的负载均衡器。
 
-> **Note:** If you are using a Private CA signed certificate, add `--set privateCA=true` and see [Adding TLS Secrets - Using a Private CA Signed Certificate](/docs/installation/options/helm2/helm-rancher/tls-secrets/#using-a-private-ca-signed-certificate) to add the CA cert for Rancher.
+> **注意事项:** 如果您使用的是专用CA签名的证书，请添加`--set privateCA=true`并参阅[添加 TLS Secrets - 使用私有的CA签名证书](/docs/installation/options/helm2/helm-rancher/tls-secrets/#using-a-private-ca-signed-certificate)来完成给Rancher添加CA证书。
 
-Your load balancer must support long lived websocket connections and will need to insert proxy headers so Rancher can route links correctly.
+您的负载均衡器必须支持长期存在的Websocket连接，并且需要插入代理标头，以便Rancher可以正确路由链接。
 
-##### Configuring Ingress for External TLS when Using NGINX v0.25
+##### 使用NGINX v0.25为外部TLS配置Ingress
 
-In NGINX v0.25, the behavior of NGINX has [changed](https://github.com/kubernetes/ingress-nginx/blob/master/Changelog.md#0220) regarding forwarding headers and external TLS termination. Therefore, in the scenario that you are using external TLS termination configuration with NGINX v0.25, you must edit the `cluster.yml` to enable the `use-forwarded-headers` option for ingress:
+在NGINX v0.25中，关于转发头和外部TLS Termination，NGINX的行为已[更改](https://github.com/kubernetes/ingress-nginx/blob/master/Changelog.md#0220)。因此，在将外部TLS Termination配置与NGINX v0.25结合使用的情况下，必须编辑`cluster.yml`来启用用于ingress的`use-forwarded-headers`选项:
 
 ```yaml
 ingress:
@@ -165,32 +165,32 @@ ingress:
     use-forwarded-headers: 'true'
 ```
 
-##### Required Headers
+##### 必须的头部
 
 - `Host`
 - `X-Forwarded-Proto`
 - `X-Forwarded-Port`
 - `X-Forwarded-For`
 
-##### Recommended Timeouts
+##### 建议的超时时间
 
 - Read Timeout: `1800 seconds`
 - Write Timeout: `1800 seconds`
 - Connect Timeout: `30 seconds`
 
-##### Health Checks
+##### 健康检查
 
-Rancher will respond `200` to health checks on the `/healthz` endpoint.
+Rancher将对`/healthz`端点上的健康检查响应`200`。
 
-##### Example NGINX config
+##### NGINX配置示例
 
-This NGINX configuration is tested on NGINX 1.14.
+此NGINX配置已在NGINX 1.14上进行了测试。
 
-> **Note:** This NGINX configuration is only an example and may not suit your environment. For complete documentation, see [NGINX Load Balancing - HTTP Load Balancing](https://docs.nginx.com/nginx/admin-guide/load-balancer/http-load-balancer/).
+> **注意事项:** 此NGINX配置只是一个示例，可能不适合您的环境。 完整文档请参阅[NGINX负载平衡 - HTTP负载平衡](https://docs.nginx.com/nginx/admin-guide/load-balancer/http-load-balancer/)。
 
-- Replace `IP_NODE1`, `IP_NODE2` and `IP_NODE3` with the IP addresses of the nodes in your cluster.
-- Replace both occurrences of `FQDN` to the DNS name for Rancher.
-- Replace `/certs/fullchain.pem` and `/certs/privkey.pem` to the location of the server certificate and the server certificate key respectively.
+- 将`IP_NODE1`，`IP_NODE2`和`IP_NODE3`替换为集群中节点的IP地址。
+- 将两个出现的`FQDN`替换为Rancher的DNS名称。
+- 将`/certs/fullchain.pem`和`/certs/privkey.pem`分别替换为服务器证书和服务器证书密钥的位置。
 
 ```
 worker_processes 4;
