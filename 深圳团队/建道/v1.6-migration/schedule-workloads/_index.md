@@ -1,92 +1,92 @@
 ---
-title: '5. Schedule Your Services'
+标题: '5. 调度你的服务'
 ---
 
-In v1.6, objects called _services_ were used to schedule containers to your cluster hosts. Services included the Docker image for an application, along with configuration settings for a desired state.
+在v1.6中，称为_服务_的对象用于将容器调度到集群主机。 服务包括应用程序的Docker镜像以及所需状态的配置。
 
-In Rancher v2.x, the equivalent object is known as a _workload_. Rancher v2.x retains all scheduling functionality from v1.6, but because of the change from Cattle to Kubernetes as the default container orchestrator, the terminology and mechanisms for scheduling workloads has changed.
+在Rancher v2.x中，等效对象称为_工作负载_。 Rancher v2.x保留了v1.6以来的所有调度功能，但是由于从Cattle更改为Kubernetes做默认容器编排，因此用于调度工作负载的术语和机制也发生了变化。
 
-Workload deployment is one of the more important and complex aspects of container orchestration. Deploying pods to available shared cluster resources helps maximize performance under optimum compute resource use.
+工作负载deployment是容器编排的更重要和更复杂的方面之一。 将pod部署到可用的共享集群资源有助于在最佳使用计算资源的情况下最大化性能。
 
-You can schedule your migrated v1.6 services while editing a deployment. Schedule services by using **Workload Type** and **Node Scheduling** sections, which are shown below.
+你可以在编辑deployment时调度迁移的v1.6服务。 通过调度服务 **工作负载类型** 和 **节点调度** 部分，如下所示。
 
 <figcaption>Editing Workloads: Workload Type and Node Scheduling Sections</figcaption>
 
-![Workload Type and Node Scheduling Sections](/img/rancher/migrate-schedule-workloads.png)
+![工作负载类型和节点调度部分](/img/rancher/migrate-schedule-workloads.png)
 
-### In This Document
+### 该文档
 
 <!-- NEED DOCS ABOUT CHANGING DEPLOYMENTS TO DAEMONSETS -->
 
 <!-- TOC -->
 
-- [What's Different for Scheduling Services?](#whats-different-for-scheduling-services)
-- [Node Scheduling Options](#node-scheduling-options)
-- [Scheduling Pods to a Specific Node](#scheduling-pods-to-a-specific-node)
-- [Scheduling Using Labels](#scheduling-using-labels)
-- [Scheduling Pods Using Resource Constraints](#scheduling-pods-using-resource-constraints)
-- [Preventing Scheduling Specific Services to Specific Nodes](#preventing-scheduling-specific-services-to-specific-nodes)
-- [Scheduling Global Services](#scheduling-global-services)
+- [调度服务有何不同?](#whats-different-for-scheduling-services)
+- [节点调度选项](#node-scheduling-options)
+- [调度Pod到特定节点](#scheduling-pods-to-a-specific-node)
+- [使用标签调度](#scheduling-using-labels)
+- [使用资源约束调度Pod](#scheduling-pods-using-resource-constraints)
+- [防止将特定服务调度到特定节点](#preventing-scheduling-specific-services-to-specific-nodes)
+- [调度全局的服务](#scheduling-global-services)
 
 <!-- /TOC -->
 
-### What's Different for Scheduling Services?
+### 调度服务有何不同?
 
-Rancher v2.x retains _all_ methods available in v1.6 for scheduling your services. However, because the default container orchestration system has changed from Cattle to Kubernetes, the terminology and implementation for each scheduling option has changed.
+Rancher v2.x保留了v1.6中可用的_所有_方法来调度服务。 但是，由于默认的容器编排系统已从Cattle更改为Kubernetes，因此每个调度选项的术语和实现都已更改。
 
-In v1.6, you would schedule a service to a host while adding a service to a Stack. In Rancher v2.x., the equivalent action is to schedule a workload for deployment. The following composite image shows a comparison of the UI used for scheduling in Rancher v2.x versus v1.6.
+在v1.6中，你可以在将服务添加到堆栈的同时调度服务到主机。 在Rancher v2.x.中，等效的操作是为deployment调度工作负载。 下图显示了Rancher v2.x与v1.6中用于调度的UI的比较。
 
-![Node Scheduling: Rancher v2.x vs v1.6](/img/rancher/node-scheduling.png)
+![节点调度: Rancher v2.x vs v1.6](/img/rancher/node-scheduling.png)
 
-### Node Scheduling Options
+### 节点调度选项
 
-Rancher offers a variety of options when scheduling nodes to host workload pods (i.e., scheduling hosts for containers in Rancher v1.6).
+在调度节点以托管工作负载pods时（即在Rancher v1.6中为容器调度主机），Rancher提供了多种选择。
 
-You can choose a scheduling option as you deploy a workload. The term _workload_ is synonymous with adding a service to a Stack in Rancher v1.6). You can deploy a workload by using the context menu to browse to a cluster project (`<CLUSTER> > <PROJECT> > Workloads`).
+你可以在部署工作负载时选择调度选项。 术语_工作负载_是在Rancher v1.6中将服务添加到堆栈的同义词。 你可以通过使用上下文菜单浏览到集群项目来部署工作负载 (`<CLUSTER> > <PROJECT> > Workloads`).
 
-The sections that follow provide information on using each scheduling options, as well as any notable changes from Rancher v1.6. For full instructions on deploying a workload in Rancher v2.x beyond just scheduling options, see [Deploying Workloads](/docs/k8s-in-rancher/workloads/deploy-workloads/).
+以下各节提供有关使用每个调度选项的信息，以及对Rancher v1.6的任何显着更改。 有关在Rancher v2.x中部署工作负载的完整说明，而不仅仅是调度选项，请参阅 [部署工作负载](/docs/k8s-in-rancher/workloads/deploy-workloads/).
 
-| Option                                                                                                                   | v1.6 Feature | v2.x Feature |
-| ------------------------------------------------------------------------------------------------------------------------ | ------------ | ------------ |
-| [Schedule a certain number of pods?](#schedule-a-certain-number-of-pods)                                                 | ✓            | ✓            |
-| [Schedule pods to specific node?](#scheduling-pods-to-a-specific-node)                                                   | ✓            | ✓            |
-| [Schedule to nodes using labels?](#applying-labels-to-nodes-and-pods)                                                    | ✓            | ✓            |
-| [Schedule to nodes using label affinity/anti-affinity rules?](#label-affinity-antiaffinity)                              | ✓            | ✓            |
-| [Schedule based on resource constraints?](#scheduling-pods-using-resource-constraints)                                   | ✓            | ✓            |
-| [Preventing scheduling specific services to specific hosts?](#preventing-scheduling-specific-services-to-specific-nodes) | ✓            | ✓            |
-| [Schedule services globally?](#scheduling-global-services)                                                               | ✓            | ✓            |
+| 选项                                                                                                                   | v1.6 特征 | v2.x 特征 |
+| -----------------------------------------------------------------------------------------------------------------------| ------------ | ------------ |
+| [调度一定数量的pods?](#schedule-a-certain-number-of-pods)                                                               | ✓            | ✓            |
+| [调度pods到特定节点?](#scheduling-pods-to-a-specific-node)                                                              | ✓            | ✓            |
+| [调度节点通过使用标签?](#applying-labels-to-nodes-and-pods)                                                              | ✓            | ✓            |
+| [调度节点通过使用标签关联性/非关联性规则?](#label-affinity-antiaffinity)                                                  | ✓            | ✓            |
+| [调度基于资源约束?](#scheduling-pods-using-resource-constraints)                                                        | ✓            | ✓            |
+| [阻止将特定服务调度到特定主机?](#preventing-scheduling-specific-services-to-specific-nodes)                              | ✓            | ✓            |
+| [调度全局服务?](#scheduling-global-services)                                                                            | ✓            | ✓            |
 
-#### Schedule a certain number of pods
+#### 调度一定数量的pods
 
-In v1.6, you could control the number of container replicas deployed for a service. You can schedule pods the same way in v2.x, but you'll have to set the scale manually while editing a workload.
+在v1.6中，你可以控制为服务部署的容器副本数量。 你可以在v2.x中以相同的方式调度pods，但在编辑工作负载时必须手动设置比例。
 
-![Resolve Scale](/img/rancher/resolve-scale.png)
+![解析规模](/img/rancher/resolve-scale.png)
 
-During migration, you can resolve `scale` entries in `output.txt` by setting a value for the **Workload Type** option **Scalable deployment** depicted below.
+在迁移期间，你可以通过为下面描述的**工作负载类型**选项**可扩展 deployment**设置一个值来解析`output.txt`中的`scale`条目。
 
 <figcaption>Scalable Deployment Option</figcaption>
 
-![Workload Scale](/img/rancher/workload-type-option.png)
+![工作负载规模](/img/rancher/workload-type-option.png)
 
-#### Scheduling Pods to a Specific Node
+#### 调度pods到特定节点
 
-Just as you could schedule containers to a single host in Rancher v1.6, you can schedule pods to single node in Rancher v2.x
+正如你可以将容器调度到Rancher v1.6中的单个主机一样，也可以将容器调度到Rancher v2.x中的单个节点。
 
-As you deploy a workload, use the **Node Scheduling** section to choose a node to run your pods on. The workload below is being scheduled to deploy an Nginx image with a scale of two pods on a specific node.
+部署工作负载时，请使用**调度节点**部分选择要在其上运行Pod的节点。 调度下面的工作负载在特定节点上部署一个具有两个pods规模的Nginx映像。
 
 <!-- Question: What would be a good use case for use of a scheduling pods on the same node?-->
 
 <figcaption>Rancher v2.x: Workload Deployment</figcaption>
 
-![Workload Tab and Group by Node Icon](/img/rancher/schedule-specific-node.png)
+![工作负载选项卡和按节点分组图标](/img/rancher/schedule-specific-node.png)
 
-Rancher schedules pods to the node you select if 1) there are compute resource available for the node and 2) you've configured port mapping to use the HostPort option, that there are no port conflicts.
+Rancher会将Pod调度到你选择的节点如果1)有可用于该节点的计算资源，并且2）你已将端口映射配置为使用HostPort选项，并且没有端口冲突。
 
-If you expose the workload using a NodePort that conflicts with another workload, the deployment gets created successfully, but no NodePort service is created. Therefore, the workload isn't exposed outside of the cluster.
+如果使用与另一个工作负载冲突的NodePort暴露工作负载，则将成功创建deployment，但不会创建NodePort服务。 因此，工作负载不会暴露在集群外部。
 
-After the workload is created, you can confirm that the pods are scheduled to your chosen node. From the project view, click **Resources > Workloads.** (In versions prior to v2.3.0, click the **Workloads** tab.) Click the **Group by Node** icon to sort your workloads by node. Note that both Nginx pods are scheduled to the same node.
+创建工作负载后，你可以确认将pods调度到所选节点。 从项目视图中，单击 **资源 > 工作负载.**（在v2.3.0之前的版本中，单击 **工作负载**选项卡。）单击**节点组**图标，以按节点对工作负载进行排序。 请注意，两个Nginx Pod都调度在同一节点上。
 
-![Pods Scheduled to Same Node](/img/rancher/scheduled-nodes.png)
+![Pods调度到同一个节点](/img/rancher/scheduled-nodes.png)
 
 <!--
 
@@ -127,116 +127,116 @@ If you export the workload's manifest for Rancher v2.x, you can see in the pod s
 ```
 -->
 
-#### Scheduling Using Labels
+#### 使用标签调度
 
-In Rancher v2.x, you can constrain pods for scheduling to specific nodes (referred to as hosts in v1.6). Using [labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/), which are key/value pairs that you can attach to different Kubernetes objects, you can configure your workload so that pods you've labeled are assigned to specific nodes (or nodes with specific labels are automatically assigned workload pods).
+在Rancher v2.x中，你可以为调度到特定节点约束pods（在v1.6中称为主机）。 使用 [标签]](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/), 它们是可以附加到不同Kubernetes对象的键/值对，你可以配置工作负载，以便将标记的pod分配给特定的节点（或具有特定标签的节点自动分配给工作负载pods）。
 
 <figcaption>Label Scheduling Options</figcaption>
 
-| Label Object      | Rancher v1.6 | Rancher v2.x |
-| ----------------- | ------------ | ------------ |
-| Schedule by Node? | ✓            | ✓            |
-| Schedule by Pod?  | ✓            | ✓            |
+| 标签对象      | Rancher v1.6 | Rancher v2.x |
+| -------------| ------------ | ------------ |
+| 按节点调度?   | ✓            | ✓            |
+| 按Pod调度?    | ✓            | ✓            |
 
-##### Applying Labels to Nodes and Pods
+##### 将标签应用于节点和Pods
 
-Before you can schedule pods based on labels, you must first apply labels to your pods or nodes.
+在基于标签调度pods之前，必须首先将标签应用于pods或节点。
 
 > **Hooray!**
-> All the labels that you manually applied in Rancher v1.6 (but _not_ the ones automatically created by Rancher) are parsed by migration-tools CLI, meaning you don't have to manually reapply labels.
+> 你在Rancher v1.6中手动应用的所有标签（但_不是_由Rancher自动创建的标签）由迁移工具CLI解析，这意味着你不必手动重新应用标签。
 
-To apply labels to pods, make additions to the **Labels and Annotations** section as you configure your workload. After you complete workload configuration, you can view the label by viewing each pod that you've scheduled. To apply labels to nodes, edit your node and make additions to the **Labels** section.
+要将标签应用于容器，请在配置工作负载时在**标签和注释**部分中添加其内容。 完成工作负载配置后，可以通过查看调度的每个pod来查看标签。 要将标签应用于节点，请编辑你的节点并在**标签**部分中添加其内容。
 
-##### Label Affinity/AntiAffinity
+##### 标签的关联性/非关联性
 
-Some of the most-used scheduling features in v1.6 were affinity and anti-affinity rules.
+v1.6中一些最常用的调度功能是关联性和非关联性规则。
 
 <figcaption><code>output.txt</code> Affinity Label</figcaption>
 
-![Affinity Label](/img/rancher/resolve-affinity.png)
+![关联性标签](/img/rancher/resolve-affinity.png)
 
-- **Affinity**
+- **关联性**
 
-  Any pods that share the same label are scheduled to the same node. Affinity can be configured in one of two ways:
+  共享相同标签的所有pods都调度到同一节点。 可以通过以下两种方式之一配置关联性：
 
-  | Affinity | Description                                                                                                                                                                                                                                                                                                                                       |
+  | 关联性   | 描述                                                                                                                                                                                                                                                                                                                                       |
   | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-  | **Hard** | A hard affinity rule means that the host chosen must satisfy all the scheduling rules. If no such host can be found, the workload will fail to deploy. In the Kubernetes manifest, this rule translates to the `nodeAffinity` directive.<br/><br/>To use hard affinity, configure a rule using the **Require ALL of** section (see figure below). |
-  | **Soft** | Rancher v1.6 user are likely familiar with soft affinity rules, which try to schedule the deployment per the rule, but can deploy even if the rule is not satisfied by any host.<br/><br/>To use soft affinity, configure a rule using the **Prefer Any of** section (see figure below).                                                          |
+  | **高** | 高关联规则意味着所选择的主机必须满足所有调度规则。 如果找不到此类主机，则工作负载将无法部署。 在Kubernetes清单中，此规则转换为`nodeAffinity`指令。<br/><br/>要使用高关联性，请使用**全部要求**部分（请参见下图）配置规则。 |
+  | **低** | Rancher v1.6用户可能熟悉低关联性规则，该规则尝试按规则调度部署，但是即使任何主机都不满足该规则也可以进行deployment。<br/><br/>要使用低关联性， 使用**优先任一项**部分配置规则（请参见下图）。                                                          |
 
     <br/>
 
 <figcaption>Affinity Rules: Hard and Soft</figcaption>
 
-    ![Affinity Rules](/img/rancher/node-scheduling-affinity.png)
+    ![关联性规则](/img/rancher/node-scheduling-affinity.png)
 
-- **AntiAffinity**
+- **关联性**
 
-  Any pods that share the same label are scheduled to different nodes. In other words, while affinity _attracts_ a specific label to each other, anti-affinity _repels_ a label from itself, so that pods are scheduled to different nodes.
+  共享相同标签的任何pods都将调度到不同的节点。 换句话说，虽然关联性彼此_吸引_了一个特定的标签，而非关联性却从其自身_驱除_了一个标签，以便将pod调度到不同的节点。
 
-  You can create an anti-affinity rules using either hard or soft affinity. However, when creating your rule, you must use either the `is not set` or `not in list` operator.
+  你可以使用高或低关联性来创建非关联性规则。 但是，在创建规则时，必须使用 `is not set`或`not in list` 运算符。
 
-  For anti-affinity rules, we recommend using labels with phrases like `NotIn` and `DoesNotExist`, as these terms are more intuitive when users are applying anti-affinity rules.
+  对于非关联性规则，我们建议使用带有诸如`NotIn`和`DoesNotExist`之类短语的标签，因为当用户应用非关联性规则时，这些术语会更加直观。
 
     <figcaption>AntiAffinity Operators</figcaption>
 
-  ![AntiAffinity ](/img/rancher/node-schedule-antiaffinity.png)
+  ![关联性](/img/rancher/node-schedule-antiaffinity.png)
 
-Detailed documentation for affinity/anti-affinity is available in the [Kubernetes Documentation](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity).
+有关关联性和非关联性的详细文档，请参见 [Kubernetes文档](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity).
 
-Affinity rules that you create in the UI update your workload, adding pod affinity/anti-affinity directives to the workload Kubernetes manifest specs.
+你在UI中创建的关联性规则会更新你的工作负载，并向工作负载Kubernetes清单规范中添加pods关联性/非关联性指令。
 
-#### Preventing Scheduling Specific Services to Specific Nodes
+#### 阻止将特定服务调度到特定节点
 
-In Rancher v1.6 setups, you could prevent services from being scheduled to specific nodes with the use of labels. In Rancher v2.x, you can reproduce this behavior using native Kubernetes scheduling options.
+在Rancher v1.6设置中，你可以使用标签阻止将服务调度到特定节点。 在Rancher v2.x中，你可以使用本机Kubernetes调度选项来重现此行为。
 
-In Rancher v2.x, you can prevent pods from being scheduled to specific nodes by applying _taints_ to a node. Pods will not be scheduled to a tainted node unless it has special permission, called a _toleration_. A toleration is a special label that allows a pod to be deployed to a tainted node. While editing a workload, you can apply tolerations using the **Node Scheduling** section. Click **Show advanced options**.
+在Rancher v2.x中，可以通过对节点应用_污染_来阻止将pods调度到特定节点。 除非具有特殊权限（称为_容忍_），否则不会将pods调度到受污染的节点。 容忍是一种特殊的标签，允许将pods部署到受污染的节点。 编辑工作负载时，可以使用**调度节点**部分来应用容忍。 点击**显示高级选项**。
 
 <figcaption>Applying Tolerations</figcaption>
 
-![Tolerations](/img/rancher/node-schedule-advanced-options.png)
+![容忍](/img/rancher/node-schedule-advanced-options.png)
 
-For more information, see the Kubernetes documentation on [taints and tolerations](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/).
+有关更多信息，请参阅关于[污点和容忍](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/).
 
-#### Scheduling Global Services
+#### 调度全局服务
 
-Rancher v1.6 included the ability to deploy [global services]({{< baseurl >}}/rancher/v1.6/en/cattle/scheduling/#global-service), which are services that deploy duplicate containers to each host in the environment (i.e., nodes in your cluster using Rancher v2.x terms). If a service has the `io.rancher.scheduler.global: 'true'` label declared, then Rancher v1.6 schedules a service container on each host in the environment.
+Rancher v1.6包含功能部署 [全局服务]({{< baseurl >}}/rancher/v1.6/en/cattle/scheduling/#global-service), 这些服务会将重复的容器部署到环境中的每个主机（即Rancher v2.x术语的集群中的节点）。 如果服务声明了`io.rancher.scheduler.global: 'true'`标签，则Rancher v1.6会在环境中的每个主机上调度服务容器。
 
 <figcaption><code>output.txt</code> Global Service Label</figcaption>
 
-![Global Service Label](/img/rancher/resolve-global.png)
+![全局服务标签](/img/rancher/resolve-global.png)
 
-In Rancher v2.x, you can schedule a pod to each node using a [Kubernetes DaemonSet](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/), which is a specific type of workload <!-- link -->). A _DaemonSet_ functions exactly like a Rancher v1.6 global service. The Kubernetes scheduler deploys a pod on each node of the cluster, and as new nodes are added, the scheduler will start new pods on them provided they match the scheduling requirements of the workload. Additionally, in v2.x, you can also limit a DaemonSet to be deployed to nodes that have a specific label.
+在Rancher v2.x中，你可以使用 [Kubernetes守护程序](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/), 这是特定类型的工作负载 <!-- link -->). _守护程序_的功能与Rancher v1.6全局服务完全相同。 Kubernetes调度程序在集群的每个节点上部署一个pod，并在添加新节点时，只要满足工作负载的调度要求，调度程序就会在它们上面启动新pod。 此外，在v2.x中，你还可以限制将守护程序部署到具有特定标签的节点上。
 
-To create a daemonset while configuring a workload, choose **Run one pod on each node** from the **Workload Type** options.
+要在配置工作负载时创建守护程序，请从**工作负载类型**选项中选择**在每个节点上运行一个Pod**。
 
 <figcaption>Workload Configuration: Choose run one pod on each node to configure daemonset</figcaption>
 
-![choose Run one pod on each node](/img/rancher/workload-type.png)
+![选择在每个节点上运行一个pod](/img/rancher/workload-type.png)
 
-#### Scheduling Pods Using Resource Constraints
+#### 使用资源约束调度Pod
 
-While creating a service in the Rancher v1.6 UI, you could schedule its containers to hosts based on hardware requirements that you choose. The containers are then scheduled to hosts based on which ones have bandwidth, memory, and CPU capacity.
+在Rancher v1.6 UI中创建服务时，可以根据你选择的硬件要求将其容器调度到主机。 然后基于带宽，内存和CPU容量的容器将调度到主机。
 
-In Rancher v2.x, you can still specify the resources required by your pods. However, these options are unavailable in the UI. Instead, you must edit your workload's manifest file to declare these resource constraints.
+在Rancher v2.x中，你仍然可以指定pod所需的资源。 但是，这些选项在UI中不可用。 相反，你必须编辑工作负载的清单文件以声明这些资源约束。
 
-To declare resource constraints, edit your migrated workloads, editing the **Security & Host** sections.
+要声明资源限制，请编辑迁移的工作负载，然后编辑**安全 & 主机**部分。
 
-- To reserve a minimum hardware reservation available for your pod(s), edit the following sections:
+- 要为你的pod(s)保留可用的最低硬件条件，请编辑以下部分：
 
   - Memory Reservation
   - CPU Reservation
   - NVIDIA GPU Reservation
 
-- To set a maximum hardware limit for your pods, edit:
+- 要为你的Pod设置最大硬件条件限制，请编辑：
 
   - Memory Limit
   - CPU Limit
 
 <figcaption>Scheduling: Resource Constraint Settings</figcaption>
 
-![Resource Constraint Settings](/img/rancher/resource-constraint-settings.png)
+![资源约束设置](/img/rancher/resource-constraint-settings.png)
 
-You can find more detail about these specs and how to use them in the [Kubernetes Documentation](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/#resource-requests-and-limits-of-pod-and-container).
+你可以在这些规范中找到有关这些规范以及如何使用它们的更多详细信息 [Kubernetes文档](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/#resource-requests-and-limits-of-pod-and-container).
 
-#### [Next: Service Discovery](/docs/v1.6-migration/discover-services/)
+#### [下一步: 服务发现](/docs/v1.6-migration/discover-services/)
