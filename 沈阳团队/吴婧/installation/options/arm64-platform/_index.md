@@ -1,26 +1,26 @@
 ---
-title: Running on ARM64 (Experimental)
+title: 在ARM64上运行 (实验性)
 ---
 
-_Available as of v2.2.0_
+_自v2.2.0起可用_
 
-> **Important:**
+> **重要：**
 >
-> Running on an ARM64 platform is currently an experimental feature and is not yet officially supported in Rancher. Therefore, we do not recommend using ARM64 based nodes in a production environment.
+> 在ARM64平台上运行目前是一项实验功能，Rancher尚未正式支持该功能。因此，我们不建议在生产环境中使用基于ARM64的节点。
 
-The following options are available when using an ARM64 platform:
+使用ARM64平台时，可以使用以下选项：
 
-- Running Rancher on ARM64 based node(s)
-  - Only [Docker Install](/docs/installation/other-installation-methods/single-node-docker)
-- Create custom cluster and adding ARM64 based node(s)
-  - Kubernetes cluster version must be 1.12 or higher
-  - CNI Network Provider must be [Flannel](/docs/faq/networking/cni-providers/#flannel)
-- Importing clusters that contain ARM64 based nodes
-  - Kubernetes cluster version must be 1.12 or higher
+- 在基于ARM64的节点上运行Rancher
+  - 仅[安装Docker](/docs/installation/other-installation-methods/single-node-docker)
+- 创建自定义集群并添加基于ARM64的节点
+  - Kubernetes集群版本必须为1.12或更高
+  - CNI网络提供商必须为[Flannel](/docs/faq/networking/cni-providers/#flannel)
+- 导入包含基于ARM64的节点的群集
+  - Kubernetes集群版本必须为1.12或更高
 
-Please see [Cluster Options](/docs/cluster-provisioning/rke-clusters/options/) how to configure the cluster options.
+请参阅[集群选项](/docs/cluster-provisioning/rke-clusters/options/) 如何配置集群选项。
 
-The following features are not tested:
+以下功能未经测试：
 
-- Monitoring, alerts, notifiers, pipelines and logging
-- Launching apps from the catalog
+- 监控、告警、通知、流水线和日志
+- 从应用商店启动应用程序
