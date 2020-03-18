@@ -1,64 +1,64 @@
 ---
-title: 2. Migrate Your Services
+标题: 2. 迁移你的服务
 ---
 
-Although your services from v1.6 won't work in Rancher v2.x by default, that doesn't mean you have to start again from square one, manually rebuilding your applications in v2.x. To help with migration from v1.6 to v2.x, Rancher has developed a migration tool. The migration-tools CLI is a utility that helps you recreate your applications in Rancher v2.x. This tool exports your Rancher v1.6 services as Compose files and converts them to a Kubernetes manifest that Rancher v2.x can consume.
+尽管默认情况下v1.6提供的服务将无法在Rancher v2.x中运行，但这并不意味着你必须重新开始在v2.x中手动重建应用程序。 为了帮助从v1.6迁移到v2.x，Rancher开发了一个迁移工具。 迁移工具CLI是一个实用程序，可帮助你在Rancher v2.x中重新创建应用程序。 该工具将你的Rancher v1.6服务导出为Compose文件，并将它们转换为Rancher v2.x可以使用的Kubernetes清单。
 
-Additionally, for each Rancher v1.6-specific Compose directive that cannot be consumed by Kubernetes, migration-tools CLI provides instructions on how to manually recreate them in Rancher v2.x.
+此外，对于Kubernetes无法使用的每个特定于Rancher v1.6的Compose指令，迁移工具CLI均提供了有关如何在Rancher v2.x中手动重新创建它们的说明。
 
-This command line interface tool will:
+此命令行界面工具将：
 
-- Export Compose files (i.e., `docker-compose.yml` and `rancher-compose.yml`) for each stack in your v1.6 Cattle environment. For every stack, files are exported to a unique folder: `<EXPORT_DIR>/<ENV_NAME>/<STACK_NAME>`.
+- 导出v1.6 Cattle环境中每个堆栈的Compose文件（即`docker-compose.yml`和`rancher-compose.yml`）。 对于每个堆栈，文件都将导出到一个唯一的文件夹： `<EXPORT_DIR>/<ENV_NAME>/<STACK_NAME>`.
 
-- Parse Compose files that you’ve exported from your Rancher v1.6 stacks and converts them to Kubernetes manifests that Rancher v2.x can consume. The tool also outputs a list of directives present in the Compose files that cannot be converted automatically to Rancher v2.x. These are directives that you’ll have to manually configure using the Rancher v2.x UI.
+- 解析从Rancher v1.6堆栈导出的Compose文件并将其转换为Rancher v2.x可以使用的Kubernetes清单。 该工具还会输出无法自动转换为Rancher v2.x的Compose文件中存在的指令列表。 这些是你必须使用Rancher v2.x UI手动配置的指令。
 
-### Outline
+### 大纲
 
 <!-- TOC -->
 
-- [A. Download the migration-tools CLI](#a-download-the-migration-tools-cli)
-- [B. Configure the migration-tools CLI](#b-configure-the-migration-tools-cli)
-- [C. Run the migration-tools CLI](#c-run-the-migration-tools-cli)
-- [D. Deploy Services Using Rancher CLI](#d-re-deploy-services-as-kubernetes-manifests)
-- [What Now?](#what-now)
+- [A. 下载迁移工具CLI](#a-download-the-migration-tools-cli)
+- [B. 配置迁移工具CLI](#b-configure-the-migration-tools-cli)
+- [C. 运行迁移工具CLI](#c-run-the-migration-tools-cli)
+- [D. 使用Rancher CLI部署服务](#d-re-deploy-services-as-kubernetes-manifests)
+- [现在该怎么做?](#what-now)
 
 <!-- /TOC -->
 
-### A. Download the migration-tools CLI
+### A. 下载迁移工具CLI
 
-The migration-tools CLI for your platform can be downloaded from our [GitHub releases page](https://github.com/rancher/migration-tools/releases). The tools are available for Linux, Mac, and Windows platforms.
+可以下载适用于你平台的迁移工具CLI从我们的[GitHub发布页面](https://github.com/rancher/migration-tools/releases). 这些工具可用于Linux，Mac和Windows平台
 
-### B. Configure the migration-tools CLI
+### B. 配置迁移工具CLI
 
-After you download migration-tools CLI, rename it and make it executable.
+下载迁移工具CLI后，将其重命名并使其可执行。
 
-1. Open a terminal window and change to the directory that contains the migration-tool file.
+1. 打开一个终端窗口，然后进入到包含迁移工具文件的目录。
 
-1. Rename the file to `migration-tools` so that it no longer includes the platform name.
+1. 将文件重命名为`migration-tools`，使其不再包含平台名称。
 
-1. Enter the following command to make `migration-tools` executable:
+1. 输入以下命令以使 `migration-tools` 可执行：
 
    ```
    chmod +x migration-tools
    ```
 
-### C. Run the migration-tools CLI
+### C. 运行迁移工具CLI
 
-Next, use the migration-tools CLI to export all stacks in all of the Cattle environments into Compose files. Then, for stacks that you want to migrate to Rancher v2.x, convert the Compose files into Kubernetes manifest.
+接下来，使用迁移工具CLI将所有Cattle环境中的所有堆栈导出到Compose文件中。 然后，对于要迁移到Rancher v2.x的堆栈，将Compose文件转换为Kubernetes清单。
 
-> **Prerequisite:** Create an [Account API Key]({{< baseurl >}}/rancher/v1.6/en/api/v2-beta/api-keys/#account-api-keys) to authenticate with Rancher v1.6 when using the migration-tools CLI.
+> **前提条件:** 创建一个 [Account API Key]({{< baseurl >}}/rancher/v1.6/en/api/v2-beta/api-keys/#account-api-keys) 使用迁移工具CLI时使用Rancher v1.6进行身份验证。
 
-1. Export the Docker Compose files for your Cattle environments and stacks from Rancher v1.6.
+1. 从Rancher v1.6导出适用于Cattle环境和堆栈的Docker Compose文件。
 
-   In the terminal window, execute the following command, replacing each placeholder with your values.
+   在终端窗口中，执行以下命令，将每个占位符替换为你的值。
 
    ```
    migration-tools export --url http://<RANCHER_URL:PORT> --access-key <RANCHER_ACCESS_KEY> --secret-key <RANCHER_SECRET_KEY> --export-dir <EXPORT_DIR> --all
    ```
 
-   **Step Result:** migration-tools exports Compose files (`docker-compose.yml` and `rancher-compose.yml`) for each stack in the `--export-dir` directory. If you omitted this option, Compose files are output to your current directory.
+   **步骤结果:** 迁移工具导出`--export-dir`目录中每个堆栈的Compose文件（`docker-compose.yml`和`rancher-compose.yml`）。 如果省略此选项，则 Compose 文件将输出到当前目录。
 
-   A unique directory is created for each environment and stack. For example, if we export each [environment/stack](/docs/v1.6-migration/#migration-example-files) from Rancher v1.6, the following directory structure is created:
+   为每个环境和堆栈创建一个唯一的目录。 例如，如果我们从Rancher v1.6中导出每个[environment/stack](/docs/v1.6-migration/#migration-example-files)， 则创建以下目录结构：
 
    ```
    export/                            # migration-tools --export-dir
@@ -69,46 +69,46 @@ Next, use the migration-tools CLI to export all stacks in all of the Cattle envi
             |--README.md              # README OF CHANGES FROM v1.6 to v2.x
    ```
 
-1) Convert the exported Compose files to Kubernetes manifest.
+1) 将导出的Compose文件转换为Kubernetes清单。
 
-   Execute the following command, replacing each placeholder with the absolute path to your Stack's Compose files. If you want to migrate multiple stacks, you'll have to re-run the command for each pair of Compose files that you exported.
+   执行以下命令，将每个占位符替换为堆栈的Compose文件的绝对路径。 如果要迁移多个堆栈，则必须为导出的每对Compose文件重新运行该命令。
 
    ```
    migration-tools parse --docker-file <DOCKER_COMPOSE_ABSOLUTE_PATH> --rancher-file <RANCHER_COMPOSE_ABSOLUTE_PATH>
    ```
 
-   > **Note:** If you omit the `--docker-file` and `--rancher-file` options from your command, migration-tools uses the current working directory to find Compose files.
+   > **注意:** 如果你从命令中省略了`--docker-file`和 `--rancher-file`选项，则迁移工具将使用当前工作目录来查找Compose文件。
 
-> **Want full usage and options for the migration-tools CLI?** See the [Migration Tools CLI Reference](/docs/v1.6-migration/run-migration-tool/migration-tools-ref/).
+> **想要迁移工具CLI的完整用法和选项?** 查看 [迁移工具CLI参考](/docs/v1.6-migration/run-migration-tool/migration-tools-ref/).
 
-#### migration-tools CLI Output
+#### 迁移工具CLI的输出
 
-After you run the migration-tools parse command, the following files are output to your target directory.
+运行migration-tools parse命令后，以下文件将输出到目标目录。
 
-| Output                    | Description                                                                                                                                                                                                                     |
+| 输出                    | 描述                                                                                                                                                                                                                     |
 | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `output.txt`              | This file lists how to recreate your Rancher v1.6-specific functionality in Kubernetes. Each listing links to the relevant blog articles on how to implement it in Rancher v2.x.                                                |
-| Kubernetes manifest specs | Migration-tools internally invokes [Kompose](https://github.com/kubernetes/kompose) to generate a Kubernetes manifest for each service you're migrating to v2.x. Each YAML spec file is named for the service you're migrating. |
+| `output.txt`              | 该文件列出了如何在Kubernetes中重新创建特定于Rancher v1.6的功能。 每个清单都链接到有关如何在Rancher v2.x中实现它的相关博客文章。                                                |
+| Kubernetes manifest specs | 迁移工具在内部调用 [Kompose](https://github.com/kubernetes/kompose) 为你要迁移到v2.x的每个服务生成Kubernetes清单。 每个YAML规范文件均以你要迁移的服务命名。                    |
 
-##### Why are There Separate Deployment and Service Manifests?
+##### 为什么会有单独的部署和服务清单?
 
-To make an application publicly accessible by URL, a Kubernetes service is required in support of the deployment. A Kubernetes service is a REST object that abstracts access to the pods in the workload. In other words, a service provides a static endpoint to the pods by mapping a URL to pod(s) Therefore, even if the pods change IP address, the public endpoint remains unchanged. A service object points to its corresponding deployment (workload) by using selector labels.
+为了使应用程序可以通过URL公开访问，需要Kubernetes服务来支持部署。 Kubernetes服务是一个REST对象，它抽象化了对工作负载中Pod的访问。 换句话说，服务通过将URL映射到一个或多个pod来为pod提供一个静态端点。因此，即使pod更改了IP地址，公共端点也保持不变。 服务对象使用选择器标签指向其相应的deployment（工作负载）。
 
-When a you export a service from Rancher v1.6 that exposes public ports, migration-tools CLI parses those ports to a Kubernetes service spec that links to a deployment YAML spec.
+当你从Rancher v1.6导出公共端口的服务时，迁移工具CLI会将这些端口解析为Kubernetes服务规范，该规范链接到deployment YAML规范。
 
-##### Migration Example File Output
+##### 迁移示例文件输出
 
-If we parse the two example files from [Migration Example Files](/docs/v1.6-migration/#migration-example-files), `docker-compose.yml` and `rancher-compose.yml`, the following files are output:
+如果我们从[迁移示例文件]（/ docs / v1.6-migration /＃migration-example-files）中解析两个示例文件`docker-compose.yml`和`rancher-compose.yml`，则以下文件输出：
 
-| File                       | Description                                                                                                |
+| 文件                       | 描述                                                                                                |
 | -------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| `web-deployment.yaml`      | A file containing Kubernetes container specs for a Let's Chat deployment.                                  |
-| `web-service.yaml`         | A file containing specs for the Let's Chat service.                                                        |
-| `database-deployment.yaml` | A file containing container specs for the MongoDB deployment in support of Let's Chat.                     |
-| `webLB-deployment.yaml`    | A file containing container specs for an HAProxy deployment that's serving as a load balancer.<sup>1</sup> |
-| `webLB-service.yaml`       | A file containing specs for the HAProxy service.<sup>1</sup>                                               |
+| `web-deployment.yaml`      | 包含用于Let's Chat部署的Kubernetes容器规范的文件。                                  |
+| `web-service.yaml`         | 包含Let's Chat 服务的规范的文件。                                                        |
+| `database-deployment.yaml` | 该文件包含用于支持Let's Chat的MongoDB部署的容器规范。                     |
+| `webLB-deployment.yaml`    | 包含用于充当负载均衡器的HAProxy部署的容器规范的文件.<sup>1</sup> |
+| `webLB-service.yaml`       | 包含HAProxy服务规范的文件。<sup>1</sup>                                               |
 
-> <sup>1</sup> Because Rancher v2.x uses Ingress for load balancing, we won't be migrating our Rancher v1.6 load balancer to v2.x.
+> <sup>1</sup> 由于Rancher v2.x使用Ingress进行负载均衡，因此我们不会将Rancher v1.6负载均衡器迁移到v2.x。
 
 <!--
 The following tabs display the contents of each parsed file. We've omitted `webLB-deployment.yaml` and `webLB-service.yaml` because we aren't migrating them to v2.x.
@@ -223,29 +223,29 @@ status: {}
 
 -->
 
-### D. Re-Deploy Services as Kubernetes Manifests
+### D. 以Kubernetes清单的形式重新部署服务
 
-> **Note:** Although these instructions deploy your v1.6 services in Rancher v2.x, they will not work correctly until you adjust their Kubernetes manifests.
+> **注意:** 尽管这些说明将你的v1.6服务部署在Rancher v2.x中，但在你调整Kubernetes清单之前，它们将无法正常工作。
 
  tabs 
  tab "Rancher UI" 
 
-You can deploy the Kubernetes manifests created by migration-tools by importing them into Rancher v2.x.
+你可以通过将迁移工具创建的Kubernetes清单导入Rancher v2.x来进行部署。
 
-> **Receiving an `ImportYaml Error`?**
+> **接收到 `ImportYaml Error`?**
 >
-> Delete the YAML directive listed in the error message. These are YAML directives from your v1.6 services that Kubernetes can't read.
+> 删除错误消息中列出的YAML指令。 这些是Kubernetes无法读取的来自v1.6服务的YAML指令。
 
 <figcaption>Deploy Services: Import Kubernetes Manifest</figcaption>
 
-![Deploy Services](/img/rancher/deploy-service.gif)
+![部署服务](/img/rancher/deploy-service.gif)
 
  /tab 
  tab "Rancher CLI" 
 
-> **Prerequisite:** [Install Rancher CLI](/docs/cli/) for Rancher v2.x.
+> **前提条件:** 为 Rancher v2.x [安装Rancher CLI](/docs/cli/) 
 
-Use the following Rancher CLI commands to deploy your application using Rancher v2.x. For each Kubernetes manifest output by migration-tools CLI, enter one of the commands below to import it into Rancher v2.x.
+使用以下Rancher CLI命令让Rancher v2.x部署应用程序。 对于迁移工具CLI输出的每个Kubernetes清单，请输入以下命令之一，以将其导入Rancherv2.x。
 
 ```
 ./rancher kubectl create -f <DEPLOYMENT_YAML_FILE> # DEPLOY THE DEPLOYMENT YAML
@@ -256,38 +256,41 @@ Use the following Rancher CLI commands to deploy your application using Rancher 
  /tab 
  /tabs 
 
-Following importation, you can view your v1.6 services in the v2.x UI as Kubernetes manifests by using the context menu to select `<CLUSTER> > <PROJECT>` that contains your services. The imported manifests will display on the **Resources > Workloads** and on the tab at **Resources > Workloads > Service Discovery.** (In Rancher v2.x prior to v2.3.0, these are on the **Workloads** and **Service Discovery** tabs in the top navigation bar.)
+
+导入后，你可以使用上下文菜单选择包含服务的`<CLUSTER>> <PROJECT>`，从而在Kubernetes清单中以v2.x UI形式查看v1.6服务。 导入的清单将显示在**资源 > 工作负载**以及**资源 > 工作负载 > 服务发现**的选项卡上。（在v2.3.0之前的Rancher v2.x中，这些文件在**工作负载**和顶部导航栏中的**服务发现**标签上。）
 
 <figcaption>Imported Services</figcaption>
 
-![Imported Services](/img/rancher/imported-workloads.png)
+![导入服务](/img/rancher/imported-workloads.png)
 
-### What Now?
+### 现在怎么做?
 
-Although the migration-tool CLI parses your Rancher v1.6 Compose files to Kubernetes manifests, there are discrepancies between v1.6 and v2.x that you must address by manually editing your parsed [Kubernetes manifests](#output). In other words, you need to edit each workload and service imported into Rancher v2.x, as displayed below.
+尽管迁移工具CLI将你的Rancher v1.6 Compose文件解析为Kubernetes清单，但是你必须通过手动编辑已解析的[Kubernetes清单](#output) 来解决v1.6和v2.x之间的差异。 换句话说，你需要编辑导入到Rancher v2.x中的每个工作负载和服务，如下所示。
 
 <figcaption>Edit Migrated Services</figcaption>
 
-![Edit Migrated Workload](/img/rancher/edit-migration-workload.gif)
+![编辑迁移的工作负载](/img/rancher/edit-migration-workload.gif)
 
-As mentioned in [Migration Tools CLI Output](#migration-tools-cli-output), the `output.txt` files generated during parsing lists the manual steps you must make for each deployment. Review the upcoming topics for more information on manually editing your Kubernetes specs.
 
-Open your `output.txt` file and take a look at its contents. When you parsed your Compose files into Kubernetes manifests, migration-tools CLI output a manifest for each workload that it creates for Kubernetes. For example, our when our [Migration Example Files](/docs/v1.6-migration/#migration-example-files) are parsed into Kubernetes manifests, `output.txt` lists each resultant parsed [Kubernetes manifest file](#migration-example-file-output) (i.e., workloads). Each workload features a list of action items to restore operations for the workload in v2.x.
+如[迁移工具CLI输出]（＃migration-tools-cli-output）中所述，解析过程中生成的output.txt文件列出了每个部署必须执行的手动步骤。 查看即将发布的议题，以获取有关手动编辑Kubernetes规范的更多信息。
+
+
+打开你的`output.txt`文件并查看其内容。 将Compose文件解析为Kubernetes清单时，迁移工具CLI会为其Kubernetes创建的每个工作负载输出清单。 例如，当我们将[迁移示例文件]（/ docs / v1.6-migration /＃migration-example-files）解析为Kubernetes清单时，`output.txt`列出了每个解析后的[Kubernetes清单文件]（＃ 迁移示例文件输出）（即工作负载）。 每个工作负载均具有一系列操作项，以还原v2.x中针对该工作负载的操作。
 
 <figcaption>Output.txt Example</figcaption>
 
 ![output.txt](/img/rancher/output-dot-text.png)
 
-The following table lists possible directives that may appear in `output.txt`, what they mean, and links on how to resolve them.
+下表列出了可能在`output.txt`中出现的指令和它们的含义以及有关如何解析它们的链接。
 
 | Directive         | Instructions                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [ports][4]        | Rancher v1.6 _Port Mappings_ cannot be migrated to v2.x. Instead, you must manually declare either a HostPort or NodePort, which are similar to Port Mappings.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| [health_check][1] | The Rancher v1.6 health check microservice has been replaced with native Kubernetes health checks, called _probes_. Recreate your v1.6 health checks in v2.0 using probes.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| [labels][2]       | Rancher v1.6 uses labels to implement a variety of features in v1.6. In v2.x, Kubernetes uses different mechanisms to implement these features. Click through on the links here for instructions on how to address each label.<br/><br/>[io.rancher.container.pull_image][7]: In v1.6, this label instructed deployed containers to pull a new version of the image upon restart. In v2.x, this functionality is replaced by the `imagePullPolicy` directive.<br/><br/>[io.rancher.scheduler.global][8]: In v1.6, this label scheduled a container replica on every cluster host. In v2.x, this functionality is replaced by [Daemon Sets](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/).<br/><br/>[io.rancher.scheduler.affinity][9]: In v2.x, affinity is applied in a different way. |
-| [links][3]        | During migration, you must create links between your Kubernetes workloads and services for them to function properly in v2.x.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| [scale][5]        | In v1.6, scale refers to the number of container replicas running on a single node. In v2.x, this feature is replaced by replica sets.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| start_on_create   | No Kubernetes equivalent. No action is required from you.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| [ports][4]        | Rancher v1.6 _端口映射_无法迁移到v2.x。 相反，你必须手动声明与端口映射类似的HostPort或NodePort。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| [health_check][1] | Rancher v1.6健康检查微服务已被本机Kubernetes健康状况检查所取代，称为_探针_。 使用探针在v2.0中重新创建v1.6运行健康状况检查。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| [labels][2]       | Rancher v1.6使用标签来实现v1.6中的各种功能。 在v2.x中，Kubernetes使用不同的机制来实现这些功能。 点击此处的链接以获取有关如何处理每个标签的说明。<br/><br/> [io.rancher.container.pull_image] [7]：在v1.6中，该标签说明部署的容器拉取新版本的镜像然后重启。 在v2.x中，此功能由`imagePullPolicy`指令代替。<br/> <br/> [io.rancher.scheduler.global] [8]：在v1.6中，该标签在每个集群主机上调度了一个容器副本。 在v2.x中，此功能由[守护进程副本集](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/).取代。<br/> <br/> [io.rancher.scheduler.affinity[9]：在v2.x中，affinity 是以不同的方式应用的。 |
+| [links][3]        | 在迁移期间，你必须在Kubernetes工作负载和服务之间创建链接，以使其在v2.x中正常运行。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| [scale][5]        | 在v1.6中，规模是指在单个节点上运行的容器副本的数量。 在v2.x中，此功能由副本集代替。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| start_on_create   | 没有等效的Kubernetes。 你无需采取任何措施。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 
 [1]: /docs/v1.6-migration/monitor-apps/#configuring-probes-in-rancher-v2-x
 [2]: /docs/v1.6-migration/schedule-workloads/#scheduling-using-labels
@@ -301,4 +304,4 @@ The following table lists possible directives that may appear in `output.txt`, w
 [8]: /docs/v1.6-migration/schedule-workloads/#scheduling-global-services
 [9]: /docs/v1.6-migration/schedule-workloads/#label-affinity-antiaffinity
 
-#### [Next: Expose Your Services](/docs/v1.6-migration/expose-services/)
+#### [下一步: 暴露你的服务](/docs/v1.6-migration/expose-services/)
