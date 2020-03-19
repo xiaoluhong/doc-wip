@@ -1,46 +1,46 @@
 ---
-title: Creating an Aliyun ACK Cluster
+title: 创建阿里云 ACK 集群
 ---
 
-_Available as of v2.2.0_
+_从v2.2.0_开始可用_
 
-You can use Rancher to create a cluster hosted in Alibaba Cloud Kubernetes (ACK). Rancher has already implemented and packaged the [cluster driver](/docs/admin-settings/drivers/cluster-drivers/) for ACK, but by default, this cluster driver is `inactive`. In order to launch ACK clusters, you will need to [enable the ACK cluster driver](/docs/admin-settings/drivers/cluster-drivers/#activating-deactivating-cluster-drivers). After enabling the cluster driver, you can start provisioning ACK clusters.
+您可以使用 Rancher 创建一个托管于 Alibaba Cloud Kubernetes (ACK) 中的集群. Rancher 已经为 ACK 实现并打包了[集群驱动](/docs/admin-settings/drivers/cluster-drivers/), 但是默认情况下, 这个集群驱动是`非活动的`. 为了启动 ACK 集群, 您需要[启用ACK集群驱动程序](/docs/admin-settings/drivers/cluster-drivers/#activating-deactivating-cluster-drivers). 启用集群驱动后，可以开始配置 ACK 集群.
 
-### Prerequisites
+### 预备知识
 
-> **Note**
-> Deploying to ACK will incur charges.
+> **注意**
+> 部署到 ACK 将会产生费用.
 
-1. In Aliyun, activate the following services in their respective consoles.
+1. 在阿里云中, 通过控制台激活以下服务.
 
    - [Container Service](https://cs.console.aliyun.com)
    - [Resource Orchestration Service](https://ros.console.aliyun.com)
    - [RAM](https://ram.console.aliyun.com)
 
-2. Make sure that the account you will be using to create the ACK cluster has the appropriate permissions. Referring to the official Alibaba Cloud documentation about [Role authorization](https://www.alibabacloud.com/help/doc-detail/86483.htm) and [Use the Container Service console as a RAM user](https://www.alibabacloud.com/help/doc-detail/86484.htm) for details.
+2. 确保您将用于创建 ACK 集群的帐户具有适当的权限. 从阿里巴巴云的官方文档[角色授权](https://www.alibabacloud.com/help/doc-detail/86483.htm)和[使用容器服务控制台作为 RAM 用户](https://www.alibabacloud.com/help/doc-detail/86484.htm)获得详细信息.
 
-3. In Alibaba Cloud, create an [access key](https://www.alibabacloud.com/help/doc-detail/53045.html).
+3. 在阿里云里，创建一个[访问密钥](https://www.alibabacloud.com/help/doc-detail/53045.html).
 
-4. In Alibaba Cloud, create an [SSH key pair](https://www.alibabacloud.com/help/doc-detail/51793.html). This key is used to access nodes in the Kubernetes cluster.
+4. 在阿里云里, 创建一个[SSH 密钥对](https://www.alibabacloud.com/help/doc-detail/51793.html). 这个密钥用于访问 Kubernetes 集群中的节点.
 
-### Create an ACK Cluster
+### 创建一个 ACK 集群
 
-1. From the **Clusters** page, click **Add Cluster**.
+1. 在 **集群** 页, 点击 **添加**.
 
-1. Choose **Alibaba ACK**.
+1. 选择 **Alibaba ACK**.
 
-1. Enter a **Cluster Name**.
+1. 输入 **集群名称**.
 
 1. {{< step_create-cluster_member-roles >}}
 
-1. Configure **Account Access** for the ACK cluster. Choose the geographical region in which to build your cluster, and input the access key that was created as part of the prerequisite steps.
+1. 为 ACK 集群配置 **访问账户**. 选择构建集群的地理区域, 并输入之前创建的访问密钥.
 
-1. Click **Next: Configure Cluster**, then choose cluster type, the version of Kubernetes and the availability zone.
+1. 单击 **下一步: 配置集群**, 然后选择集群类型、Kubernetes 版本和可用的区域.
 
-1. If you choose **Kubernetes** as the cluster type, Click **Next: Configure Master Nodes**, then complete the **Master Nodes** form.
+1. 如果你选择 **Kubernetes** 作为集群类型, 单击 **下一步: 配置主节点**, 然后完成 **主节点** 表单的配置.
 
-1. Click **Next: Configure Worker Nodes**, then complete the **Worker Nodes** form.
+1. 点击 **下一步: 配置 Worker 节点**, 完成 **Worker 节点** 表单.
 
-1. Review your options to confirm they're correct. Then click **Create**.
+1. 检查你的选项是否正确. 然后点击 **创建**.
 
 {{< result_create-cluster >}}

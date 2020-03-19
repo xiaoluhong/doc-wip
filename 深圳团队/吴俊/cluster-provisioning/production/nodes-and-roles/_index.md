@@ -1,29 +1,29 @@
 ---
-title: Roles for Nodes in Kubernetes
+title: Kubernetes 中节点的角色
 ---
 
-This section describes the roles for etcd nodes, controlplane nodes, and worker nodes in Kubernetes, and how the roles work together in a cluster.
+本节描述 Kubernetes 中的 `etcd` 节点、`controlplane` 节点和`worker` 节点的角色, 以及这些角色如何在集群中协同工作
 
-This diagram is applicable to Kubernetes clusters [launched with Rancher using RKE.](/docs/cluster-provisioning/rke-clusters/).
+这个图适用于 Kubernetes 集群 [使用 RKE 和 Rancher 一起启动.](/docs/cluster-provisioning/rke-clusters/).
 
-![Cluster diagram](/img/rancher/clusterdiagram.svg)<br/>
-<sup>Lines show the traffic flow between components. Colors are used purely for visual aid</sup>
+![集群图片](/img/rancher/clusterdiagram.svg)<br/>
+<sup>线条显示组件之间的通信流. 颜色纯粹用于视觉辅助</sup>
 
 ## etcd
 
-Nodes with the `etcd` role run etcd, which is a consistent and highly available key value store used as Kubernetes’ backing store for all cluster data. etcd replicates the data to each node.
+使用`etcd`角色运行etcd节点, 这是一个一致的、高度可用的键值存储方式, 用于 Kubernetes 对所有集群数据的备份存储. etcd 将数据复制到每个节点.
 
-> **Note:** Nodes with the `etcd` role are shown as `Unschedulable` in the UI, meaning no pods will be scheduled to these nodes by default.
+> **注意:** 在UI中如果具有`etcd`角色的节点显示为`Unschedulable`, 这意味着在默认情况下不会将pod调度到这些节点.
 
 ## controlplane
 
-Nodes with the `controlplane` role run the Kubernetes master components (excluding `etcd`, as it's a separate role). See [Kubernetes: Master Components](https://kubernetes.io/docs/concepts/overview/components/#master-components) for a detailed list of components.
+在具有`controlplane`角色的节点上运行 Kubernetes 主组件(不包括 `etcd`, 因为它是一个单独的角色). 有关主组件的详细列表, 请参阅 [Kubernetes: 主组件](https://kubernetes.io/docs/concepts/overview/components/#master-components).
 
-> **Note:** Nodes with the `controlplane` role are shown as `Unschedulable` in the UI, meaning no pods will be scheduled to these nodes by default.
+> **注意:** 在UI中如果具有`controlplane`角色的节点显示为`Unschedulable`, 这意味着在默认情况下不会将pod调度到这些节点.
 
 #### kube-apiserver
 
-The Kubernetes API server (`kube-apiserver`) scales horizontally. Each node with the role `controlplane` will be added to the NGINX proxy on the nodes with components that need to access the Kubernetes API server. This means that if a node becomes unreachable, the local NGINX proxy on the node will forward the request to another Kubernetes API server in the list.
+Kubernetes API服务器（`kube-apiserver`）是水平扩展的. 每个具有`controlplane`角色的节点将被添加到具有需要访问Kubernetes API服务器的组件的节点上的NGINX代理中. 这意味着如果一个节点变得不可调度, 该节点上的本地 NGINX 代理将把请求转发到列表中的另一个 Kubernetes API 服务器.
 
 #### kube-controller-manager
 
@@ -35,8 +35,8 @@ The Kubernetes scheduler uses leader election using an endpoint in Kubernetes. O
 
 ## worker
 
-Nodes with the `worker` role run the Kubernetes node components. See [Kubernetes: Node Components](https://kubernetes.io/docs/concepts/overview/components/#node-components) for a detailed list of components.
+具有`worker`角色的节点运行 Kubernetes 节点组件. 参见 [Kubernetes: 节点组件](https://kubernetes.io/docs/concepts/overview/components/#node-components) 的详细列表.
 
-## References
+## 参考
 
-- [Kubernetes: Node Components](https://kubernetes.io/docs/concepts/overview/components/#node-components)
+- [Kubernetes: 节点组件](https://kubernetes.io/docs/concepts/overview/components/#node-components)

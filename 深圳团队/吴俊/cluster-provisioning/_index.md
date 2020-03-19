@@ -1,76 +1,76 @@
 ---
-title: Setting up Kubernetes Clusters in Rancher
+title: 在 Rancher 中设置 Kubernetes 集群
 ---
 
-Rancher simplifies the creation of clusters by allowing you to create them through the Rancher UI rather than more complex alternatives. Rancher provides multiple options for launching a cluster. Use the option that best fits your use case.
+Rancher允许您通过Rancher UI(而不是更复杂的方案)创建集群, 从而简化了集群的创建. Rancher提供了启动集群的多种选项. 使用最适合您的用例的选项.
 
-This section assumes a basic familiarity with Docker and Kubernetes. For a brief explanation of how Kubernetes components work together, refer to the [concepts](/docs/overview/concepts) page.
+本节假设您基本熟悉Docker和Kubernetes. 有关Kubernetes组件如何协同工作的简要说明, 请参阅 [概念](/docs/overview/concepts) 页面.
 
-For a conceptual overview of how the Rancher server provisions clusters and what tools it uses to provision them, refer to the [architecture](/docs/overview/architecture/) page.
+有关Rancher服务器如何配置集群以及使用什么工具来配置集群的概念概述, 请参阅 [架构](/docs/overview/architecture/) 页面.
 
-This section covers the following topics:
+本节讨论以下主题:
 
 <!-- TOC -->
 
-- [Setting up clusters in a hosted Kubernetes provider](#setting-up-clusters-in-a-hosted-kubernetes-cluster)
-- [Launching Kubernetes with Rancher](#launching-kubernetes-with-rancher)
-  - [Launching Kubernetes and Provisioning Nodes in an Infrastructure Provider](#launching-kubernetes-and-provisioning-nodes-in-an-infrastructure-provider)
-  - [Launching Kubernetes on Existing Custom Nodes](#launching-kubernetes-on-existing-custom-nodes)
-- [Importing Existing Cluster](#importing-existing-cluster)
+- [在托管的Kubernetes提供商中设置集群](#setting-up-clusters-in-a-hosted-kubernetes-cluster)
+- [使用Rancher启动Kubernetes](#launching-kubernetes-with-rancher)
+  - [在基础设施提供商中启动Kubernetes和配置节点](#launching-kubernetes-and-provisioning-nodes-in-an-infrastructure-provider)
+  - [在现有的自定义节点上启动Kubernetes](#launching-kubernetes-on-existing-custom-nodes)
+- [导入现有集群](#importing-existing-cluster)
   <!-- /TOC -->
 
-The following table summarizes the options and settings available for each cluster type:
+下表总结了每种群集类型的可用选项和设置:
 
-| Rancher Capability   | RKE Launched | Hosted Kubernetes Cluster | Imported Cluster |
+| Rancher 功能   | RKE 启动 | 托管Kubernetes集群| 导入群集 |
 | -------------------- | ------------ | ------------------------- | ---------------- |
-| Manage member roles  | ✓            | ✓                         | ✓                |
-| Edit cluster options | ✓            |                           |
-| Manage node pools    | ✓            |                           |
+| 管理成员角色  | ✓            | ✓                         | ✓                |
+| 编辑群集选项  | ✓            |                           |
+| 管理节点池    | ✓            |                           |
 
-## Setting up Clusters in a Hosted Kubernetes Provider
+## 在托管的Kubernetes提供商中设置集群
 
-In this scenario, Rancher does not provision Kubernetes because it is installed by providers such as Google Kubernetes Engine (GKE), Amazon Elastic Container Service for Kubernetes, or Azure Kubernetes Service.
+在这个场景中, Rancher不提供Kubernetes, 因为它是由供应商安装的,例如Google Kubernetes引擎（GKE）,用于Kubernetes的Amazon 弹性容器服务或Azure Kubernetes服务.
 
-If you use a Kubernetes provider such as Google GKE, Rancher integrates with its cloud APIs, allowing you to create and manage role-based access control for the hosted cluster from the Rancher UI.
+如果您使用Kubernetes提供商(例如:谷歌GKE)， Rancher将与其云api集成, 允许您在Rancher UI中创建和管理托管群集的基于角色的访问控制.
 
-For more information, refer to the section on [hosted Kubernetes clusters.](/docs/cluster-provisioning/hosted-kubernetes-clusters)
+有关更多信息, 请参阅[托管Kubernetes集群](/docs/cluster-provisioning/hosted-kubernetes-clusters)一节.
 
-## Launching Kubernetes with Rancher
+## 使用Rancher启动Kubernetes
 
-Rancher uses the [Rancher Kubernetes Engine (RKE)]({{<baseurl>}}/rke/latest/en/)as a library when provisioning Kubernetes on your own nodes. RKE is Rancher’s own lightweight Kubernetes installer.
+Rancher在您自己的节点上配置Kubernetes时,使用[Rancher Kubernetes Engine (RKE)]({{<baseurl>}}/rke/latest/en/)作为库时. RKE是Rancher自己的轻量级Kubernetes安装程序.
 
-In RKE clusters, Rancher manages the deployment of Kubernetes. These clusters can be deployed on any bare metal server, cloud provider, or virtualization platform.
+在RKE集群中, Rancher管理Kubernetes的部署. 这些集群可以部署在任何裸机服务器、云提供商或虚拟化平台上.
 
-These nodes can be dynamically provisioned through Rancher's UI, which calls [Docker Machine](https://docs.docker.com/machine/) to launch nodes on various cloud providers.
+这些节点可以通过Rancher UI进行动态配置, Rancher UI 调用[Docker Machine](https://docs.docker.com/machine/)来启动各种云提供商上的节点.
 
-If you already have a node that you want to add to an RKE cluster, you can add it to the cluster by running a Rancher agent container on it.
+如果已经有了要添加到RKE集群中的节点, 则可以通过在其上运行Rancher代理容器将其添加到集群中.
 
-For more information, refer to the section on [RKE clusters.](/docs/cluster-provisioning/rke-clusters/)
+有关详细信息, 请参阅有关 [RKE 群集](/docs/cluster-provisioning/rke-clusters/)的部分.
 
-#### Launching Kubernetes and Provisioning Nodes in an Infrastructure Provider
+#### 在基础设施提供商中启动Kubernetes和配置节点
 
-Rancher can dynamically provision nodes in infrastructure providers such as Amazon EC2, DigitalOcean, Azure, or vSphere, then install Kubernetes on them.
+Rancher可以在Amazon EC2、DigitalOcean、Azure或vSphere等基础设施提供商中动态地提供节点,然后在这些节点上安装Kubernetes .
 
-Using Rancher, you can create pools of nodes based on a [node template](/docs/cluster-provisioning/rke-clusters/node-pools/#node-templates). This template defines the parameters used to launch nodes in your cloud providers.
+使用Rancher, 您可以基于[节点模板](/docs/cluster-provisioning/rke-clusters/node-pools/#node-templates)创建节点池. 此模板定义用于启动云提供商中的节点的参数.
 
-One benefit of using nodes hosted by an infrastructure provider is that if a node loses connectivity with the cluster, Rancher can automatically replace it, thus maintaining the expected cluster configuration.
+使用基础设施提供者托管的节点的一个好处是, 如果节点失去与集群的连接, Rancher可以自动替换它, 从而维护预期的集群配置.
 
-The cloud providers available for creating a node template are decided based on the [node drivers](/docs/cluster-provisioning/rke-clusters/node-pools/#node-drivers) active in the Rancher UI.
+创建一个可用的云提供商节点模板是由Rancher UI中活动的[节点驱动](/docs/cluster-provisioning/rke-clusters/node-pools/#node-drivers)决定的.
 
-For more information, refer to the section on [nodes hosted by an infrastructure provider](/docs/cluster-provisioning/rke-clusters/node-pools/)
+有关更多信息, 请参阅关于 [由设备提供商托管的节点](/docs/cluster-provisioning/rke-clusters/node-pools/)
 
-#### Launching Kubernetes on Existing Custom Nodes
+#### 在现有的自定义节点上启动Kubernetes
 
-When setting up this type of cluster, Rancher installs Kubernetes on existing [custom nodes,](/docs/cluster-provisioning/rke-clusters/custom-nodes/) which creates a custom cluster.
+在设置这种类型的集群时, Rancher会在现有的[自定义节点](/docs/cluster-provisioning/rke-clusters/custom-nodes/)上安装Kubernetes, 这将创建一个自定义集群.
 
-You can bring any nodes you want to Rancher and use them to create a cluster.
+您可以使用任何节点, 在Rancher中创建一个集群.
 
-These nodes include on-premise bare metal servers, cloud-hosted virtual machines, or on-premise virtual machines.
+这些节点包括本地裸机服务器、云托管虚拟机或本地虚拟机.
 
-## Importing Existing Clusters
+## 导入现有集群
 
-In this type of cluster, Rancher connects to a Kubernetes cluster that has already been set up. Therefore, Rancher does not provision Kubernetes, but only sets up the Rancher agents to communicate with the cluster.
+在这种类型的集群中,Rancher连接到一个已经建立的Kubernetes集群. 因此, Rancher不提供Kubernetes, 而只设置Rancher代理来与集群通信.
 
-Note that Rancher does not automate the provisioning, scaling, or upgrade of imported clusters. All other Rancher features, including management of cluster, policy, and workloads, are available for imported clusters.
+请注意, Rancher不会自动配置、扩展或升级导入的集群. 所有其他Rancher特性, 包括集群管理、策略和工作负载, 都可用于导入的集群.
 
-For more information, refer to the section on [importing existing clusters.](/docs/cluster-provisioning/imported-clusters/)
+有关更多信息，请参阅[导入现有群集](/docs/cluster-provisioning/imported-clusters/)一节

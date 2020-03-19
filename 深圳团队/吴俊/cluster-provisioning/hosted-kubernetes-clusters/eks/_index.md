@@ -1,151 +1,151 @@
 ---
-title: Creating an EKS Cluster
+title: 创建 EKS 集群
 ---
 
-Amazon EKS provides a managed control plane for your Kubernetes cluster. Amazon EKS runs the Kubernetes control plane instances across multiple Availability Zones to ensure high availability. Rancher provides an intuitive user interface for managing and deploying the Kubernetes clusters you run in Amazon EKS. With this guide, you will use Rancher to quickly and easily launch an Amazon EKS Kubernetes cluster in your AWS account. For more information on Amazon EKS, see this [documentation](https://docs.aws.amazon.com/eks/latest/userguide/what-is-eks.html).
+Amazon EKS 为 Kubernetes 集群提供了一个托管控制平面. Amazon EKS 跨多个可用性区域运行 Kubernetes 控制平面实例,以确保高可用性. Rancher 为管理和部署在 Amazon EKS 中运行的 Kubernetes 集群提供了直观的用户界面. 通过本指南, 您将使用 Rancher 在您的 AWS 帐户中快速轻松地启动 Amazon EKS Kubernetes 集群. 有关 Amazon EKS 的更多信息, 参考[文档](https://docs.aws.amazon.com/eks/latest/userguide/what-is-eks.html).
 
-### Prerequisites in Amazon Web Services
+### Amazon Web 服务的预备条件
 
-> **Note**
-> Deploying to Amazon AWS will incur charges. For more information, refer to the [EKS pricing page](https://aws.amazon.com/eks/pricing/).
+> **注意**
+> 部署Amazon AWS将产生费用. 了解更多信息, 请参阅[EKS定价页](https://aws.amazon.com/eks/pricing/).
 
-To set up a cluster on EKS, you will need to set up an Amazon VPC (Virtual Private Cloud). You will also need to make sure that the account you will be using to create the EKS cluster has the appropriate permissions. For details, refer to the official guide on [Amazon EKS Prerequisites](https://docs.aws.amazon.com/eks/latest/userguide/getting-started-console.html#eks-prereqs).
+要在EKS上建立集群,需要建立Amazon VPC（虚拟私有云. 您还需要确保用于创建EKS群集的帐户具有适当的权限. 有关详细信息，请参阅官方文档 [Amazon EKS 预备条件](https://docs.aws.amazon.com/eks/latest/userguide/getting-started-console.html#eks-prereqs).
 
 #### Amazon VPC
 
-You need to set up an Amazon VPC to launch the EKS cluster. The VPC enables you to launch AWS resources into a virtual network that you've defined. For more information, refer to the [Tutorial: Creating a VPC with Public and Private Subnets for Your Amazon EKS Cluster](https://docs.aws.amazon.com/eks/latest/userguide/create-public-private-vpc.html).
+你需要建立一个Amazon VPC来启动EKS集群. VPC使您能够将AWS资源启动到您定义的虚拟网络中. 了解更多信息, 参考 [教程: 为Amazon EKS集群创建一个包含公共和私有子网的VPC](https://docs.aws.amazon.com/eks/latest/userguide/create-public-private-vpc.html).
 
-#### IAM Policies
+#### IAM 策略
 
-Rancher needs access to your AWS account in order to provision and administer your Kubernetes clusters in Amazon EKS. You'll need to create a user for Rancher in your AWS account and define what that user can access.
+Rancher需要访问您的AWS帐户, 以便在Amazon EKS中提供和管理您的Kubernetes群集.您需要在AWS帐户中为Rancher创建一个用户,并定义该用户可以访问的内容.
 
-1. Create a user with programmatic access by following the steps [here](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html).
+1. 请按照以下步骤创建具有程序访问权限的用户:[此处](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_create.html).
 
-2. Next, create an IAM policy that defines what this user has access to in your AWS account. It's important to only grant this user minimal access within your account. Follow the steps [here](https://docs.aws.amazon.com/eks/latest/userguide/EKS_IAM_user_policies.html) to create an IAM policy and attach it to your user.
+2. 下一步, 创建 IAM 策略,定义该用户在 AWS 账户中有权访问的内容. 请务必仅授予此用户在帐户中的最小访问权限. 按照 [此处](https://docs.aws.amazon.com/eks/latest/userguide/EKS_IAM_user_policies.html) 的步骤创建 IAM 策略并将其附加到用户.
 
-3. Finally, follow the steps [here](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#Using_CreateAccessKey) to create an access key and secret key for this user.
+3. 最后,按照 [此处](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#Using_CreateAccessKey)的步骤为此用户创建访问密钥和密钥.
 
-> **Note:** It's important to regularly rotate your access and secret keys. See this [documentation](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#rotating_access_keys_console) for more information.
+> **注意:** 定期轮换访问权限和密钥非常重要. 参考[文档](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#rotating_access_keys_console)了解更多信息.
 
-For more detailed information on IAM policies for EKS, refer to the official [documentation on Amazon EKS IAM Policies, Roles, and Permissions](https://docs.aws.amazon.com/eks/latest/userguide/IAM_policies.html).
+有关EKS的IAM策略的更多详细信息，请参阅官方[有关 Amazon EKS IAM 策略、角色和权限的文档](https://docs.aws.amazon.com/eks/latest/userguide/IAM_policies.html).
 
-### Architecture
+### 结构
 
-The figure below illustrates the high-level architecture of Rancher 2.x. The figure depicts a Rancher Server installation that manages two Kubernetes clusters: one created by RKE and another created by EKS.
+下图展示了Rancher 2.x的高级架构. 该图描述了一个Rancher服务器安装, 它管理两个Kubernetes集群:一个由RKE创建, 另一个由EKS创建.
 
-![Rancher architecture with EKS hosted cluster](/img/rancher/rancher-architecture.svg)
+![具有EKS托管集群的Rancher体系结构](/img/rancher/rancher-architecture.svg)
 
-### Create the EKS Cluster
+### 创建 EKS 集群
 
-Use Rancher to set up and configure your Kubernetes cluster.
+使用Rancher设置和配置Kubernetes集群.
 
-1.  From the **Clusters** page, click **Add Cluster**.
+1.  从 **集群** 页面, 单击 **添加集群**.
 
-1.  Choose **Amazon EKS**.
+1.  选择 **Amazon EKS**.
 
-1.  Enter a **Cluster Name**.
+1.  输入 **集群名称**.
 
 1.  {{< step_create-cluster_member-roles >}}
 
-1.  Configure **Account Access** for the EKS cluster. Complete each drop-down and field using the information obtained in [2. Create Access Key and Secret Key](#prerequisites-in-amazon-web-services).
+1.  为 EKS 集群配置**账户访问**. 使用[2. 创建 Access Key 和 Secret Key](#prerequisites-in-amazon-web-services)中获取的信息填写每个下拉列表和字段.
 
-    | Setting    | Description                                                                                                          |
+    | 设置    | 描述                                                                                                          |
     | ---------- | -------------------------------------------------------------------------------------------------------------------- |
-    | Region     | From the drop-down choose the geographical region in which to build your cluster.                                    |
-    | Access Key | Enter the access key that you created in [2. Create Access Key and Secret Key](#2-create-access-key-and-secret-key). |
-    | Secret Key | Enter the secret key that you created in [2. Create Access Key and Secret Key](#2-create-access-key-and-secret-key). |
+    | 区域     | 从下拉列表中选择要在其中创建集群的地理区域。.                                    |
+    | Access Key | 输入在[2. 创建 Access Key 和 Secret Key](#2-create-access-key-and-secret-key)中创建的访问密钥. |
+    | Secret Key | 输入在[2. 创建 Access Key 和 Secret Key](#2-create-access-key-and-secret-key)中创建的密钥. |
 
-1.  Click **Next: Select Service Role**. Then choose a [service role](https://docs.aws.amazon.com/IAM/latest/UserGuide/using-service-linked-roles.html).
+1.  单击 **下一步: 选择服务角色**. 然后选择[服务角色](https://docs.aws.amazon.com/IAM/latest/UserGuide/using-service-linked-roles.html).
 
-    | Service Role                                    | Description                                                                                                                                                                                                                                                                                                             |
+    | 服务角色                                    | 描述                                                                                                                                                                                                                                                                                                             |
     | ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-    | Standard: Rancher generated service role        | If you choose this role, Rancher automatically adds a service role for use with the cluster.                                                                                                                                                                                                                            |
-    | Custom: Choose from your existing service roles | If you choose this role, Rancher lets you choose from service roles that you're already created within AWS. For more information on creating a custom service role in AWS, see the [Amazon documentation](https://docs.aws.amazon.com/IAM/latest/UserGuide/using-service-linked-roles.html#create-service-linked-role). |
+    | Standard: Rancher 生成的服务角色        | 如果选择此角色, Rancher 会自动添加一个服务角色以用于群集.                                                                                                                                                                                                                            |
+    | Custom: 从现有服务角色中选择 | 如果您选择此角色, Rancher 允许您从已经在 AWS 中创建的服务角色中进行选择. 有关在 AWS 中创建自定义服务角色的详细信息, 参考 [Amazon documentation](https://docs.aws.amazon.com/IAM/latest/UserGuide/using-service-linked-roles.html#create-service-linked-role). |
 
-1.  Click **Next: Select VPC and Subnet**.
+1.  单击 **下一步: 选择 VPC 和 Subnet**.
 
-1.  Choose an option for **Public IP for Worker Nodes**. Your selection for this option determines what options are available for **VPC & Subnet**.
+1.  为**工作节点的公用IP**选择一个选项. 您对此选项的选择决定了**VPC 和 Subnet**可用的选项.
 
-    | Option               | Description                                                                                                                                                                                                                                                                                                       |
+    | 选择               | 描述                                                                                                                                                                                                                                                                                                       |
     | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-    | Yes                  | When your cluster nodes are provisioned, they're assigned a both a private and public IP address.                                                                                                                                                                                                                 |
-    | No: Private IPs only | When your cluster nodes are provisioned, they're assigned only a private IP address.<br/><br/>If you choose this option, you must also choose a **VPC & Subnet** that allow your instances to access the internet. This access is required so that your worker nodes can connect to the Kubernetes control plane. |
+    | Yes                  | 当您的集群节点被配置时，它们被分配了一个私有和公共IP地址.                                                                                                                                                                                                                 |
+    | No: 仅限私有 IP | 当您的群集节点被配置时，它们只被分配了一个私有IP地址.<br/><br/>如果您选择此选项, 您还必须选择一个**VPC & Subnet**来允许您的实例访问 internet. 此访问是必需的,以便您的工作节点可以连接到Kubernetes控制平面. |
 
-1.  Now choose a **VPC & Subnet**. For more information, refer to the AWS documentation for [Cluster VPC Considerations](https://docs.aws.amazon.com/eks/latest/userguide/network_reqs.html). Follow one of the sets of instructions below based on your selection from the previous step.
+1.  现在选择 **VPC & Subnet**. 有关更多信息, 请参阅AWS文档中的[Cluster VPC Considerations](https://docs.aws.amazon.com/eks/latest/userguide/network_reqs.html). 根据上一步的选择，按照下面的一组说明进行操作.
 
-        - [What Is Amazon VPC?](https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html)
-        - [VPCs and Subnets](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Subnets.html)
+    - [ Amazon VPC?](https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html)
+    - [VPCs and Subnets](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Subnets.html)
 
-         accordion id="yes" label="Public IP for Worker Nodes—Yes" 
+    accordion id="yes" label="Public IP for Worker Nodes—Yes" 
 
-    If you choose to assign a public IP address to your cluster's worker nodes, you have the option of choosing between a VPC that's automatically generated by Rancher (i.e., **Standard: Rancher generated VPC and Subnet**), or a VPC that you're already created with AWS (i.e., **Custom: Choose from your existing VPC and Subnets**). Choose the option that best fits your use case.
+    如果您选择将一个公共IP地址分配给集群的工作节点，您可以在Rancher自动生成的VPC之间进行选择 (例如,**Standard: Rancher生成的VPC and Subnets**), 或者您已经使用AWS创建的VPC (例如, **Custom: 选择您现有的VPC and Subnets**). 选择最适合您的用例的选项.
 
-1.  Choose a **VPC and Subnet** option.
+1.  选择 **VPC and Subnet** 选项.
 
-    | Option                                           | Description                                                                                                                                                                                                                                                             |
+    | 操作                                           | 描述                                                                                                                                                                                                                                                             |
     | ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-    | Standard: Rancher generated VPC and Subnet       | While provisioning your cluster, Rancher generates a new VPC and Subnet.                                                                                                                                                                                                |
-    | Custom: Choose from your exiting VPC and Subnets | While provisioning your cluster, Rancher configures your nodes to use a VPC and Subnet that you've already [created in AWS](https://docs.aws.amazon.com/vpc/latest/userguide/getting-started-ipv4.html). If you choose this option, complete the remaining steps below. |
+    | Standard: Rancher生成的VPC and Subnets       | 在配置集群时,Rancher会生成一个新的VPC和子网.                                                                                                                                                                                                |
+    | Custom: 选择您现有的VPC and Subnets | 设置群集时, Rancher将使用您已经在[AWS中创建](https://docs.aws.amazon.com/vpc/latest/userguide/getting-started-ipv4.html)的VPC和子网来配置您的节点. 如果选择此选项,请完成以下剩余步骤. |
 
-1.  If you're using **Custom: Choose from your existing VPC and Subnets**:
+1.  如果您使用 **Custom:  选择您现有的VPC and Subnets**:
 
-        (If you're using **Standard**, skip to [step 11](#select-instance-options))
+    (如果您选择 **Standard**, 跳到 [步骤 11](#select-instance-options))
 
-        1. Make sure **Custom: Choose from your existing VPC and Subnets** is selected.
+    1. 确保 **Custom: 选择您现有的VPC and Subnets** 已经选择.
 
-        1. From the drop-down that displays, choose a VPC.
+    1. 在显示的下拉列表中,选择一个VPC.
 
-        1. Click **Next: Select Subnets**. Then choose one of the **Subnets** that displays.
+    1. 单击 **下一步: 选择 Subnets**. 然后选择其中一个显示的**Subnets**.
 
-        1. Click **Next: Select Security Group**.
-         /accordion 
-         accordion id="no" label="Public IP for Worker Nodes—No: Private IPs only" 
+    1. 单击 **下一步: 选择安全组**.
+        /accordion 
+        accordion id="no" label="Public IP for Worker Nodes—No: Private IPs only" 
 
-    If you chose this option, you must also choose a **VPC & Subnet** that allow your instances to access the internet. This access is required so that your worker nodes can connect to the Kubernetes control plane. Follow the steps below.
+    如果您选择此选项, 您还必须选择允许您的实例访问internet的**VPC & Subnet**. 这个访问是必需的,这样您的工作节点就可以连接到Kubernetes控制平面. 遵循以下步骤.
 
-> **Tip:** When using only private IP addresses, you can provide your nodes internet access by creating a VPC constructed with two subnets, a private set and a public set. The private set should have its route tables configured to point toward a NAT in the public set. For more information on routing traffic from private subnets, please see the [official AWS documentation](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_NAT_Instance.html).
+> **提示:** 仅使用专用IP地址时, 可以通过创建由两个子网（一个专用集和一个公用集）构成的VPC来为节点提供internet访问. 私有集应该将其路由表配置为指向公共集中的NAT. 有关从专用子网路由流量的详细信息. 有关私有子网路由流量的更多信息, 请查看 [官方AWS文档](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_NAT_Instance.html).
 
-    1. From the drop-down that displays, choose a VPC.
+1. 从显示的下拉列表中,选择专有网络 VPC.
 
-    1. Click **Next: Select Subnets**. Then choose one of the **Subnets** that displays.
+1. 单击 **下一步: 选择 Subnets**. 然后选择其中一个显示的**Subnets**.
 
-    1. Click **Next: Select Security Group**.
+1. 单击 **下一步: 选择安全组**.
      /accordion 
 
-1. <a id="security-group"></a>Choose a **Security Group**. See the documentation below on how to create one.
+1. <a id="security-group"></a>选择**安全组**. 请参阅下面的文档,了解如何创建一个.
 
-   Amazon Documentation:
+   Amazon 文档:
 
-   - [Cluster Security Group Considerations](https://docs.aws.amazon.com/eks/latest/userguide/sec-group-reqs.html)
-   - [Security Groups for Your VPC](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html)
-   - [Create a Security Group](https://docs.aws.amazon.com/vpc/latest/userguide/getting-started-ipv4.html#getting-started-create-security-group)
+   - [群集安全组注意事项](https://docs.aws.amazon.com/eks/latest/userguide/sec-group-reqs.html)
+   - [VPC的安全组](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_SecurityGroups.html)
+   - [创建安全组](https://docs.aws.amazon.com/vpc/latest/userguide/getting-started-ipv4.html#getting-started-create-security-group)
 
-1. <a id="select-instance-options"></a>Click **Select Instance Options**, and then edit the node options available. Instance type and size of your worker nodes affects how many IP addresses each worker node will have available. See this [documentation](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-eni.html#AvailableIpPerENI) for more information.
+1. <a id="select-instance-options"></a>单击 **选择实例选项**, 然后编辑可用的节点选项. 工作节点的实例类型和大小影响每个工作节点将有多少IP地址可用. 参考这个 [文档](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-eni.html#AvailableIpPerENI) 了解更多信息.
 
-   | Option              | Description                                                                                                                                                                                                                                                                                                                 |
+   | 选项              | 描述                                                                                                                                                                                                                                                                                                                 |
    | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-   | Instance Type       | Choose the [hardware specs](https://aws.amazon.com/ec2/instance-types/) for the instance you're provisioning.                                                                                                                                                                                                               |
-   | Custom AMI Override | If you want to use a custom [Amazon Machine Image](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AMIs.html#creating-an-ami) (AMI), specify it here. By default, Rancher will use the [EKS-optimized AMI](https://docs.aws.amazon.com/eks/latest/userguide/eks-optimized-ami.html) for the EKS version that you chose. |
-   | Minimum ASG Size    | The minimum number of instances that your cluster will scale to during low traffic, as controlled by [Amazon Auto Scaling](https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html).                                                                                                     |
-   | Maximum ASG Size    | The maximum number of instances that your cluster will scale to during high traffic, as controlled by [Amazon Auto Scaling](https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html).                                                                                                    |
-   | User Data           | Custom commands can to be passed to perform automated configuration tasks **WARNING: Modifying this may cause your nodes to be unable to join the cluster.** _Note: Available as of v2.2.0_                                                                                                                                 |
+   | 实例类型       | 为正在配置的实例选择[硬件规格](https://aws.amazon.com/ec2/instance-types/).                                                                                                                                                                                                               |
+   | Custom AMI Override | 如果你想使用自定义的 [Amazon Machine Image](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AMIs.html#creating-an-ami) (AMI), 请在这里指定它, Rancher 将会为您选择的 EKS 版本使用 [EKS-optimized AMI](https://docs.aws.amazon.com/eks/latest/userguide/eks-optimized-ami.html). |
+   | Minimum ASG Size    | 通过[Amazon Auto Scaling](https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html)控制,在低流量期间集群将扩展到的最小的实例数.                                                                                                     |
+   | Maximum ASG Size    | 通过[Amazon Auto Scaling](https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html)控制,在低流量期间集群将扩展到的最大的实例数.                                                                                                    |
+   | 用户数据           | 可以传递自定义命令来执行自动配置任务 **警告：修改此命令可能会导致节点无法加入群集** _注意: 从v2.2.0起提供_                                                                                                                                 |
 
-1. Click **Create**.
+1. 单击 **创建**.
 
 {{< result_create-cluster >}}
 
-### Troubleshooting
+### 故障排除
 
-For any issues or troubleshooting details for your Amazon EKS Kubernetes cluster, please see this [documentation](https://docs.aws.amazon.com/eks/latest/userguide/troubleshooting.html).
+对于您的Amazon EKS Kubernetes集群的任何问题或故障排除细节, 请参考 [文档](https://docs.aws.amazon.com/eks/latest/userguide/troubleshooting.html).
 
-### AWS Service Events
+### AWS服务事件
 
-To find information on any AWS Service events, please see [this page](https://status.aws.amazon.com/).
+查找任何AWS服务事件的信息, 请参考 [此页](https://status.aws.amazon.com/).
 
-### Security and Compliance
+### 安全性和合规性
 
-For more information on security and compliance with your Amazon EKS Kubernetes cluster, please see this [documentation](https://docs.aws.amazon.com/eks/latest/userguide/shared-responsibilty.html).
+对于您的Amazon EKS Kubernetes集群的安全性和遵从性的更多信息, 请参考 [文档](https://docs.aws.amazon.com/eks/latest/userguide/shared-responsibilty.html).
 
-### Tutorial
+### 教程
 
-This [tutorial](https://aws.amazon.com/blogs/opensource/managing-eks-clusters-rancher/) on the AWS Open Source Blog will walk you through how to set up an EKS cluster with Rancher, deploy a publicly accessible app to test the cluster, and deploy a sample project to track real-time geospatial data using a combination of other open-source software such as Grafana and InfluxDB.
+AWS开源博客上的这篇[教程](https://aws.amazon.com/blogs/opensource/managing-eks-clusters-rancher/) 将指导您如何使用Rancher设置一个EKS集群, 部署一个可公开访问的应用程序来测试集群, 并部署一个示例项目, 使用其他开源软件如Grafana和infloxdb的组合来跟踪实时地理空间数据.

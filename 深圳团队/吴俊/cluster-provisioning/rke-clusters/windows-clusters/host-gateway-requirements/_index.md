@@ -1,36 +1,36 @@
 ---
-title: Networking Requirements for Host Gateway (L2bridge)
+title: 主机网关（L2bridge）的网络要求
 ---
 
-This section describes how to configure custom Windows clusters that are using _Host Gateway (L2bridge)_ mode.
+本节介绍如何配置使用 _主机网关（L2bridge）_ 模式的自定义Windows群集.
 
-#### Disabling Private IP Address Checks
+#### 禁用私有IP地址检查
 
-If you are using _Host Gateway (L2bridge)_ mode and hosting your nodes on any of the cloud services listed below, you must disable the private IP address checks for both your Linux or Windows hosts on startup. To disable this check for each node, follow the directions provided by each service below.
+如果你使用 _主机网关（L2bridge）_ 模式 并将您的节点托管在下面列出的任何云服务上, 那么您必须在启动时禁用Linux或Windows主机的私有IP地址检查. 要禁用每个节点的此检查，请按照下面每个服务提供的说明操作.
 
-| Service    | Directions to disable private IP address checks                                                                                                                         |
+| 服务    | 禁用私有IP地址检查的说明                                                                                                                         |
 | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Amazon EC2 | [Disabling Source/Destination Checks](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_NAT_Instance.html#EIP_Disable_SrcDestCheck)                                  |
-| Google GCE | [Enabling IP Forwarding for Instances](https://cloud.google.com/vpc/docs/using-routes#canipforward) (By default, a VM cannot forward a packet originated by another VM) |
-| Azure VM   | [Enable or Disable IP Forwarding](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-network-interface#enable-or-disable-ip-forwarding)             |
+| Amazon EC2 | [禁用源/目标检查](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_NAT_Instance.html#EIP_Disable_SrcDestCheck)                                  |
+| Google GCE | [为实例启用 IP 转发](https://cloud.google.com/vpc/docs/using-routes#canipforward) (默认情况下，虚拟机无法转发由另一个虚拟机发出的数据包。) |
+| Azure VM   | [启用或禁用IP转发](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-network-network-interface#enable-or-disable-ip-forwarding)             |
 
-#### Cloud-hosted VM Routes Configuration
+#### 云托管的VM路由配置
 
-If you are using the [**Host Gateway (L2bridge)**](https://github.com/coreos/flannel/blob/master/Documentation/backends.md#host-gw) backend of Flannel, all containers on the same node belong to a private subnet, and traffic routes from a subnet on one node to a subnet on another node through the host network.
+如果您使用的后端是Flannel的[**主机网关（L2bridge）**](https://github.com/coreos/flannel/blob/master/Documentation/backends.md#host-gw), 则同一节点上的所有容器都属于一个私有子网, 和通信路由从一个节点上的子网通过主机网络路由到另一个节点上的子网.
 
-- When worker nodes are provisioned on AWS, virtualization clusters, or bare metal servers, make sure they belong to the same layer 2 subnet. If the nodes don't belong to the same layer 2 subnet, `host-gw` networking will not work.
+- 当工作节点配置在AWS、虚拟化集群或裸机服务器上时, 确保它们属于相同的第2层子网. 如果节点不属于同一第2层子网，则`host-gw`网络将不起作用.
 
-- When worker nodes are provisioned on GCE or Azure, they are not on the same layer 2 subnet. Nodes on GCE and Azure belong to a routable layer 3 network. Follow the instructions below to configure GCE and Azure so that the cloud network knows how to route the host subnets on each node.
+- 当工作节点配置在GCE或Azure上时, 它们不在相同的第2层子网中. GCE和Azure上的节点属于可路由的第3层网络. 按照下面的说明配置GCE和Azure, 以便云网络知道如何在每个节点上路由主机子网.
 
-To configure host subnet routing on GCE or Azure, first run the following command to find out the host subnets on each worker node:
+要在GCE或Azure上配置主机子网路由,首先运行以下命令来查找每个工作节点上的主机子网:
 
 ```bash
 kubectl get nodes -o custom-columns=nodeName:.metadata.name,nodeIP:status.addresses[0].address,routeDestination:.spec.podCIDR
 ```
 
-Then follow the instructions for each cloud provider to configure routing rules for each node:
+然后按照每个云提供商的说明为每个节点配置路由规则:
 
-| Service    | Instructions                                                                                                                                                         |
+| 服务    | 说明                                                                                                                                                         |
 | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Google GCE | For GCE, add a static route for each node: [Adding a Static Route](https://cloud.google.com/vpc/docs/using-routes#addingroute).                                      |
-| Azure VM   | For Azure, create a routing table: [Custom Routes: User-defined](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview#user-defined). |
+| Google GCE | 对于GCE, 为每个节点添加一个静态路由:[添加一个静态路由](https://cloud.google.com/vpc/docs/using-routes#addingroute).                                      |
+| Azure VM   | 对于Azure,创建一个路由表:[自定义路由:用户定义](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview#user-defined). |
