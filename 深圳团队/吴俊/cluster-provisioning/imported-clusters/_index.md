@@ -1,16 +1,16 @@
 ---
-title: Importing Existing Clusters into Rancher
+title: 将现有集群导入 Rancher
 ---
 
-When managing an imported cluster, Rancher connects to a Kubernetes cluster that has already been set up. Therefore, Rancher does not provision Kubernetes, but only sets up the Rancher agents to communicate with the cluster.
+当管理一个导入的集群时, Rancher 连接到一个已经设置好的 Kubernetes 集群. 因此, Rancher 不提供 Kubernetes, 而只设置 Rancher 代理来与集群通信.
 
-Keep in mind that editing your Kubernetes cluster still has to be done outside of Rancher. Some examples of editing the cluster include adding and removing nodes, upgrading the Kubernetes version, and changing Kubernetes component parameters.
+请记住, 编辑您的 Kubernetes 集群仍然需要在 Rancher 之外完成. 编辑集群的一些示例包括添加和删除节点、升级Kubernetes 版本以及更改 Kubernetes 组件参数.
 
-#### Prerequisites
+#### 前提条件
 
-If your existing Kubernetes cluster already has a `cluster-admin` role defined, you must have this `cluster-admin` privilege to import the cluster into Rancher.
+如果您现有的 Kubernetes 集群已经定义了一个`集群管理员`角色, 那么您必须拥有这个`集群管理员`特权才能将集群导入Rancher.
 
-In order to apply the privilege, you need to run:
+为了获得特权, 你需要运行:
 
 ```plain
 kubectl create clusterrolebinding cluster-admin-binding \
@@ -18,22 +18,22 @@ kubectl create clusterrolebinding cluster-admin-binding \
   --user [USER_ACCOUNT]
 ```
 
-before running the `kubectl` command to import the cluster.
+在运行`kubectl`命令以导入群集之前.
 
-By default, GKE users are not given this privilege, so you will need to run the command before importing GKE clusters. To learn more about role-based access control for GKE, please click [here](https://cloud.google.com/kubernetes-engine/docs/how-to/role-based-access-control).
+默认情况下，GKE 用户不会获得此权限，因此您需要在导入 GKE 群集之前运行该命令。要了解有关 GKE 基于角色的访问控制的详细信息，请单击 [此处](https://cloud.google.com/kubernetes-engine/docs/how-to/role-based-access-control).
 
-#### Importing a Cluster
+#### 导入一个集群
 
-1. From the **Clusters** page, click **Add Cluster**.
-2. Choose **Import**.
-3. Enter a **Cluster Name**.
+1. 在 **集群** 页, 点击 **添加**.
+2. 选择 **导入**.
+3. 输入 **集群名称**.
 4. {{< step_create-cluster_member-roles >}}
-5. Click **Create**.
-6. The prerequisite for `cluster-admin` privileges is shown (see **Prerequisites** above), including an example command to fulfil the prerequisite.
-7. Copy the `kubectl` command to your clipboard and run it on a node where kubeconfig is configured to point to the cluster you want to import. If you are unsure it is configured correctly, run `kubectl get nodes` to verify before running the command shown in {{< product >}}.
-8. If you are using self signed certificates, you will receive the message `certificate signed by unknown authority`. To work around this validation, copy the command starting with `curl` displayed in {{< product >}} to your clipboard. Then run the command on a node where kubeconfig is configured to point to the cluster you want to import.
-9. When you finish running the command(s) on your node, click **Done**.
+5. 单击 **创建**.
+6. 这里显示了`集群管理员`特权的先决条件 (请参阅上面的**前提条件**), 其中包括了实现该先决条件的示例命令.
+7. 将`kubectl`命令复制到剪贴板, 并根据 kubeconfig 的配置在指向要导入的集群的节点上运行它. 如果您不确定它是否正确配置, 在运行{{< product >}}中显示的命令之前, 运行`kubectl get nodes`来验证一下.
+8. 如果您正在使用自签名证书, 您将收到`由未知机构签名的证书`消息. 要解决这个验证问题, 请把{{< product >}}中显示的`curl`开头的命令复制到剪贴板中. 然后根据 kubeconfig 的配置在指向要导入的集群的节点上运行它.
+9. 在节点上运行完命令后, 单击 **完成**.
    {{< result_import-cluster >}}
 
-> **Note:**
-> You can not re-import a cluster that is currently active in a Rancher setup.
+> **注意:**
+> 你不能重新导入当前在 Rancher 设置中处于活动状态的群集.

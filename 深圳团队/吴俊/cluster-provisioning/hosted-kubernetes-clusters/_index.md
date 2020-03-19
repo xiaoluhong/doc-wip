@@ -1,16 +1,15 @@
 ---
-title: Setting up Clusters from Hosted Kubernetes Providers
+title: 从托管的Kubernetes提供商设置集群
 ---
+在这种情况下, rancher 不预设 kubernetes, 因为它是通过 Google Kubernetes Engine (GKE), Amazon Elastic Container Service for Kubernetes, or Azure Kubernetes Service 等提供商来安装的.
 
-In this scenario, Rancher does not provision Kubernetes because it is installed by providers such as Google Kubernetes Engine (GKE), Amazon Elastic Container Service for Kubernetes, or Azure Kubernetes Service.
+如果您使用了一个 Kubernetes 提供商, 如谷歌 GKE, Rancher 集成了它的云api，允许您通过 Rancher UI 创建和管理托管集群的基于角色的访问控制。
 
-If you use a Kubernetes provider such as Google GKE, Rancher integrates with its cloud APIs, allowing you to create and manage role-based access control for the hosted cluster from the Rancher UI.
+在这个用例中, Rancher使用供应商的API向托管的供应商发送请求. 然后，提供商为您提供并托管集群. 当集群完成构建时, 您可以通过 Rancher UI 管理它, 同时还可以管理您位于本地或云服务商提供的的集群.
 
-In this use case, Rancher sends a request to a hosted provider using the provider's API. The provider then provisions and hosts the cluster for you. When the cluster finishes building, you can manage it from the Rancher UI along with clusters you've provisioned that are hosted on-premise or in an infrastructure provider.
+Rancher支持以下Kubernetes供应商:
 
-Rancher supports the following Kubernetes providers:
-
-| Kubernetes Providers                                                                                            | Available as of |
+| Kubernetes 提供商                                                                                           | 可用于 |
 | --------------------------------------------------------------------------------------------------------------- | --------------- |
 | [Google GKE (Google Kubernetes Engine)](https://cloud.google.com/kubernetes-engine/)                            | v2.0.0          |
 | [Amazon EKS (Amazon Elastic Container Service for Kubernetes)](https://aws.amazon.com/eks/)                     | v2.0.0          |
@@ -19,13 +18,13 @@ Rancher supports the following Kubernetes providers:
 | [Tencent TKE (Tencent Kubernetes Engine)](https://intl.cloud.tencent.com/product/tke)                           | v2.2.0          |
 | [Huawei CCE (Huawei Cloud Container Engine)](https://www.huaweicloud.com/en-us/product/cce.html)                | v2.2.0          |
 
-### Hosted Kubernetes Provider Authentication
+### 托管与于Kubernetes提供商的身份验证
 
-When using Rancher to create a cluster hosted by a provider, you are prompted for authentication information. This information is required to access the provider's API. For more information on how to obtain this information, see the following procedures:
+当使用Rancher创建由提供商托管的集群时, 会提示您输入身份验证信息。访问提供商的API需要这些信息。有关如何获取此信息的详细信息，请参阅以下步骤:
 
-- [Creating a GKE Cluster](/docs/cluster-provisioning/hosted-kubernetes-clusters/gke)
-- [Creating an EKS Cluster](/docs/cluster-provisioning/hosted-kubernetes-clusters/eks)
-- [Creating an AKS Cluster](/docs/cluster-provisioning/hosted-kubernetes-clusters/aks)
-- [Creating an ACK Cluster](/docs/cluster-provisioning/hosted-kubernetes-clusters/ack)
-- [Creating a TKE Cluster](/docs/cluster-provisioning/hosted-kubernetes-clusters/tke)
-- [Creating a CCE Cluster](/docs/cluster-provisioning/hosted-kubernetes-clusters/cce)
+- [创建 GKE 集群](/docs/cluster-provisioning/hosted-kubernetes-clusters/gke)
+- [创建 EKS 集群](/docs/cluster-provisioning/hosted-kubernetes-clusters/eks)
+- [创建 AKS 集群](/docs/cluster-provisioning/hosted-kubernetes-clusters/aks)
+- [创建 ACK 集群](/docs/cluster-provisioning/hosted-kubernetes-clusters/ack)
+- [创建 TKE 集群](/docs/cluster-provisioning/hosted-kubernetes-clusters/tke)
+- [创建 CCE 集群](/docs/cluster-provisioning/hosted-kubernetes-clusters/cce)
