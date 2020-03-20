@@ -1,100 +1,100 @@
 ---
-title: Generic troubleshooting
+title: 一般常见问题
 ---
 
-> #### **Important: RKE add-on install is only supported up to Rancher v2.0.8**
+> #### **重要: RKE add-on 安装 仅支持至 Rancher v2.0.8 版本**
 >
-> Please use the Rancher helm chart to install Rancher on a Kubernetes cluster. For details, see the [Kubernetes Install - Installation Outline](/docs/installation/k8s-install/#installation-outline).
+> 在 Kubernetes 集群中安装 Rancher 可以使用 Helm chart. 获取更多细节, 请参考 [安装 Kubernetes - 安装概述](/docs/installation/k8s-install/#installation-outline).
 >
-> If you are currently using the RKE add-on install method, see [Migrating from a Kubernetes Install with an RKE Add-on](/docs/upgrades/upgrades/migrating-from-rke-add-on/) for details on how to move to using the helm chart.
+> 如果您正在使用 RKE add-on 安装的方法, see [从一个 RKE Add-on 安装的 Kubernetes 迁移](/docs/upgrades/upgrades/migrating-from-rke-add-on/) 获取如何迁移至使用 helm chart 的更多细节.
 
-Below are steps that you can follow to determine what is wrong in your cluster.
+您可以按下列步骤定位您集群中的问题原因.
 
-#### Double check if all the required ports are opened in your (host) firewall
+#### 仔细检查是否在（主机的）防火墙中打开了所有必需的端口
 
-Double check if all the [required ports](/docs/cluster-provisioning/node-requirements/#networking-requirements/) are opened in your (host) firewall.
+仔细检查所有 [必需的端口](/docs/cluster-provisioning/node-requirements/#networking-requirements/) 是否已经在（主机的）防火墙中开启状态.
 
-#### All nodes should be present and in **Ready** state
+#### 所有的节点是否处于 **Ready** 状态
 
-To check, run the command:
+请运行以下命令检测:
 
 ``` 
 kubectl --kubeconfig kube_config_rancher-cluster.yml get nodes
 ```
 
-If a node is not shown in this output or a node is not in **Ready** state, you can check the logging of the `kubelet` container. Login to the node and run `docker logs kubelet` .
+如果有节点未显示或处于非 **Ready** 状态, 可以检查 `kubelet` 容器的日志. 登录该节点执行 `docker logs kubelet` .
 
-#### All pods/jobs should be in **Running**/**Completed** state
+#### 所有的 pods/jobs 处于 **Running**/**Completed** 状态
 
-To check, run the command:
+请运行以下命令检测:
 
 ``` 
 kubectl --kubeconfig kube_config_rancher-cluster.yml get pods --all-namespaces
 ```
 
-If a pod is not in **Running** state, you can dig into the root cause by running:
+如果有 pod 不处于 **Running** 状态, 可以通过运行以下命令来找出根本原因:
 
-##### Describe pod
+##### 描述 pod
 
 ``` 
 kubectl --kubeconfig kube_config_rancher-cluster.yml describe pod POD_NAME -n NAMESPACE
 ```
 
-##### Pod container logs
+##### 显示 Pod 容器日志
 
 ``` 
 kubectl --kubeconfig kube_config_rancher-cluster.yml logs POD_NAME -n NAMESPACE
 ```
 
-If a job is not in **Completed** state, you can dig into the root cause by running:
+如果有 job 处于非 **Completed** 状态, 可以通过运行以下命令来找出根本原因:
 
-##### Describe job
+##### 描述 job
 
 ``` 
 kubectl --kubeconfig kube_config_rancher-cluster.yml describe job JOB_NAME -n NAMESPACE
 ```
 
-##### Logs from the containers of pods of the job
+##### 显示 job 的容器日志
 
 ``` 
 kubectl --kubeconfig kube_config_rancher-cluster.yml logs -l job-name=JOB_NAME -n NAMESPACE
 ```
 
-#### Check ingress
+#### 检查 ingress
 
-Ingress should have the correct `HOSTS` (showing the configured FQDN) and `ADDRESS` (address(es) it will be routed to).
+Ingress 应该具有正确的 `HOSTS` (显示已配置的 FQDN) 和 `ADDRESS` (将被路由到的地址).
 
 ``` 
 kubectl --kubeconfig kube_config_rancher-cluster.yml get ingress --all-namespaces
 ```
 
-#### List all Kubernetes cluster events
+#### 显示所有 Kubernetes 集群事件
 
-Kubernetes cluster events are stored, and can be retrieved by running:
+Kubernetes 集群事件会被存储, 可以通过运行以下命令进行检索:
 
 ``` 
 kubectl --kubeconfig kube_config_rancher-cluster.yml get events --all-namespaces
 ```
 
-#### Check Rancher container logging
+#### 检查 Rancher 容器日志
 
 ``` 
 kubectl --kubeconfig kube_config_rancher-cluster.yml logs -l app=cattle -n cattle-system
 ```
 
-#### Check NGINX ingress controller logging
+#### 检查 NGINX ingress controller 日志
 
 ``` 
 kubectl --kubeconfig kube_config_rancher-cluster.yml logs -l app=ingress-nginx -n ingress-nginx
 ```
 
-#### Check if overlay network is functioning correctly
+#### 检查 overlay network 是否正常运行
 
-The pod can be scheduled to any of the hosts you used for your cluster, but that means that the NGINX ingress controller needs to be able to route the request from `NODE_1` to `NODE_2` . This happens over the overlay network. If the overlay network is not functioning, you will experience intermittent TCP/HTTP connection failures due to the NGINX ingress controller not being able to route to the pod.
+可以将Pod调度到用于集群的任何主机, 但这意味着 NGINX ingress controller 需要能够将请求从 `NODE_1` 路由到 `NODE_2` . 这发生在 overlay network 上. 如果 overlay network 不起作用, 由于 NGINX ingress controller 无法路由到 pod, 您将遇到间歇性的 TCP/HTTP 连接失败.
 
-To test the overlay network, you can launch the following `DaemonSet` definition. This will run an `alpine` container on every host, which we will use to run a `ping` test between containers on all hosts.
+要测试 overlay network, 您可以启动以下的 `DaemonSet` 定义. 这将在每个主机上运行一个 `alpine` 容器, 并在所有主机上的容器之间运行一个 `ping` 测试.
 
-1. Save the following file as `ds-alpine.yml` 
+1. 将以下文件另存为 `ds-alpine.yml` 
 
    
 
@@ -127,9 +127,9 @@ To test the overlay network, you can launch the following `DaemonSet` definition
            terminationMessagePath: /dev/termination-log
    ```
 
-2. Launch it using `kubectl --kubeconfig kube_config_rancher-cluster.yml create -f ds-alpine.yml` 
-3. Wait until `kubectl --kubeconfig kube_config_rancher-cluster.yml rollout status ds/alpine -w` returns: `daemon set "alpine" successfully rolled out` .
-4. Run the following command to let each container on every host ping each other (it's a single line command).
+2. 安装并启动它 `kubectl --kubeconfig kube_config_rancher-cluster.yml create -f ds-alpine.yml` 
+3. 等待直到 `kubectl --kubeconfig kube_config_rancher-cluster.yml rollout status ds/alpine -w` 返回: `daemon set "alpine" successfully rolled out` .
+4. 运行以下命令，使每个主机上的每个容器相互ping通（这是一条单行命令）.
 
    
 
@@ -137,7 +137,7 @@ To test the overlay network, you can launch the following `DaemonSet` definition
    echo "=> Start"; kubectl --kubeconfig kube_config_rancher-cluster.yml get pods -l name=alpine -o jsonpath='{range .items[*]}{@.metadata.name}{" "}{@.spec.nodeName}{"\n"}{end}' | while read spod shost; do kubectl --kubeconfig kube_config_rancher-cluster.yml get pods -l name=alpine -o jsonpath='{range .items[*]}{@.status.podIP}{" "}{@.spec.nodeName}{"\n"}{end}' | while read tip thost; do kubectl --kubeconfig kube_config_rancher-cluster.yml --request-timeout='10s' exec $spod -- /bin/sh -c "ping -c2 $tip > /dev/null 2>&1"; RC=$?; if [ $RC -ne 0 ]; then echo $shost cannot reach $thost; fi; done; done; echo "=> End"
    ```
 
-5. When this command has finished running, the output indicating everything is correct is:
+5. 该命令运行完毕后，指示一切正确的输出为:
 
    
 
@@ -146,9 +146,9 @@ To test the overlay network, you can launch the following `DaemonSet` definition
    => End
    ```
 
-If you see error in the output, that means that the [required ports](/docs/cluster-provisioning/node-requirements/#networking-requirements/) for overlay networking are not opened between the hosts indicated.
+如果在输出中看到错误, 则表示在指示的主机之间未打开用于 overlay networking 使用的 [必须端口](/docs/cluster-provisioning/node-requirements/#networking-requirements/) .
 
-Example error output of a situation where NODE1 had the UDP ports blocked.
+当 NODE1 的 UDP 端口被禁用时的错误示例.
 
 ``` 
 => Start
