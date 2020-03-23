@@ -1,13 +1,12 @@
 ---
-title: Upgrading to v2.0.7+ — Namespace Migration
+title: 升级到 v2.0.7+ — 命名空间迁移
 ---
 
-> This section applies only to Rancher upgrades from v2.0.6 or earlier to v2.0.7 or later. Upgrades from v2.0.7 to later version are unaffected.
+> 本节仅适用于从v2.0.6或更早版本升级到v2.0.7或更高版本的Rancher。从v2.0.7升级到更高版本不受影响。
 
-In Rancher v2.0.6 and prior, system namespaces crucial for Rancher and Kubernetes operations were not assigned to any Rancher project by default. Instead, these namespaces existed independently from all Rancher projects, but you could move these namespaces into any project without affecting cluster operations.
+在Rancher v2.0.6及更低版本中，默认情况下，未将对Rancher和Kubernetes操作至关重要的系统命名空间分配给任何Rancher项目。相反，这些命名空间独立于所有Rancher项目而存在，但是您可以将这命名空间移至任何项目中而不会影响集群操作。
 
-These namespaces include:
-
+这些命名空间包括：
 - `kube-system`
 - `kube-public`
 - `cattle-system`
@@ -16,30 +15,31 @@ These namespaces include:
 - `cattle-pipeline`<sup>1</sup>
 - `ingress-nginx`
 
-> <sup>1</sup> Only displays if this feature is enabled for the cluster.
+> <sup>1</sup> 仅在为集群启用此功能时显示。
 
-However, with the release of Rancher v2.0.7, the `System` project was introduced. This project, which is automatically created during the upgrade, is assigned the system namespaces above to hold these crucial components for safe keeping.
+但是，随着Rancher v2.0.7的发布，引入了`System`项目。在升级过程中自动创建的该项目已被分配了上面的系统命名空间，以保存这些关键组件以确保安全。
 
-During upgrades from Rancher v2.0.6- to Rancher v2.0.7+, all system namespaces are moved from their default location outside of all projects into the newly created `System` project. However, if you assigned any of your system namespaces to a project before upgrading, your cluster networking may encounter issues afterwards. This issue occurs because the system namespaces are not where the upgrade expects them to be during the upgrade, so it cannot move them to the `System` project.
+在从Rancher v2.0.6-升级到Rancher v2.0.7 +的过程中，所有系统命名空间均从其位于所有项目之外的默认位置移至新创建的`System`项目中。但是，如果在升级之前将任何系统命名空间分配给项目，则集群网络之后可能会遇到问题。发生此问题是因为系统命名空间不是升级过程中升级所期望的位置，因此它无法将其移至`System`项目。
 
-- To prevent this issue from occurring before the upgrade, see [Preventing Cluster Networking Issues](#preventing-cluster-networking-issues).
-- To fix this issue following upgrade, see [Restoring Cluster Networking](#restoring-cluster-networking).
+-为防止在升级之前发生此问题，请参阅[防止集群网络问题
+](#preventing-cluster-networking-issues).
+- 要在升级后解决此问题，请参阅[还原集群网络](#restoring-cluster-networking).
 
-> **Note:** If you are upgrading from from Rancher v2.0.13 or earlier, or v2.1.8 or earlier, and your cluster's certificates have expired, you will need to perform [additional steps](/docs/cluster-admin/certificate-rotation/#rotating-expired-certificates-after-upgrading-older-rancher-versions) to rotate the certificates.
+> **注意:** 如果要从Rancher v2.0.13或更早版本或v2.1.8或更早版本升级，并且集群的证书已过期，则需要执行[其他步骤](/docs/cluster-admin/certificate-rotation/#rotating-expired-certificates-after-upgrading-older-rancher-versions)轮换证书。
 
-### Preventing Cluster Networking Issues
+### 防止集群网络问题
 
-You can prevent cluster networking issues from occurring during your upgrade to v2.0.7+ by unassigning system namespaces from all of your Rancher projects. Complete this task if you've assigned any of a cluster's system namespaces into a Rancher project.
+通过从所有Rancher项目中取消分配系统命名空间，可以防止在升级到v2.0.7 +时发生集群网络问题。如果您已将任何集群的系统命名空间分配给Rancher项目，请完成此任务。
 
-1. Log into the Rancher UI prior to upgrade.
+1. 升级前登录Rancher UI。
 
-1. From the context menu, open the **local** cluster (or any of your other clusters).
+1. 从上下文菜单中，打开`local`集群（或任何其他集群）。
 
-1. From the main menu, select **Project/Namespaces**.
+1. 从主菜单中，选择**项目/命名空间**。
 
-1. Find and select the following namespaces. Click **Move** and then choose **None** to move them out of your projects. Click **Move** again.
+1. 查找并选择以下命名空间。单击**移动**，然后选择**无**将其移出项目。再次点击**移动**。
 
-   > **Note:** Some or all of these namespaces may already be unassigned from all projects.
+   > **注意:** 这些命名空间中的某些或全部可能已经从所有项目中取消分配。
 
    - `kube-system`
    - `kube-public`
@@ -49,29 +49,28 @@ You can prevent cluster networking issues from occurring during your upgrade to 
    - `cattle-pipeline`<sup>1</sup>
    - `ingress-nginx`
 
-   > <sup>1</sup> Only displays if this feature is enabled for the cluster.
+   > <sup>1</sup> 仅在为集群启用此功能时显示。
 
-   <figcaption>Moving namespaces out of projects</figcaption>
-   ![Moving Namespaces](/img/rancher/move-namespaces.png)
+   <figcaption>将命名空间移出项目</figcaption>
+   ![移动命名空间](/img/rancher/move-namespaces.png)
 
-1. Repeat these steps for each cluster where you've assigned system namespaces to projects.
+1. 对已为项目分配系统命名空间的每个集群重复这些步骤。
 
-**Result:** All system namespaces are moved out of Rancher projects. You can now safely begin the [upgrade](/docs/upgrades/upgrades).
+**结果:** 所有系统命名空间均移出Rancher项目。现在，您可以安全地开始[升级](/docs/upgrades/upgrades).
 
-### Restoring Cluster Networking
+### 恢复集群网络
 
-Reset the cluster nodes' network policies to restore connectivity.
-
-> **Prerequisites:**
+重置集群节点的网络策略以恢复连接。
+> **先决条件:**
 >
-> Download and setup [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/).
+> 下载并设置 [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/).
 
  tabs 
  tab "Kubernetes Install" 
 
-1.  From **Terminal**, change directories to your kubectl file that's generated during Rancher install, `kube_config_rancher-cluster.yml`. This file is usually in the directory where you ran RKE during Rancher installation.
+1.  在 **终端**中，将目录更改为在Rancher安装期间生成的kubectl文件，即`kube_config_rancher-cluster.yml`。该文件通常位于Rancher安装过程中运行RKE的目录中。
 
-1.  Before repairing networking, run the following two commands to make sure that your nodes have a status of `Ready` and that your cluster components are `Healthy`.
+1.  在修复网络之前，请运行以下两个命令以确保您的节点的状态为 `Ready` ，并且集群组件的状态为 `Healthy`.
 
     ```
     kubectl --kubeconfig kube_config_rancher-cluster.yml get nodes
@@ -91,7 +90,7 @@ Reset the cluster nodes' network policies to restore connectivity.
     etcd-1               Healthy   {"health": "true"}
     ```
 
-1.  Check the `networkPolicy` for all clusters by running the following command.
+1.  通过运行以下命令检查所有集群的 `networkPolicy` 命令。
 
         kubectl --kubeconfig kube_config_rancher-cluster.yml get cluster -o=custom-columns=ID:.metadata.name,NAME:.spec.displayName,NETWORKPOLICY:.spec.enableNetworkPolicy,APPLIEDNP:.status.appliedSpec.enableNetworkPolicy,ANNOTATION:.metadata.annotations."networking\.management\.cattle\.io/enable-network-policy"
 
@@ -99,11 +98,11 @@ Reset the cluster nodes' network policies to restore connectivity.
         c-59ptz custom  <nil>           <nil>       <none>
         local   local   <nil>           <nil>       <none>
 
-1)  Disable the `networkPolicy` for all clusters, still pointing toward your `kube_config_rancher-cluster.yml`.
+1)  对所有集群禁用`networkPolicy`，仍然指向您的`kube_config_rancher-cluster.yml`.
 
         kubectl --kubeconfig kube_config_rancher-cluster.yml get cluster -o jsonpath='{range .items[*]}{@.metadata.name}{"\n"}{end}' | xargs -I {} kubectl --kubeconfig kube_config_rancher-cluster.yml patch cluster {} --type merge -p '{"spec": {"enableNetworkPolicy": false},"status": {"appliedSpec": {"enableNetworkPolicy": false }}}'
 
-    > **Tip:** If you want to keep `networkPolicy` enabled for all created clusters, you can run the following command to disable `networkPolicy` for `local` cluster (i.e., your Rancher Server nodes):
+    > **提示:** 如果您想为所有已创建的集群启用`networkPolicy`，则可以运行以下命令为`local`集群（即Rancher Server节点）禁用:
     >
     > ```
     >  kubectl --kubeconfig kube_config_rancher-cluster.yml patch cluster local --type merge -p '{"spec": {"enableNetworkPolicy": false},"status": {"appliedSpec": {"enableNetworkPolicy": false }}}'
@@ -113,11 +112,11 @@ Reset the cluster nodes' network policies to restore connectivity.
 
     ```
 
-1)  Remove annotations for network policy for all clusters
+1)  删除所有集群的network policy注释
 
         kubectl --kubeconfig kube_config_rancher-cluster.yml get cluster -o jsonpath='{range .items[*]}{@.metadata.name}{"\n"}{end}' | xargs -I {} kubectl --kubeconfig kube_config_rancher-cluster.yml annotate cluster {} "networking.management.cattle.io/enable-network-policy"="false" --overwrite
 
-    > **Tip:** If you want to keep `networkPolicy` enabled for all created clusters, you can run the following command to disable `networkPolicy` for `local` cluster (i.e., your Rancher Server nodes):
+    > **提示:** 如果您想为所有已创建的集群启用`networkPolicy`，则可以运行以下命令为`local`集群（即Rancher Server节点）禁用:
     >
     > ```
     >  kubectl --kubeconfig kube_config_rancher-cluster.yml annotate cluster local "networking.management.cattle.io/enable-network-policy"="false" --overwrite
@@ -127,7 +126,7 @@ Reset the cluster nodes' network policies to restore connectivity.
 
     ```
 
-1)  Check the `networkPolicy` for all clusters again to make sure the policies have a status of `false`.
+1)  再次检查所有集群的`networkPolicy` 以确保策略的状态为 `false`.
 
         kubectl --kubeconfig kube_config_rancher-cluster.yml get cluster -o=custom-columns=ID:.metadata.name,NAME:.spec.displayName,NETWORKPOLICY:.spec.enableNetworkPolicy,APPLIEDNP:.status.appliedSpec.enableNetworkPolicy,ANNOTATION:.metadata.annotations."networking\.management\.cattle\.io/enable-network-policy"
 
@@ -135,15 +134,14 @@ Reset the cluster nodes' network policies to restore connectivity.
         c-59ptz custom  false           false       false
         local   local   false           false       false
 
-1)  Remove all network policies from all namespaces. Run this command for each cluster, using the kubeconfig generated by RKE.
-
+1) 从所有命名空间中删除所有网络策略。使用RKE生成的kubeconfig为每个集群运行此命令。
     ```
     for namespace in $(kubectl --kubeconfig kube_config_rancher-cluster.yml get ns -o custom-columns=NAME:.metadata.name --no-headers); do
         kubectl --kubeconfig kube_config_rancher-cluster.yml -n $namespace delete networkpolicy --all;
     done
     ```
 
-1)  Remove all the projectnetworkpolicies created for the clusters, to make sure networkpolicies are not recreated.
+1)  删除为集群创建的所有项目网络策略，以确保未重新创建网络策略。
 
     ```
     for cluster in $(kubectl --kubeconfig kube_config_rancher-cluster.yml get clusters -o custom-columns=NAME:.metadata.name --no-headers); do
@@ -153,7 +151,7 @@ Reset the cluster nodes' network policies to restore connectivity.
     done
     ```
 
-    > **Tip:** If you want to keep `networkPolicy` enabled for all created clusters, you can run the following command to disable `networkPolicy` for `local` cluster (i.e., your Rancher Server nodes):
+ > **提示:** 如果您想为所有已创建的集群启用`networkPolicy`，则可以运行以下命令为`local`集群（即Rancher Server节点）禁用:
     >
     > ```
     >  for project in $(kubectl --kubeconfig kube_config_rancher-cluster.yml get project -n local -o custom-columns=NAME:.metadata.name --no-headers); do
@@ -167,26 +165,28 @@ Reset the cluster nodes' network policies to restore connectivity.
 
     ```
 
-1)  Wait a few minutes and then log into the Rancher UI.
+1)  等待几分钟，然后登录到Rancher UI。
 
-    - If you can access Rancher, you're done, so you can skip the rest of the steps.
-    - If you still can't access Rancher, complete the steps below.
 
-1)  Force your pods to recreate themselves by entering the following command.
+
+    - 如果您可以访问Rancher，则操作已完成，因此可以跳过其余步骤。
+    - 如果您仍然无法访问Rancher，请完成以下步骤。
+
+1)  通过输入以下命令来强制您的Pod重新创建。
 
     ```
     kubectl --kubeconfig kube_config_rancher-cluster.yml delete pods -n cattle-system --all
     ```
 
-1)  Log into the Rancher UI and view your clusters. Created clusters will show errors from attempting to contact Rancher while it was unavailable. However, these errors should resolve automatically.
+1)  登录到Rancher UI并查看您的集群。创建的集群将显示由于无法联系Rancher而导致的错误。但是，这些错误应自动解决。
 
  /tab 
  tab "Rancher Launched Kubernetes" 
 <br/>
-If you can access Rancher, but one or more of the clusters that you launched using Rancher has no networking, you can repair them by moving the
+如果您可以访问Rancher，但是使用Rancher启动的一个或多个集群没有网络，则可以通过移动Rancher来修复它们。
 
-- From the cluster's [embedded kubectl shell](/docs/k8s-in-rancher/kubectl/#accessing-clusters-with-kubectl-shell).
-- By [downloading the cluster kubeconfig file and running it](/docs/k8s-in-rancher/kubectl/#accessing-clusters-with-kubectl-and-a-kubeconfig-file) from your workstation.
+- 从集群的 [embedded kubectl shell](/docs/k8s-in-rancher/kubectl/#accessing-clusters-with-kubectl-shell).
+- 通过从工作站 [下载集群kubeconfig文件并运行它](/docs/k8s-in-rancher/kubectl/#accessing-clusters-with-kubectl-and-a-kubeconfig-file)。
 
   ```
   for namespace in $(kubectl --kubeconfig kube_config_rancher-cluster.yml get ns -o custom-columns=NAME:.metadata.name --no-headers); do

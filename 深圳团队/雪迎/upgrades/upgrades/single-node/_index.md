@@ -1,132 +1,134 @@
 ---
-title: Upgrading Rancher Installed with Docker
+title: 升级Docker安装的Rancher
 ---
 
-The following instructions will guide you through upgrading a Rancher server that was installed with Docker.
+以下说明将指导您升级Docker安装的Rancher Server。
 
-## Prerequisites
+## 先决条件
 
-- **Review the [known upgrade issues](/docs/upgrades/upgrades/#known-upgrade-issues) and [caveats](/docs/upgrades/upgrades/#caveats)** in the Rancher documentation for the most noteworthy issues to consider when upgrading Rancher. A more complete list of known issues for each Rancher version can be found in the release notes on [GitHub](https://github.com/rancher/rancher/releases) and on the [Rancher forums.](https://forums.rancher.com/c/announcements/12)
-- **For [air gap installs only,](/docs/installation/other-installation-methods/air-gap) collect and populate images for the new Rancher server version.** Follow the guide to [populate your private registry](/docs/installation/other-installation-methods/air-gap/populate-private-registry/) with the images for the Rancher version that you want to upgrade to.
+- 从Rancher文档中的 **[已知升级问题](/docs/upgrades/upgrades/#known-upgrade-issues) 和 [警告](/docs/upgrades/upgrades/#caveats)** 查看升级Rancher中最值得注意的问题. 可以在[GitHub](https://github.com/rancher/rancher/releases) 和 [Rancher forums.](https://forums.rancher.com/c/announcements/12)的发行说明中找到每个Rancher版本的已知问题的更完整列表。
+- **对于 [air gap安装,](/docs/installation/other-installation-methods/air-gap) 收集并填充新Rancher server版本的镜像。** 请遵循指南以要升级到的Rancher版本的图像 [填充私有仓库](/docs/installation/other-installation-methods/air-gap/populate-private-registry/).
 
-## Placeholder Review
+## 占位符
 
-During upgrade, you'll enter a series of commands, filling placeholders with data from your environment. These placeholders are denoted with angled brackets and all capital letters (`<EXAMPLE>`).
+在升级过程中，您将输入一系列命令，用环境中的数据填充占位符。这些占位符用尖括号和所有大写字母(`<EXAMPLE>`)表示。
 
-Here's an **example** of a command with a placeholder:
+这是带有占位符的命令的**示例**：
 
 ```
 docker stop <RANCHER_CONTAINER_NAME>
 ```
 
-In this command, {`<RANCHER_CONTAINER_NAME>`} is the name of your Rancher container.
+在此命令中，{`<RANCHER_CONTAINER_NAME>`} 是您的Rancher容器的名称。
 
-Cross reference the image and reference table below to learn how to obtain this placeholder data. Write down or copy this information before starting the upgrade.
+请交叉参考下面的图像和参考表，以了解如何获取此占位符数据。在开始升级之前，记下或复制此信息。
 
-<sup>Terminal `docker ps` Command, Displaying Where to Find {`<RANCHER_CONTAINER_TAG>`} and {`<RANCHER_CONTAINER_NAME>`}</sup>
-![Placeholder Reference](/img/rancher/placeholder-ref.png)
+<sup>终端 `docker ps` 命令，显示在何处查找 {`<RANCHER_CONTAINER_TAG>`} 和 {`<RANCHER_CONTAINER_NAME>`}</sup>
+![占位符参考](/img/rancher/placeholder-ref.png)
 
-| Placeholder                  | Example           | Description                                               |
+| 占位符                  | 示例           | 描述                                               |
 | ---------------------------- | ----------------- | --------------------------------------------------------- |
-| {`<RANCHER_CONTAINER_TAG>`}  | `v2.1.3`          | The rancher/rancher image you pulled for initial install. |
-| {`<RANCHER_CONTAINER_NAME>`} | `festive_mestorf` | The name of your Rancher container.                       |
-| `<RANCHER_VERSION>`          | `v2.1.3`          | The version of Rancher that you're creating a backup for. |
-| {`<DATE>`}                   | `2018-12-19`      | The date that the data container or backup was created.   |
+| {`<RANCHER_CONTAINER_TAG>`}  | `v2.1.3`          | 初始安装拉取的Rancher镜像。 |
+| {`<RANCHER_CONTAINER_NAME>`} | `festive_mestorf` | Rancher容器的名称。                      |
+| `<RANCHER_VERSION>`          | `v2.1.3`          | 创建备份的Rancher的版本。 |
+| {`<DATE>`}                   | `2018-12-19`      | 数据容器或备份的创建日期。 |
 
 <br/>
 
-You can obtain {`<RANCHER_CONTAINER_TAG>`} and {`<RANCHER_CONTAINER_NAME>`} by logging into your Rancher server by remote connection and entering the command to view the containers that are running: `docker ps`. You can also view containers that are stopped using a different command: `docker ps -a`. Use these commands for help anytime during while creating backups.
+您可以通过远程连接登录Rancher server并输入命令以查看正在运行的容器：`docker ps`，从而获得 {`<RANCHER_CONTAINER_TAG>`} 和 {`<RANCHER_CONTAINER_NAME>`}。您还可以查看使用其他命令停止的容器：`docker ps -a`。创建备份期间，随时可以使用这些命令获得帮助。
 
-## Upgrade Outline
+## 升级大纲
 
-During upgrade, you create a copy of the data from your current Rancher container and a backup in case something goes wrong. Then you deploy the new version of Rancher in a new container using your existing data. Follow the steps to upgrade Rancher server:
 
-- [A. Create a copy of the data from your Rancher server container](#a-create-a-copy-of-the-data-from-your-rancher-server-container)
-- [B. Create a backup tarball](#b-create-a-backup-tarball)
-- [C. Pull the new Docker image](#c-pull-the-new-docker-image)
-- [D. Start the new Rancher server container](#d-start-the-new-rancher-server-container)
-- [E. Verify the Upgrade](#e-verify-the-upgrade)
-- [F. Clean up your old Rancher server container](#f-clean-up-your-old-rancher-server-container)
+在升级期间，您可以从当前Rancher容器中创建数据的副本，并在出现问题时进行备份。然后，您可以使用现有数据在新容器中部署新版本的Rancher。请按照以下步骤升级Rancher server：
 
-#### A. Create a copy of the data from your Rancher server container
+- [A. 从Rancher server容器中创建数据的副本](#a-create-a-copy-of-the-data-from-your-rancher-server-container)
+- [B. 创建备用压缩包](#b-create-a-backup-tarball)
+- [C. 拉取新的Docker镜像](#c-pull-the-new-docker-image)
+- [D. 启动新的Rancher server容器](#d-start-the-new-rancher-server-container)
+- [E. 验证升级](#e-verify-the-upgrade)
+- [F. 清理旧的Rancher server容器](#f-clean-up-your-old-rancher-server-container)
 
-1. Using a remote Terminal connection, log into the node running your Rancher server.
+#### A. 从Rancher server容器中创建数据的副本
 
-1. Stop the container currently running Rancher server. Replace {`<RANCHER_CONTAINER_NAME>`} with the name of your Rancher container.
+1. 使用远程终端连接，登录运行Rancher server的节点。
+
+1. 停止当前正在运行的Rancher server的容器。将{`<RANCHER_CONTAINER_NAME>`} 替换为Rancher容器的名称。
 
    ```
    docker stop <RANCHER_CONTAINER_NAME>
    ```
 
-1. <a id="backup"></a>Use the command below, replacing each placeholder, to create a data container from the Rancher container that you just stopped.
+1. <a id="backup"></a>使用下面的命令替换每个占位符，从刚刚停止的Rancher容器中创建一个数据容器。
 
    ```
    docker create --volumes-from <RANCHER_CONTAINER_NAME> --name rancher-data rancher/rancher:<RANCHER_CONTAINER_TAG>
    ```
 
-#### B. Create a backup tarball
+#### B. 创建一个备用压缩包
 
-1. <a id="tarball"></a>From the data container that you just created (`rancher-data`), create a backup tarball ({`rancher-data-backup-<RANCHER_VERSION>-<DATE>.tar.gz`}).
+1. <a id="tarball"></a>从您刚创建的数据容器(`rancher-data`), 创建一个备份压缩包 ({`rancher-data-backup-<RANCHER_VERSION>-<DATE>.tar.gz`}).
 
-   This tarball will serve as a rollback point if something goes wrong during upgrade. Use the following command, replacing each [placeholder](#before-you-start).
+   如果升级期间出现问题，则此tarball将用作回滚点。使用以下命令，替换每个[占位符](#before-you-start).
 
 
     ```
     docker run --volumes-from rancher-data -v $PWD:/backup busybox tar zcvf /backup/rancher-data-backup-<RANCHER_VERSION>-<DATE>.tar.gz /var/lib/rancher
     ```
 
-    **Step Result:** When you enter this command, a series of commands should run.
+    **步骤结果:** 当您输入此命令时，应运行一系列命令。
 
-1. Enter the `ls` command to confirm that the backup tarball was created. It will have a name similar to {`rancher-data-backup-<RANCHER_VERSION>-<DATE>.tar.gz`}.
+1. 输入`ls`命令以确认已创建备份压缩包。它的名称类似于 {`rancher-data-backup-<RANCHER_VERSION>-<DATE>.tar.gz`}.
 
    ```
    [rancher@ip-10-0-0-50 ~]$ ls
    rancher-data-backup-v2.1.3-20181219.tar.gz
    ```
 
-1. Move your backup tarball to a safe location external from your Rancher server.
+1. 将备份压缩包移到Rancher server外部的安全位置。
 
-#### C. Pull the New Docker Image
 
-Pull the image of the Rancher version that you want to upgrade to.
+#### C. 拉取新的Docker映像
 
-| Placeholder             | Description                                                                                                    |
+拉取要升级到的Rancher版本的映像。
+
+| 占位符             | 描述                                                                                                    |
 | ----------------------- | -------------------------------------------------------------------------------------------------------------- |
-| `<RANCHER_VERSION_TAG>` | The release tag of the [Rancher version](/docs/installation/options/server-tags/) that you want to upgrade to. |
+| `<RANCHER_VERSION_TAG>` | 您要升级到的[Rancher 版本](/docs/installation/options/server-tags/) 的发行标签。 |
 
 ```
 docker pull rancher/rancher:<RANCHER_VERSION_TAG>
 ```
 
-#### D. Start the New Rancher Server Container
+#### D. 启动新的Rancher Server容器
 
-Start a new Rancher server container using the data from the `rancher-data` container. Remember to pass in all the environment variables that you had used when you started the original container.
+使用来自`rancher-data`容器的数据启动一个新的Rancher server容器。记住要传入启动原始容器时使用的所有环境变量。
 
-> **Important:** _Do not_ stop the upgrade after initiating it, even if the upgrade process seems longer than expected. Stopping the upgrade may result in database migration errors during future upgrades.
+> **重要提示:** _不要_ 在启动升级后停止升级，即使升级过程似乎比预期的要长。停止升级可能会导致将来升级期间数据库迁移错误。
 
-If you used a proxy, see [HTTP Proxy Configuration.](/docs/installation/other-installation-methods/single-node-docker/proxy/)
+如果使用代理，请参阅 [HTTP代理配置。](/docs/installation/other-installation-methods/single-node-docker/proxy/)
 
-If you configured a custom CA root certificate to access your services, see [Custom CA root certificate.](/docs/installation/other-installation-methods/single-node-docker/advanced/#custom-ca-certificate)
+如果您配置了自定义CA根证书来访问服务，请参阅[自定义CA根证书。](/docs/installation/other-installation-methods/single-node-docker/advanced/#custom-ca-certificate)
 
-If you are recording all transactions with the Rancher API, see [API Auditing](/docs/installation/other-installation-methods/single-node-docker/advanced/#api-audit-log)
+如果您正在使用Rancher API记录所有交易，请参阅 [API 审计](/docs/installation/other-installation-methods/single-node-docker/advanced/#api-audit-log)
 
-To see the command to use when starting the new Rancher server container, choose from the following options:
+要查看启动新的Rancher server容器时要使用的命令，请从以下选项中选择：
 
-- Docker Upgrade
-- Docker Upgrade for Air Gap Installs
+- Docker 升级
+- air gap安装的Docker升级
 
  tabs 
  tab "Docker Upgrade" 
 
-Select which option you had installed Rancher server
+选择您已安装Rancher server的选项
 
  accordion id="option-a" label="Option A-Default Self-Signed Certificate" 
 
-If you have selected to use the Rancher generated self-signed certificate, you add the `--volumes-from rancher-data` to the command that you had started your original Rancher server container.
+如果选择使用Rancher生成的自签名证书，则在启动原始Rancher server容器的命令中添加`--volumes-from rancher-data`。
 
-| Placeholder             | Description                                                                                                    |
+| 占位符             | 描述                                                                                                    |
 | ----------------------- | -------------------------------------------------------------------------------------------------------------- |
-| `<RANCHER_VERSION_TAG>` | The release tag of the [Rancher version](/docs/installation/options/server-tags/) that you want to upgrade to. |
+| `<RANCHER_VERSION_TAG>` | 您要升级到的 [Rancher 版本](/docs/installation/options/server-tags/) 的发行标签。 |
 
 ```
 docker run -d --volumes-from rancher-data \
@@ -139,17 +141,18 @@ docker run -d --volumes-from rancher-data \
 
  accordion id="option-b" label="Option B-Bring Your Own Certificate: Self-Signed" 
 
-If you have selected to bring your own self-signed certificate, you add the `--volumes-from rancher-data` to the command that you had started your original Rancher server container and need to have access to the same certificate that you had originally installed with.
+如果您选择携带自己的自签名证书，则在启动原始Rancher server容器的命令中添加`--volumes-from rancher-data`，并需要访问与该证书相同的证书最初安装。
 
-> **Reminder of the Cert Prerequisite:** The certificate files must be in [PEM format](/docs/installation/other-installation-methods/single-node-docker/#pem). In your certificate file, include all intermediate certificates in the chain. Order your certificates with your certificate first, followed by the intermediates. For an example, see [SSL FAQ / Troubleshooting](#cert-order).
+> **证书前提提示:** 证书文件必须为 [PEM 格式](/docs/installation/other-installation-methods/single-node-docker/#pem)。在您的证书文件中，包括链中的所有中间证书。请先使用证书订购证书，然后再订购中间体。有关示例，请参见 [SSL常见问题解答/故障排除](#cert-order).
 
-| Placeholder             | Description                                                                                                    |
+| 占位符             | 描述                                                                                                    |
 | ----------------------- | -------------------------------------------------------------------------------------------------------------- |
-| `<CERT_DIRECTORY>`      | The path to the directory containing your certificate files.                                                   |
-| `<FULL_CHAIN.pem>`      | The path to your full certificate chain.                                                                       |
-| `<PRIVATE_KEY.pem>`     | The path to the private key for your certificate.                                                              |
-| `<CA_CERTS>`            | The path to the certificate authority's certificate.                                                           |
-| `<RANCHER_VERSION_TAG>` | The release tag of the [Rancher version](/docs/installation/options/server-tags/) that you want to upgrade to. |
+| `<CERT_DIRECTORY>`      | 包含证书文件的目录的路径。                                                   |
+| `<FULL_CHAIN.pem>`      | 完整证书链的路径。                                                                    |
+| `<PRIVATE_KEY.pem>`     | 证书私钥的路径。                                                             |
+| `<CA_CERTS>`            | 证书颁发机构的证书的路径。                                                          |
+| `<RANCHER_VERSION_TAG>` | 您要升级到的 [Rancher 版本](/docs/installation/options/server-tags/) 的发行标签。
+ |
 
 ```
 docker run -d --volumes-from rancher-data \
@@ -164,16 +167,17 @@ docker run -d --volumes-from rancher-data \
  /accordion 
  accordion id="option-c" label="Option C-Bring Your Own Certificate: Signed by Recognized CA" 
 
-If you have selected to use a certificate signed by a recognized CA, you add the `--volumes-from rancher-data` to the command that you had started your original Rancher server container and need to have access to the same certificates that you had originally installed with. Remember to include `--no-cacerts` as an argument to the container to disable the default CA certificate generated by Rancher.
+如果选择使用由公认的CA签名的证书，则将 `--volumes-from rancher-data` 添加到启动原始Rancher server容器的命令中，并且需要访问与您相同的证书最初安装的。请记住，要在容器中包含`--no-cacerts`作为参数，以禁用Rancher生成的默认CA证书。
 
-> **Reminder of the Cert Prerequisite:** The certificate files must be in [PEM format](/docs/installation/other-installation-methods/single-node-docker/#pem). In your certificate file, include all intermediate certificates provided by the recognized CA. Order your certificates with your certificate first, followed by the intermediates. For an example, see [SSL FAQ / Troubleshooting](#cert-order).
+>  **证书前提条件提示:** 证书文件必须为 [PEM 格式](/docs/installation/other-installation-methods/single-node-docker/#pem)。在您的证书文件中， ，包括公认的CA提供的所有中间证书。请先使用证书订购证书，然后再订购中间体。有关示例，请参见[SSL常见问题解答/故障排除](#cert-order).
 
-| Placeholder             | Description                                                                                                    |
+| 占位符             | 描述                                                                                                    |
 | ----------------------- | -------------------------------------------------------------------------------------------------------------- |
-| `<CERT_DIRECTORY>`      | The path to the directory containing your certificate files.                                                   |
-| `<FULL_CHAIN.pem>`      | The path to your full certificate chain.                                                                       |
-| `<PRIVATE_KEY.pem>`     | The path to the private key for your certificate.                                                              |
-| `<RANCHER_VERSION_TAG>` | The release tag of the [Rancher version](/docs/installation/options/server-tags/) that you want to upgrade to. |
+| `<CERT_DIRECTORY>`      | 包含证书文件的目录的路径。                                                   |
+| `<FULL_CHAIN.pem>`      | 完整证书链的路径。                                                                    |
+| `<PRIVATE_KEY.pem>`     | 证书私钥的路径。                                                             |
+| `<RANCHER_VERSION_TAG>` | 您要升级到的 [Rancher 版本](/docs/installation/options/server-tags/) 的发行标签。
+ |
 
 ```
 docker run -d --volumes-from rancher-data \
@@ -188,19 +192,19 @@ docker run -d --volumes-from rancher-data \
  /accordion 
  accordion id="option-d" label="Option D-Let's Encrypt Certificate" 
 
-> **Remember:** Let's Encrypt provides rate limits for requesting new certificates. Therefore, limit how often you create or destroy the container. For more information, see [Let's Encrypt documentation on rate limits](https://letsencrypt.org/docs/rate-limits/).
+> **记住:** Let's Encrypt为请求新证书提供速率限制。因此，请限制创建或销毁容器的频率。有关更多信息，请参阅 [关于速率限制的加密文档](https://letsencrypt.org/docs/rate-limits/).
 
-If you have selected to use [Let's Encrypt](https://letsencrypt.org/) certificates, you add the `--volumes-from rancher-data` to the command that you had started your original Rancher server container and need to provide the domain that you had used when you originally installed Rancher.
+如果您选择使用 [Let's Encrypt](https://letsencrypt.org/) 证书，则将`--volumes-from rancher-data`添加到启动原始Rancher server容器的命令中，并且需要提供最初安装Rancher时使用的域。
 
-> **Reminder of the Cert Prerequisites:**
+> **证书前提条件提示:**
 >
-> - Create a record in your DNS that binds your Linux host IP address to the hostname that you want to use for Rancher access (`rancher.mydomain.com` for example).
-> - Open port `TCP/80` on your Linux host. The Let's Encrypt http-01 challenge can come from any source IP address, so port `TCP/80` must be open to all IP addresses.
+> - 在您的DNS中创建一条记录，将您的Linux主机IP地址绑定到您要用于Rancher访问的主机名（例如，`rancher.mydomain.com`）。
+> - 在Linux主机上打开端口 `TCP/80`。The Let's Encrypt http-01 challenge 可以来自任何源IP地址，因此端口`TCP/80`必须对所有IP地址开放。
 
-| Placeholder             | Description                                                                                                    |
+| 占位符             | 描述                                                                                                    |
 | ----------------------- | -------------------------------------------------------------------------------------------------------------- |
-| `<RANCHER_VERSION_TAG>` | The release tag of the [Rancher version](/docs/installation/options/server-tags/) that you want to upgrade to. |
-| `<YOUR.DNS.NAME>`       | The domain address that you had originally started with                                                        |
+| `<RANCHER_VERSION_TAG>` | 您要升级到的 [Rancher 版本](/docs/installation/options/server-tags/) 的发行标签。|
+| `<YOUR.DNS.NAME>`       | 您最初开始使用的域地址                                                      |
 
 ```
 docker run -d --volumes-from rancher-data \
@@ -215,20 +219,19 @@ docker run -d --volumes-from rancher-data \
  /tab 
  tab "Docker Air Gap Upgrade" 
 
-For security purposes, SSL (Secure Sockets Layer) is required when using Rancher. SSL secures all Rancher network communication, like when you login or interact with a cluster.
+为了安全起见，使用Rancher时需要SSL（安全套接字层）。 SSL保护所有Rancher网络通信的安全，例如在您登录集群或与集群交互时。
 
-> For Rancher versions from v2.2.0 to v2.2.x, you will need to mirror the `system-charts` repository to a location in your network that Rancher can reach. Then, after Rancher is installed, you will need to configure Rancher to use that repository. For details, refer to the documentation on [setting up the system charts for Rancher prior to v2.3.0.](/docs/installation/options/local-system-charts/#setting-up-system-charts-for-rancher-prior-to-v2-3-0)
+> 对于从v2.2.0到v2.2.x的Rancher版本，您需要将`system-charts`存储库镜像到网络中Rancher可以访问的位置。然后，在安装Rancher之后，您将需要配置Rancher以使用该存储库。有关详细信息，请参考 [在v2.3.0之前为Rancher设置系统图表。](/docs/installation/options/local-system-charts/#setting-up-system-charts-for-rancher-prior-to-v2-3-0)
 
-When starting the new Rancher server container, choose from the following options:
-
+启动新的Rancher server容器时，请从以下选项中选择：
  accordion id="option-a" label="Option A-Default Self-Signed Certificate" 
 
-If you have selected to use the Rancher generated self-signed certificate, you add the `--volumes-from rancher-data` to the command that you had started your original Rancher server container.
+如果选择使用Rancher生成的自签名证书，则在启动原始Rancher server容器的命令中添加`--volumes-from rancher-data`。
 
-| Placeholder                      | Description                                                                                                       |
+| 占位符                      | 描述                                                                                                       |
 | -------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `<REGISTRY.YOURDOMAIN.COM:PORT>` | Your private registry URL and port.                                                                               |
-| `<RANCHER_VERSION_TAG>`          | The release tag of the [Rancher version](/docs/installation/options/server-tags/) that you want to to upgrade to. |
+| `<REGISTRY.YOURDOMAIN.COM:PORT>` | 您的私有仓库URL和端口。                                                                          |
+| `<RANCHER_VERSION_TAG>`          | 您要升级到的[Rancher 版本](/docs/installation/options/server-tags/) 的发行标签。 |
 
 ```
   docker run -d --volumes-from rancher-data \
@@ -243,18 +246,18 @@ If you have selected to use the Rancher generated self-signed certificate, you a
 
  accordion id="option-b" label="Option B-Bring Your Own Certificate: Self-Signed" 
 
-If you have selected to bring your own self-signed certificate, you add the `--volumes-from rancher-data` to the command that you had started your original Rancher server container and need to have access to the same certificate that you had originally installed with.
+如果您选择携带自己的自签名证书，则在启动原始Rancher server容器的命令中添加`--volumes-from rancher-data`，并需要访问与该证书相同的证书最初安装。
 
-> **Reminder of the Prerequisite:** The certificate files must be in [PEM format](/docs/installation/other-installation-methods/single-node-docker/#pem). In your certificate file, include all intermediate certificates in the chain. Order your certificates with your certificate first, followed by the intermediates. For an example, see [SSL FAQ / Troubleshooting](#cert-order).
+> **前提条件的提醒:** 证书文件必须为[PEM 格式](/docs/installation/other-installation-methods/single-node-docker/#pem)。在您的证书文件中，包括链中的所有中间证书。请先使用证书订购证书，然后再订购中间体。有关示例，请参见 [SSL常见问题解答/故障排除](#cert-order).
 
-| Placeholder                      | Description                                                                                                    |
+| 占位符                      | 描述                                                                                                    |
 | -------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| `<CERT_DIRECTORY>`               | The path to the directory containing your certificate files.                                                   |
-| `<FULL_CHAIN.pem>`               | The path to your full certificate chain.                                                                       |
-| `<PRIVATE_KEY.pem>`              | The path to the private key for your certificate.                                                              |
-| `<CA_CERTS>`                     | The path to the certificate authority's certificate.                                                           |
-| `<REGISTRY.YOURDOMAIN.COM:PORT>` | Your private registry URL and port.                                                                            |
-| `<RANCHER_VERSION_TAG>`          | The release tag of the [Rancher version](/docs/installation/options/server-tags/) that you want to upgrade to. |
+| `<CERT_DIRECTORY>`               | 包含证书文件的目录的路径。                                                   |
+| `<FULL_CHAIN.pem>`               | 完整证书链的路径。                                                              |
+| `<PRIVATE_KEY.pem>`              | 证书私钥的路径。                                                             |
+| `<CA_CERTS>`                     | 证书颁发机构的证书的路径。                                                         |
+| `<REGISTRY.YOURDOMAIN.COM:PORT>` |您的私有仓库URL和端口。                                                                                       |
+| `<RANCHER_VERSION_TAG>`          | 您要升级到的[Rancher 版本](/docs/installation/options/server-tags/) 的发行标签。 |
 
 ```
 docker run -d --restart=unless-stopped \
@@ -271,19 +274,19 @@ docker run -d --restart=unless-stopped \
 
  accordion id="option-c" label="Option C-Bring Your Own Certificate: Signed by Recognized CA" 
 
-If you have selected to use a certificate signed by a recognized CA, you add the `--volumes-from rancher-data` to the command that you had started your original Rancher server container and need to have access to the same certificates that you had originally installed with.
 
-> **Reminder of the Prerequisite:** The certificate files must be in [PEM format](/docs/installation/other-installation-methods/single-node-docker/#pem). In your certificate file, include all intermediate certificates provided by the recognized CA. Order your certificates with your certificate first, followed by the intermediates. For an example, see [SSL FAQ / Troubleshooting](#cert-order).
+如果选择使用由公认的CA签名的证书，则将`--volumes-from rancher-data`添加到启动原始Rancher server容器的命令中，并且需要访问与您相同的证书最初安装的。
+> **前提条件的提醒:** 证书文件必须为[PEM 格式](/docs/installation/other-installation-methods/single-node-docker/#pem)。在您的证书文件中，包括公认的CA提供的所有中间证书。请先使用证书订购证书，然后再订购中间体。有关示例，请参见[SSL常见问题解答/故障排除](#cert-order)。
 
-| Placeholder                      | Description                                                                                                    |
+| 占位符                      | 描述                                                                                                    |
 | -------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| `<CERT_DIRECTORY>`               | The path to the directory containing your certificate files.                                                   |
-| `<FULL_CHAIN.pem>`               | The path to your full certificate chain.                                                                       |
-| `<PRIVATE_KEY.pem>`              | The path to the private key for your certificate.                                                              |
-| `<REGISTRY.YOURDOMAIN.COM:PORT>` | Your private registry URL and port.                                                                            |
-| `<RANCHER_VERSION_TAG>`          | The release tag of the [Rancher version](/docs/installation/options/server-tags/) that you want to upgrade to. |
+| `<CERT_DIRECTORY>`               | 包含证书文件的目录的路径。                                                   |
+| `<FULL_CHAIN.pem>`               | 完整证书链的路径。                                                              |
+| `<PRIVATE_KEY.pem>`              | 证书私钥的路径。                                                             |
+| `<REGISTRY.YOURDOMAIN.COM:PORT>` |您的私有仓库URL和端口。                                                                                       |
+| `<RANCHER_VERSION_TAG>`          | 您要升级到的[Rancher 版本](/docs/installation/options/server-tags/) 的发行标签。 |
 
-> **Note:** Use the `--no-cacerts` as argument to the container to disable the default CA certificate generated by Rancher.
+> **注意:** 使用`--no-cacerts`作为容器的参数来禁用Rancher生成的默认CA证书。
 
 ```
 docker run -d --volumes-from rancher-data \
@@ -301,20 +304,20 @@ docker run -d --volumes-from rancher-data \
  /tab 
  /tabs 
 
-**Result:** You have upgraded Rancher. Data from your upgraded server is now saved to the `rancher-data` container for use in future upgrades.
+**结果:** 您已升级Rancher。现在，已升级服务器中的数据将保存到`rancher-data`容器中，以用于将来的升级。
 
-#### E. Verify the Upgrade
+#### E. 验证升级
 
-Log into Rancher. Confirm that the upgrade succeeded by checking the version displayed in the bottom-left corner of the browser window.
+登录到Rancher。通过检查浏览器窗口左下角显示的版本，确认升级成功.
 
-> **Having network issues in your user clusters following upgrade?**
+> **升级后您的用户集群中有网络问题吗？**
 >
-> See [Restoring Cluster Networking](/docs/upgrades/upgrades/namespace-migration/#restoring-cluster-networking).
+> 请参阅 [还原集群网络](/docs/upgrades/upgrades/namespace-migration/#restoring-cluster-networking).
 
-#### F. Clean up Your Old Rancher Server Container
+#### F. 清理旧的Rancher Server容器
 
-Remove the previous Rancher server container. If you only stop the previous Rancher server container (and don't remove it), the container may restart after the next server reboot.
+删除以前的Rancher server容器。如果仅停止上一个Rancher server容器（并且不删除它），则该容器可能会在下一个服务器重启后重新启动。
 
-### Rolling Back
+### 回滚
 
-If your upgrade does not complete successfully, you can roll back Rancher server and its data back to its last healthy state. For more information, see [Docker Rollback](/docs/upgrades/rollbacks/single-node-rollbacks/).
+如果升级未成功完成，则可以将Rancher server及其数据回滚到最后的正常状态。有关更多信息，请参阅 [Docker 回滚](/docs/upgrades/rollbacks/single-node-rollbacks/).
