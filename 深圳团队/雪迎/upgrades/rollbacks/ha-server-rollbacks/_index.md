@@ -1,11 +1,11 @@
 ---
-title: Kubernetes Rollback
+title: Kubernetes 回滚
 ---
 
-If you upgrade Rancher and the upgrade does not complete successfully, you may need to rollback your Rancher Server to its last healthy state.
+如果升级Rancher且升级未成功完成，则可能需要将Rancher Server回滚到最后的正常状态。
 
-To restore Rancher follow the procedure detailed here: [Restoring Backups — Kubernetes installs](/docs/backups/restorations/ha-restoration)
+要还原Rancher，请遵循此处详述的过程：[还原备份-Kubernetes安装](/docs/backups/restorations/ha-restoration)
 
-Restoring a snapshot of the Rancher Server cluster will revert Rancher to the version and state at the time of the snapshot.
+还原Rancher Server集群的快照会将Rancher还原到快照时的版本和状态。
 
-> **Note:** Managed cluster are authoritative for their state. This means restoring the rancher server will not revert workload deployments or changes made on managed clusters after the snapshot was taken.
+> **注意:** 托管集群对其状态具有权威性。这意味着在还原快照后，还原rancher server将不会还原工作负载部署或在托管群集上所做的更改。

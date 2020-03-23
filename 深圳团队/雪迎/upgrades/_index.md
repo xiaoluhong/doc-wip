@@ -1,19 +1,20 @@
 ---
-title: Upgrades and Rollbacks
+title: 升级和回滚
 ---
 
-#### Upgrading Rancher
+#### 升级 Rancher
 
-- [Upgrades](/docs/upgrades/upgrades/)
+- [升级](/docs/upgrades/upgrades/)
 
-#### Rolling Back Unsuccessful Upgrades
+#### 回滚不成功的升级
 
-In the event that your Rancher Server does not upgrade successfully, you can rollback to your installation prior to upgrade:
+如果你的Rancher Server没有成功升级, 你可以回滚到升级之前的版本：
 
-- [Rollbacks for Rancher installed with Docker](/docs/upgrades/single-node-rollbacks)
-- [Rollbacks for Rancher installed on a Kubernetes cluster](/docs/upgrades/ha-server-rollbacks)
+- [回滚使用Docker安装的Rancher](/docs/upgrades/single-node-rollbacks)
+- [回滚安装在Kubernetes集群上的Rancher](/docs/upgrades/ha-server-rollbacks)
 
-> **Note:** If you are rolling back to versions in either of these scenarios, you must follow some extra [instructions](/docs/upgrades/rollbacks/) in order to get your clusters working.
+
+> **注意:** 如果要在以下两种情况下回滚到版本，则必须遵循一些额外的 [说明](/docs/upgrades/rollbacks/) 才能使集群正常工作。
 >
-> - Rolling back from v2.1.6+ to any version between v2.1.0 - v2.1.5 or v2.0.0 - v2.0.10.
-> - Rolling back from v2.0.11+ to any version between v2.0.0 - v2.0.10.
+> - 从v2.1.6 +回滚到v2.1.0-v2.1.5或v2.0.0-v2.0.10之间的任何版本。
+> - 从v2.0.11 +回滚到v2.0.0-v2.0.10之间的任何版本。
