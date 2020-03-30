@@ -1,29 +1,29 @@
 ---
-title: '1. Create Nodes and Load Balancer'
+title: '1. 创建节点和负载均衡器'
 ---
 
-Use your infrastructure provider of choice to provision three nodes and a load balancer endpoint for your RKE install.
+使用您选择的基础架构提供商为RKE安装设置三个节点和一个负载均衡器端点。
 
-> **Note:** These nodes must be in the same region/datacenter. You may place these servers in separate availability zones.
+> **注意：** 这些节点必须位于相同的区域/数据中心中，您可以将这些服务器放在单独的可用区中。
 
-#### Requirements for OS, Docker, Hardware, and Networking
+#### 操作系统，Docker，硬件和网络的要求
 
-Make sure that your nodes fulfill the general [installation requirements.](/docs/installation/requirements/)
+确保您的节点满足[安装要求。](/docs/installation/requirements/)
 
-View the OS requirements for RKE at [RKE Requirements.]({{<baseurl>}}/rke/latest/en/os/)
+在[RKE要求]({{<baseurl>}}/rke/latest/en/os/)中查看RKE的操作系统要求。
 
-#### Load Balancer
+#### 负载均衡器
 
-RKE will configure an Ingress controller pod, on each of your nodes. The Ingress controller pods are bound to ports TCP/80 and TCP/443 on the host network and are the entry point for HTTPS traffic to the Rancher server.
+RKE将在每个节点上配置一个Ingress控制器pod。 Ingress控制器pod绑定到主机网络上的TCP/80和TCP/443端口，并且是到Rancher server的HTTPS流量的入口点。
 
-Configure a load balancer as a basic Layer 4 TCP forwarder. The exact configuration will vary depending on your environment.
+将负载均衡器配置为基本的4层TCP转发器。确切的配置将根据您的环境而有所不同。
 
-> **Important:**
-> Do not use this load balancer (i.e, the `local` cluster Ingress) to load balance applications other than Rancher following installation. Sharing this Ingress with other applications may result in websocket errors to Rancher following Ingress configuration reloads for other apps. We recommend dedicating the `local` cluster to Rancher and no other applications.
+> **重要提示：**
+> 安装后，请不要使用这个负载均衡器（即`local`群集Ingress）对Rancher以外的应用程序进行负载均衡。与其他应用程序共享这个Ingress可能会在其他应用的Ingress配置重新加载后导致Rancher出现websocket错误。我们建议将`local`群集专用于Rancher，不要使用其他应用程序。
 
-##### How-to Guides
+##### 入门指南
 
-- For an example showing how to set up an NGINX load balancer, refer to [this page.](/docs/installation/k8s-install/create-nodes-lb/nginx/)
-- For an example showing how to setup an Amazon NLB load balancer, refer to [this page.](/docs/installation/k8s-install/create-nodes-lb/nlb/)
+- 有关如何设置NGINX负载均衡器的示例，请参阅[此页面。](/docs/installation/k8s-install/create-nodes-lb/nginx/)
+- 有关显示如何设置Amazon NLB负载均衡器的示例，请参阅[此页面。](/docs/installation/k8s-install/create-nodes-lb/nlb/)
 
-#### [Next: Install Kubernetes with RKE](/docs/installation/k8s-install/kubernetes-rke/)
+#### [下一步：使用RKE安装Kubernetes](/docs/installation/k8s-install/kubernetes-rke/)

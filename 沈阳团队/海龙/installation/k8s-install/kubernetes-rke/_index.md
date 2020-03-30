@@ -1,21 +1,21 @@
 ---
-title: 2. Set up a Kubernetes Cluster
+title: 2. 设置Kubernetes集群
 ---
 
-This section describes how to install a Kubernetes cluster on your three nodes according to our [best practices for the Rancher server environment.](/docs/overview/architecture-recommendations/#environment-for-kubernetes-installations) This cluster should be dedicated to run only the Rancher server. We recommend using RKE to install Kubernetes on this cluster. Hosted Kubernetes providers such as EKS should not be used.
+本节介绍如何根据[Rancher server环境的最佳实践](/docs/overview/architecture-recommendations/#environment-for-kubernetes-installations)在您的三个节点上安装Kubernetes集群。这个集群应该专用于运行Rancher server。我们建议使用RKE在这个集群上安装Kubernetes。不应使用托管的Kubernetes提供商，例如EKS。
 
-For systems without direct internet access, refer to [Air Gap: Kubernetes install.](/docs/installation/air-gap-high-availability/)
+对于无法直接访问Internet的系统，请参阅[Air Gap：Kubernetes安装。](/docs/installation/air-gap-high-availability/)
 
-> **Single-node Installation Tip:**
-> In a single-node Kubernetes cluster, the Rancher server does not have high availability, which is important for running Rancher in production. However, installing Rancher on a single-node cluster can be useful if you want to save resources by using a single node in the short term, while preserving a high-availability migration path.
+> **单节点安装提示：**
+> 在单节点Kubernetes集群中，Rancher server不具有高可用性，这对于在生产环境中运行Rancher至关重要。但是，如果要在短期内通过使用单个节点来节省资源，同时保留高可用性迁移路径，则在单节点群集上安装Rancher可能会很有用。
 >
-> To set up a single-node cluster, configure only one node in the `cluster.yml` when provisioning the cluster with RKE. The single node should have all three roles: `etcd`, `controlplane`, and `worker`. Then Rancher can be installed with Helm on the cluster in the same way that it would be installed on any other cluster.
+> 要设置单节点集群，在使用RKE配置集群时，只需在`cluster.yml`中配置一个节点。单个节点应该具有所有三个角色:`etcd`、`controlplane`和`worker`。这样，Rancher就可以像安装在其他集群上一样，使用Helm安装集群。
 
-#### Create the `rancher-cluster.yml` File
+#### 创建`rancher-cluster.yml`文件
 
-Using the sample below, create the `rancher-cluster.yml` file. Replace the IP Addresses in the `nodes` list with the IP address or DNS names of the 3 nodes you created.
+使用下面的示例，创建`rancher-cluster.yml`文件。将`nodes`列表中的IP地址替换为您创建的3个节点的IP地址或DNS名称。
 
-If your node has public and internal addresses, it is recommended to set the `internal_address:` so Kubernetes will use it for intra-cluster communication. Some services like AWS EC2 require setting the `internal_address:` if you want to use self-referencing security groups or firewalls.
+如果您的节点具有公共和内部地址，建议设置`internal_address：`这样Kubernetes会将其用于集群内通信。某些服务（例如AWS EC2）需要设置`internal_address：`如果您想使用自引用安全组或防火墙。
 
 ```yaml
 nodes:
@@ -46,45 +46,45 @@ ingress:
     use-forwarded-headers: 'true'
 ```
 
-##### Common RKE Nodes Options
+##### RKE节点选项
 
-| Option             | Required | Description                                                                            |
+| 选项             | 需要 | 描述                                                                            |
 | ------------------ | -------- | -------------------------------------------------------------------------------------- |
-| `address`          | yes      | The public DNS or IP address                                                           |
-| `user`             | yes      | A user that can run docker commands                                                    |
-| `role`             | yes      | List of Kubernetes roles assigned to the node                                          |
-| `internal_address` | no       | The private DNS or IP address for internal cluster traffic                             |
-| `ssh_key_path`     | no       | Path to SSH private key used to authenticate to the node (defaults to `~/.ssh/id_rsa`) |
+| `address`          | yes      | 公用DNS或IP地址                                                           |
+| `user`             | yes      | 可以运行docker命令的用户                                                    |
+| `role`             | yes      | 分配给节点的Kubernetes角色列表                                          |
+| `internal_address` | no       | 内部群集流量的专用DNS或IP地址                             |
+| `ssh_key_path`     | no       | 用于对节点进行身份验证的SSH私钥的路径（默认为`~/.ssh/id_rsa`） |
 
-##### Advanced Configurations
+##### 高级配置
 
-RKE has many configuration options for customizing the install to suit your specific environment.
+RKE有许多配置选项可用于自定义安装在您的特定环境。
 
-Please see the [RKE Documentation]({{<baseurl>}}/rke/latest/en/config-options/) for the full list of options and capabilities.
+请参阅[RKE文档]({{<baseurl>}}/rke/latest/en/config-options/)来了解RKE的选项和功能的完整列表。
 
-For tuning your etcd cluster for larger Rancher installations see the [etcd settings guide](/docs/installation/options/etcd/).
+要为大规模Rancher安装etcd集群，请参阅[etcd设置指南](/docs/installation/options/etcd/)。
 
-#### Run RKE
+#### 运行RKE
 
 ```
 rke up --config ./rancher-cluster.yml
 ```
 
-When finished, it should end with the line: `Finished building Kubernetes cluster successfully`.
+完成后，它应该以这样一行结束： `Finished building Kubernetes cluster successfully`.
 
-#### Testing Your Cluster
+#### 测试集群
 
-RKE should have created a file `kube_config_rancher-cluster.yml`. This file has the credentials for `kubectl` and `helm`.
+RKE应该已经创建了一个文件`kube_config_rancher-cluster.yml`。该文件具有`kubectl`和`helm`的凭据。
 
-> **Note:** If you have used a different file name from `rancher-cluster.yml`, then the kube config file will be named `kube_config_<FILE_NAME>.yml`.
+> **注意：** 如果您使用了与`rancher-cluster.yml`不同的文件名，则kube配置文件将命名为`kube_config_<FILE_NAME>.yml`。
 
-You can copy this file to `$HOME/.kube/config` or if you are working with multiple Kubernetes clusters, set the `KUBECONFIG` environmental variable to the path of `kube_config_rancher-cluster.yml`.
+您可以将此文件复制到`$HOME/.kube/config`，或者如果您使用多个Kubernetes集群，请将`KUBECONFIG`环境变量设置为`kube_config_rancher-cluster.yml`的路径。
 
 ```
 export KUBECONFIG=$(pwd)/kube_config_rancher-cluster.yml
 ```
 
-Test your connectivity with `kubectl` and see if all your nodes are in `Ready` state.
+使用`kubectl`测试您的连通性，并查看您的所有节点是否都处于`Ready`状态。
 
 ```
 kubectl get nodes
@@ -95,13 +95,13 @@ NAME                          STATUS    ROLES                      AGE       VER
 165.227.127.226               Ready     controlplane,etcd,worker   11m       v1.13.5
 ```
 
-#### Check the Health of Your Cluster Pods
+#### 检查集群pod的运行状况
 
-Check that all the required pods and containers are healthy are ready to continue.
+检查所有必需的pod和容器是否状况良好，可以继续进行。
 
-- Pods are in `Running` or `Completed` state.
-- `READY` column shows all the containers are running (i.e. `3/3`) for pods with `STATUS` `Running`
-- Pods with `STATUS` `Completed` are run-once Jobs. For these pods `READY` should be `0/1`.
+- Pod是`Running`或`Completed`状态。
+- `READY`列显示所有正在运行的容器 (即`3/3`)，`STATUS`显示POD是`Running`。
+- `STATUS` `Completed`的窗格是一次运行的作业。对于这些pod，`READY`应为`0/1`。
 
 ```
 kubectl get pods --all-namespaces
@@ -122,19 +122,19 @@ kube-system     rke-metrics-addon-deploy-job-7ljkc        0/1       Completed   
 kube-system     rke-network-plugin-deploy-job-6pbgj       0/1       Completed   0          30s
 ```
 
-#### Save Your Files
+#### 保存文件
 
-> **Important**
-> The files mentioned below are needed to maintain, troubleshoot and upgrade your cluster.
+> **重要**
+> 需要以下文件来维护，故障排除和升级群集。
 
-Save a copy of the following files in a secure location:
+将以下文件的副本保存在安全的位置：
 
-- `rancher-cluster.yml`: The RKE cluster configuration file.
-- `kube_config_rancher-cluster.yml`: The [Kubeconfig file]({{<baseurl>}}/rke/latest/en/kubeconfig/) for the cluster, this file contains credentials for full access to the cluster.
-- `rancher-cluster.rkestate`: The [Kubernetes Cluster State file]({{<baseurl>}}/rke/latest/en/installation/#kubernetes-cluster-state), this file contains credentials for full access to the cluster.<br/><br/>_The Kubernetes Cluster State file is only created when using RKE v0.2.0 or higher._
+- `rancher-cluster.yml`: RKE群集配置文件。
+- `kube_config_rancher-cluster.yml`: 集群的[Kubeconfig文件]({{<baseurl>}}/rke/latest/en/kubeconfig/)，此文件包含用于访问集群的凭据。
+- `rancher-cluster.rkestate`: [Kubernetes群集状态文件]({{<baseurl>}}/rke/latest/en/installation/#kubernetes-cluster-state)，此文件包含用于完全访问群集的凭据。<br/><br/>_Kubernetes集群状态文件仅在使用RKE v0.2.0或更高版本时创建。_
 
-#### Issues or errors?
+#### 问题或错误？
 
-See the [Troubleshooting](/docs/installation/options/troubleshooting/) page.
+请参阅[故障排除](/docs/installation/options/troubleshooting/)页面.
 
-#### [Next: Install Rancher](/docs/installation/k8s-install/helm-rancher/)
+#### [下一步: 安装Rancher](/docs/installation/k8s-install/helm-rancher/)

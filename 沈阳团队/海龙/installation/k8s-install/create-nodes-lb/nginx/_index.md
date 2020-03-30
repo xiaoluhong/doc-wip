@@ -1,31 +1,31 @@
 ---
-title: Setting up an NGINX Load Balancer
+title: 设置NGINX负载均衡器
 ---
 
-NGINX will be configured as Layer 4 load balancer (TCP) that forwards connections to one of your Rancher nodes.
+我们将使用NGINX作为4层负载均衡器(TCP)，它将连接转发到您的某一台Rancher节点。
 
-> **Note:**
-> In this configuration, the load balancer is positioned in front of your nodes. The load balancer can be any host capable of running NGINX.
+> **注意：**
+> 在此配置中，负载均衡器位于节点的前面。负载平衡器可以是任何能够运行NGINX的主机。
 >
-> One caveat: do not use one of your Rancher nodes as the load balancer.
+> 一个警告：不要使用任意一个Rancher节点作为负载均衡器节点，这会出现端口冲突。
 
-### Install NGINX
+### 安装 NGINX
 
-Start by installing NGINX on the node you want to use as a load balancer. NGINX has packages available for all known operating systems. The versions tested are `1.14` and `1.15`. For help installing NGINX, refer to their [install documentation](https://www.nginx.com/resources/wiki/start/topics/tutorials/install/).
+首先在负载均衡器主机上安装NGINX，NGINX具有适用于所有已知操作系统的软件包。我们测试了`1.14`和`1.15`版本。有关安装NGINX的帮助，请参阅[安装文档。](https://www.nginx.com/resources/wiki/start/topics/tutorials/install/)
 
-The `stream` module is required, which is present when using the official NGINX packages. Please refer to your OS documentation on how to install and enable the NGINX `stream` module on your operating system.
+`stream`模块是必需的，在安装官方NGINX软件包时提供。请参阅您的操作系统文档来了解如何在操作系统上安装和启用NGINX `stream`模块。
 
-### Create NGINX Configuration
+### 创建NGINX配置
 
-After installing NGINX, you need to update the NGINX configuration file, `nginx.conf`, with the IP addresses for your nodes.
+安装NGINX之后，您需要使用节点的IP地址更新NGINX配置文件`nginx.conf`。
 
-1.  Copy and paste the code sample below into your favorite text editor. Save it as `nginx.conf`.
+1. 将下面的配置示例复制并粘贴到您喜欢的文本编辑器中，保存为`nginx.conf`。
 
-2.  From `nginx.conf`, replace both occurrences (port 80 and port 443) of `<IP_NODE_1>`, `<IP_NODE_2>`, and `<IP_NODE_3>` with the IPs of your [nodes](/docs/installation/k8s-install/create-nodes-lb/).
+2. 在nginx.conf配置中，用[节点](/docs/installation/k8s-install/create-nodes-lb/)的IP替换 `<IP_NODE_1>`，`<IP_NODE_2>`和`<IP_NODE_3>`。
 
-    > **Note:** See [NGINX Documentation: TCP and UDP Load Balancing](https://docs.nginx.com/nginx/admin-guide/load-balancer/tcp-udp-load-balancer/) for all configuration options.
+    > **注意:** 有关所有配置选项，请参见[NGINX文档：TCP和UDP负载均衡。](https://docs.nginx.com/nginx/admin-guide/load-balancer/tcp-udp-load-balancer/)
 
-    <figcaption>Example NGINX config</figcaption>
+    <figcaption>NGINX配置示例</figcaption>
     ```
     worker_processes 4;
     worker_rlimit_nofile 40000;
@@ -63,17 +63,17 @@ After installing NGINX, you need to update the NGINX configuration file, `nginx.
 
     ```
 
-3.  Save `nginx.conf` to your load balancer at the following path: `/etc/nginx/nginx.conf`.
+3. 将`nginx.conf`保存到`/etc/nginx/nginx.conf`。
 
-4.  Load the updates to your NGINX configuration by running the following command:
+4. 运行以下命令重新加载NGINX配置：
 
     ```
     # nginx -s reload
     ```
 
-### Option - Run NGINX as Docker container
+### 可选 - 将NGINX作为Docker容器运行
 
-Instead of installing NGINX as a package on the operating system, you can rather run it as a Docker container. Save the edited **Example NGINX config** as `/etc/nginx.conf` and run the following command to launch the NGINX container:
+与其将NGINX作为软件包安装在操作系统上，还不如将其作为Docker容器运行。将已编辑的**示例NGINX配置**另存为`/etc/nginx.conf`并运行以下命令启动NGINX容器：
 
 ```
 docker run -d --restart=unless-stopped \

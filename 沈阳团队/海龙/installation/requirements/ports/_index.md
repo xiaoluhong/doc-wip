@@ -1,57 +1,57 @@
 ---
-title: Port Requirements
+title: Port 要求
 ---
 
-To operate properly, Rancher requires a number of ports to be open on Rancher nodes and on downstream Kubernetes cluster nodes.
+为了保证运行，Rancher要求在Rancher节点和下游Kubernetes群集节点上开放许多端口。
 
-### Rancher Nodes
+### Rancher 节点
 
-The following table lists the ports that need to be open to and from nodes that are running the Rancher server container for [Docker installs](/docs/installation/single-node-install/) or pods for [installing Rancher on Kubernetes](/docs/installation/k8s-install/).
+下表列出了使用[Docker安装](/docs/installation/single-node-install/)的Rancher server容器的节点与[Kubernetes上安装Rancher](/docs/installation/k8s-install/)的节点之间需要开放的端口。
 
 {{< ports-rancher-nodes >}}
 
-**Note** Rancher nodes may also require additional outbound access for any external authentication provider which is configured (LDAP for example).
+**注意** 对于已配置的外部身份验证提供程序（例如LDAP），Rancher节点可能还需要其他出站规则。
 
-### Downstream Kubernetes Cluster Nodes
+### 下游Kubernetes集群节点
 
-The ports required to be open for cluster nodes changes depending on how the cluster was launched. Each of the tabs below list the ports that need to be opened for different [cluster creation options](/docs/cluster-provisioning/#cluster-creation-options).
+群集节点需要开放的端口会根据群集的启动方式而变化。下面的每个选项卡都列出了需要为不同[集群创建选项](/docs/cluster-provisioning/#cluster-creation-options)开放的端口。
 
-> **Tip:**
+> **提示：**
 >
-> If security isn't a large concern and you're okay with opening a few additional ports, you can use the table in [Commonly Used Ports](#commonly-used-ports) as your port reference instead of the comprehensive tables below.
+> 如果安全不是一个大问题，并且可以打开一些其他端口，可以将[常用端口](#commonly-used-ports)中的表用作端口参考，而不是下面的完整表。
 
  tabs 
 
- tab "Node Pools" 
+ tab "节点池" 
 
-The following table depicts the port requirements for [Rancher Launched Kubernetes](/docs/cluster-provisioning/rke-clusters/) with nodes created in an [Infrastructure Provider](/docs/cluster-provisioning/rke-clusters/node-pools/).
+下表描述了在[基础设施提供商](/docs/cluster-provisioning/rke-clusters/node-pools/)中创建[Rancher Launched Kubernetes](/docs/cluster-provisioning/rke-clusters/)的节点的端口要求。
 
-> **Note:**
-> The required ports are automatically opened by Rancher during creation of clusters in cloud providers like Amazon EC2 or DigitalOcean.
+> **注意：**
+> 在Amazon EC2或DigitalOcean等云提供商中创建集群时，Rancher会自动打开所需的端口。
 
 {{< ports-iaas-nodes >}}
 
  /tab 
 
- tab "Custom Nodes" 
+ tab "自定义节点" 
 
-The following table depicts the port requirements for [Rancher Launched Kubernetes](/docs/cluster-provisioning/rke-clusters/) with [Custom Nodes](/docs/cluster-provisioning/rke-clusters/custom-nodes/).
+下表描述了带有[自定义节点](/docs/cluster-provisioning/rke-clusters/custom-nodes/)的[Rancher Launched Kubernetes](/docs/cluster-provisioning/rke-clusters/)的端口要求。
 
 {{< ports-custom-nodes >}}
 
  /tab 
 
- tab "Hosted Clusters" 
+ tab "托管的集群" 
 
-The following table depicts the port requirements for [hosted clusters](/docs/cluster-provisioning/hosted-kubernetes-clusters).
+下表描述了[托管群集](/docs/cluster-provisioning/hosted-kubernetes-clusters)的端口要求。
 
 {{< ports-imported-hosted >}}
 
  /tab 
 
- tab "Imported Clusters" 
+ tab "导入的集群" 
 
-The following table depicts the port requirements for [imported clusters](/docs/cluster-provisioning/imported-clusters/).
+下表描述了[导入群集](/docs/cluster-provisioning/imported-clusters/)的端口要求。
 
 {{< ports-imported-hosted >}}
 
@@ -59,13 +59,13 @@ The following table depicts the port requirements for [imported clusters](/docs/
 
  /tabs 
 
-### Other Port Considerations
+### 其他端口注意事项
 
-#### Commonly Used Ports
+#### 常用端口
 
-These ports are typically opened on your Kubernetes nodes, regardless of what type of cluster it is.
+这些端口通常在Kubernetes节点上打开，无论它是哪种类型的群集。
 
-| Protocol |    Port     | Description                                         |
+| 协议 |    端口     | 描述                                         |
 | :------: | :---------: | --------------------------------------------------- |
 |   TCP    |     22      | Node driver SSH provisioning                        |
 |   TCP    |    2376     | Node driver Docker daemon TLS port                  |
@@ -82,23 +82,22 @@ These ports are typically opened on your Kubernetes nodes, regardless of what ty
 
 ---
 
-#### Local Node Traffic
+#### 本地节点流量
 
-Ports marked as `local traffic` (i.e., `9099 TCP`) in the above requirements are used for Kubernetes healthchecks (`livenessProbe` and`readinessProbe`).
-These healthchecks are executed on the node itself. In most cloud environments, this local traffic is allowed by default.
+标记为`local traffic`（即: 9099 TCP）的端口用于Kubernetes健康检查(`livenessProbe` 和`readinessProbe`)。这些健康检查在节点本身上执行。在大多数云环境中，默认情况下会允许此本地流量。
 
-However, this traffic may be blocked when:
+但是在以下情况下，此流量可能会被阻止：
 
-- You have applied strict host firewall policies on the node.
-- You are using nodes that have multiple interfaces (multihomed).
+- 您已在节点上应用了严格的主机防火墙策略。
+- 您正在使用具有多个接口（多宿主）的节点。
 
-In these cases, you have to explicitly allow this traffic in your host firewall, or in case of public/private cloud hosted machines (i.e. AWS or OpenStack), in your security group configuration. Keep in mind that when using a security group as source or destination in your security group, explicitly opening ports only applies to the private interface of the nodes / instances.
+在这些情况下，您必须在您的主机防火墙，或者在公有/私有云托管机器(AWS或OpenStack)安全组配置中显式地允许这些流量。请记住，在将安全组用作安全组中的源或目标时，显式打开端口只适用于节点/实例的私有接口。
 
-#### Rancher AWS EC2 security group
+#### Rancher AWS EC2 安全组
 
-When using the [AWS EC2 node driver](/docs/cluster-provisioning/rke-clusters/node-pools/ec2/) to provision cluster nodes in Rancher, you can choose to let Rancher create a security group called `rancher-nodes`. The following rules are automatically added to this security group.
+在使用[AWS EC2 node driver](/docs/cluster-provisioning/rke-clusters/node-pools/ec2/)在Rancher中配置群集节点时，您可以选择让Rancher创建一个名为rancher-nodes的安全组。以下规则将自动添加到此安全组。
 
-| Type            | Protocol | Port Range  | Source/Destination     | Rule Type |
+| 类型            | 协议 | 端口范围  | 源/目的     | 规则类型 |
 | --------------- | :------: | :---------: | ---------------------- | :-------: |
 | SSH             |   TCP    |     22      | 0.0.0.0/0              |  Inbound  |
 | HTTP            |   TCP    |     80      | 0.0.0.0/0              |  Inbound  |

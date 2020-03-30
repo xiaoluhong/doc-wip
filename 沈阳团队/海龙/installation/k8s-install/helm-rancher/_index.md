@@ -1,26 +1,26 @@
 ---
-title: 3. Install Rancher on the Kubernetes Cluster
+title: 3. 在Kubernetes集群上安装Rancher
 ---
 
-Rancher is installed using the Helm package manager for Kubernetes. Helm charts provide templating syntax for Kubernetes YAML manifest documents.
+Rancher使用Kubernetes的Helm软件包管理器安装。Helm charts为Kubernetes YAML清单文档提供了模板语法。
 
-With Helm, we can create configurable deployments instead of just using static files. For more information about creating your own catalog of deployments, check out the docs at https://helm.sh/.
+有了Helm，我们可以创建可配置的deployments，而不只是使用静态文件。有关创建您自己的deployments目录的更多信息，请查看https://helm.sh/中的文档。
 
-For systems without direct internet access, see [Air Gap: Kubernetes install](/docs/installation/air-gap-installation/install-rancher/).
+对于无法直接访问Internet的系统，请参阅[Air Gap：安装Kubernetes](/docs/installation/air-gap-installation/install-rancher/)。
 
-To choose a Rancher version to install, refer to [Choosing a Rancher Version.](/docs/installation/options/server-tags)
+选择要安装的Rancher版本，请参阅[选择Rancher版本。](/docs/installation/options/server-tags)
 
-To choose a version of Helm to install Rancher with, refer to the [Helm version requirements](/docs/installation/options/helm-version)
+要选择用于安装Rancher的Helm版本，请参阅[Helm版本要求](/docs/installation/options/helm-version)。
 
-> **Note:** The installation instructions assume you are using Helm 3. For migration of installs started with Helm 2, refer to the official [Helm 2 to 3 migration docs.](https://helm.sh/blog/migrate-from-helm-v2-to-helm-v3/) This [section](/docs/installation/options/helm2) provides a copy of the older installation instructions for Rancher installed on Kubernetes with Helm 2, and it is intended to be used if upgrading to Helm 3 is not feasible.
+> **注意：**安装说明假定您使用的是Helm3。有关从Helm 2的安装迁移，请参阅官方的[Helm 2到3迁移文档](https://helm.sh/blog/migrate-from-helm-v2-to-helm-v3/)。这个[章节](/docs/installation/options/helm2)提供了使用Helm 2在Kubernetes上安装Rancher的较旧安装说明，适用于无法升级到Helm 3的情况。
 
-#### Install Helm
+#### 安装Helm
 
-Helm requires a simple CLI tool to be installed. Refer to the [instructions provided by the Helm project](https://helm.sh/docs/intro/install/) for your specific platform.
+Helm需要安装一个简单的CLI工具。请参阅针对特定平台的[Helm项目提供的说明](https://helm.sh/docs/intro/install/)。
 
-#### Add the Helm Chart Repository
+#### 添加Helm Chart存储库
 
-Use `helm repo add` command to add the Helm chart repository that contains charts to install Rancher. For more information about the repository choices and which is best for your use case, see [Choosing a Version of Rancher](/docs/installation/options/server-tags/#helm-chart-repositories).
+使用`helm repo add`命令可以添加包含要安装Rancher chart的Helm chart存储库。有关存储库选择以及最适合您的使用场景的更多信息，请参阅[选择Rancher的版本](/docs/installation/options/server-tags/#helm-chart-repositories)。
 
 {{< release-channel >}}
 
@@ -28,67 +28,67 @@ Use `helm repo add` command to add the Helm chart repository that contains chart
 helm repo add rancher-<CHART_REPO> https://releases.rancher.com/server-charts/<CHART_REPO>
 ```
 
-#### Create a Namespace for Rancher
+#### 为Rancher创建Namespace
 
-We'll need to define a namespace where the resources created by the Chart should be installed. This should always be `cattle-system`:
+我们需要定义一个Namespace，在Namespace中安装由Chart创建的资源。这应该是`cattle-system`:
 
 ```
 kubectl create namespace cattle-system
 ```
 
-#### Choose your SSL Configuration
+#### 选择SSL配置
 
-Rancher Server is designed to be secure by default and requires SSL/TLS configuration.
+Rancher Server在默认情况下是安全的，并且需要SSL/TLS配置。
 
-There are three recommended options for the source of the certificate.
+证书建议使用以下三个选项。
 
-> **Note:** If you want terminate SSL/TLS externally, see [TLS termination on an External Load Balancer](/docs/installation/options/chart-options/#external-tls-termination).
+> **注意：** 如果要从外部终止SSL/TLS，请参阅[外部负载均衡器上的TLS终止](/docs/installation/options/chart-options/#external-tls-termination)。
 
-| Configuration                  | Chart option                     | Description                                                                                 | Requires cert-manager                 |
+| 配置                  | Chart选项                     | 描述                                                                                 |需要cert-manager                 |
 | ------------------------------ | -------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------- |
-| Rancher Generated Certificates | `ingress.tls.source=rancher`     | Use certificates issued by Rancher's generated CA (self signed)<br/>This is the **default** | [yes](#optional-install-cert-manager) |
-| Let’s Encrypt                  | `ingress.tls.source=letsEncrypt` | Use Let's Encrypt to issue a certificate                                                    | [yes](#optional-install-cert-manager) |
-| Certificates from Files        | `ingress.tls.source=secret`      | Use your own certificate files by creating Kubernetes Secret(s)                             | no                                    |
+| Rancher生成的证书 | `ingress.tls.source=rancher`     | 使用Rancher生成的CA颁发的证书（自签名）<br/>这是**默认值** | [yes](#optional-install-cert-manager) |
+| Let’s Encrypt                  | `ingress.tls.source=letsEncrypt` |使用Let's Encrypt颁发证书                                                    | [yes](#optional-install-cert-manager) |
+| 证书文件        | `ingress.tls.source=secret`      | 通过创建Kubernetes Secret(s)使用您自己的证书文件                             | no                                    |
 
-#### Optional: Install cert-manager
+#### 可选: 安装cert-manager
 
-Rancher relies on [cert-manager](https://github.com/jetstack/cert-manager) to issue certificates from Rancher's own generated CA or to request Let's Encrypt certificates.
+Rancher依靠[cert-manager](https://github.com/jetstack/cert-manager)从Rancher自己生成的CA颁发证书或请求Let's Encrypt证书。
 
-`cert-manager` is only required for certificates issued by Rancher's generated CA (`ingress.tls.source=rancher`) and Let's Encrypt issued certificates (`ingress.tls.source=letsEncrypt`). You should skip this step if you are using your own certificate files (option `ingress.tls.source=secret`) or if you use [TLS termination on an External Load Balancer](/docs/installation/options/chart-options/#external-tls-termination).
+`cert-manager`只适用于Rancher生成的CA (`ingress.tls.source=rancher`)和Let's Encrypt颁发的证书(`ingress.tls.source=letsEncrypt`)。如果您正在使用自己的证书文件(选项`ingress.tls.source=secret`)，或者在[外部负载均衡器上使用TLS终止](/docs/installation/options/chart-options/#external-tls-termination)，则应跳过此步骤。
 
- accordion id="cert-manager" label="Click to Expand" 
+ accordion id="cert-manager" label="点击展开" 
 
-> **Important:**
-> Due to an issue with Helm v2.12.0 and cert-manager, please use Helm v2.12.1 or higher.
+> **重要：**
+> 由于Helm v2.12.0和cert-manager的问题，请使用Helm v2.12.1或更高版本。
 
-> Recent changes to cert-manager require an upgrade. If you are upgrading Rancher and using a version of cert-manager older than v0.11.0, please see our [upgrade documentation](/docs/installation/options/upgrading-cert-manager/).
+> cert-manager的最新更改需要升级。如果要升级Rancher并使用v0.11.0之前的cert-manager版本，请参阅我们的[升级文档](/docs/installation/options/upgrading-cert-manager/)。
 
-These instructions are adapted from the [official cert-manager documentation](https://cert-manager.io/docs/installation/kubernetes/#installing-with-helm).
+这些说明来自[官方的cert-manager文档](https://cert-manager.io/docs/installation/kubernetes/#installing-with-helm)。
 
 ```
-## Install the CustomResourceDefinition resources separately
+## 安装CustomResourceDefinition资源
 kubectl apply -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.12/deploy/manifests/00-crds.yaml
 
-> **Important:**
-> If you are running Kubernetes v1.15 or below, you will need to add the `--validate=false flag to your kubectl apply command above else you will receive a validation error relating to the x-kubernetes-preserve-unknown-fields field in cert-manager’s CustomResourceDefinition resources. This is a benign error and occurs due to the way kubectl performs resource validation.
+> **重要：**
+> 如果您正在运行Kubernetes v1.15或更低版本，则需要在上方的kubectl apply命令中添加`--validate=false`标志，否则您将在cert-manager的CustomResourceDefinition资源中收到与x-kubernetes-preserve-unknown-fields字段有关的验证错误。这是一个良性错误，是由于kubectl执行资源验证的方式造成的。
 
-## Create the namespace for cert-manager
+## 为cert-manager创建名称空间
 kubectl create namespace cert-manager
 
-## Add the Jetstack Helm repository
+## 添加Jetstack Helm存储库
 helm repo add jetstack https://charts.jetstack.io
 
-## Update your local Helm chart repository cache
+## 更新本地Helm chart存储库缓存
 helm repo update
 
-## Install the cert-manager Helm chart
+## 安装cert-manager Helm chart
 helm install \
   cert-manager jetstack/cert-manager \
   --namespace cert-manager \
   --version v0.12.0
 ```
 
-Once you’ve installed cert-manager, you can verify it is deployed correctly by checking the cert-manager namespace for running pods:
+安装cert-manager后，您可以通过检查cert-manager namespace中正在运行的Pod来验证它是否已正确部署：
 
 ```
 kubectl get pods --namespace cert-manager
@@ -101,16 +101,16 @@ cert-manager-webhook-787858fcdb-nlzsq      1/1     Running   0          2m
 
  /accordion 
 
-#### Install Rancher with Helm and Your Chosen Certificate Option
+#### 使用Helm和您选择的证书选项安装Rancher
 
  tabs 
- tab "Rancher-generated Certificates" 
+ tab "Rancher生成的证书" 
 
-> **Note:** You need to have [cert-manager](#optional-install-cert-manager) installed before proceeding.
+> **注意：** 在继续操作之前，您需要安装[cert-manager](#optional-install-cert-manager)。
 
-The default is for Rancher to generate a CA and uses `cert-manager` to issue the certificate for access to the Rancher server interface. Because `rancher` is the default option for `ingress.tls.source`, we are not specifying `ingress.tls.source` when running the `helm install` command.
+默认情况下，Rancher生成一个CA并使用`cert-manager`颁发证书访问Rancher server。因为`rancher`是`ingress.tls.source`的默认选项，所以在运行`helm install`命令时我们没有指定`ingress.tls.source`。
 
-- Set the `hostname` to the DNS name you pointed at your load balancer.
+- 将`hostname`设置为您指向负载均衡器的DNS名称。
 
 ```
 helm install rancher rancher-<CHART_REPO>/rancher \
@@ -118,7 +118,7 @@ helm install rancher rancher-<CHART_REPO>/rancher \
   --set hostname=rancher.my.org
 ```
 
-Wait for Rancher to be rolled out:
+等待Rancher推出:
 
 ```
 kubectl -n cattle-system rollout status deploy/rancher
@@ -129,11 +129,11 @@ deployment "rancher" successfully rolled out
  /tab 
  tab "Let's Encrypt" 
 
-> **Note:** You need to have [cert-manager](#optional-install-cert-manager) installed before proceeding.
+> **注意：** 在继续操作之前，您需要安装[cert-manager](#optional-install-cert-manager)。
 
-This option uses `cert-manager` to automatically request and renew [Let's Encrypt](https://letsencrypt.org/) certificates. This is a free service that provides you with a valid certificate as Let's Encrypt is a trusted CA. This configuration uses HTTP validation (`HTTP-01`) so the load balancer must have a public DNS record and be accessible from the internet.
+此选项使用`cert-manager`自动请求和续​​订[Let's Encrypt](https://letsencrypt.org/)证书。这是一项免费服务，可为您提供有效的证书，因为我们的加密是受信任的CA。此配置使用HTTP验证（`HTTP-01`），因此负载均衡器必须具有公共DNS记录并且可以从Internet访问。
 
-- Set `hostname` to the public DNS record, set `ingress.tls.source` to `letsEncrypt` and `letsEncrypt.email` to the email address used for communication about your certificate (for example, expiry notices)
+- 将`hostname`设置为公共DNS记录，将`ingress.tls.source`设置为`letsEncrypt`，将`letsEncrypt.email`设置为用于与证书进行通信的电子邮件地址（例如，到期通知）
 
 ```
 helm install rancher rancher-<CHART_REPO>/rancher \
@@ -143,7 +143,7 @@ helm install rancher rancher-<CHART_REPO>/rancher \
   --set letsEncrypt.email=me@example.org
 ```
 
-Wait for Rancher to be rolled out:
+等待Rancher推出：
 
 ```
 kubectl -n cattle-system rollout status deploy/rancher
@@ -152,13 +152,12 @@ deployment "rancher" successfully rolled out
 ```
 
  /tab 
- tab "Certificates from Files" 
-Create Kubernetes secrets from your own certificates for Rancher to use.
+ tab "文件证书" 根据您自己的证书创建Kubernetes secrets提供Rancher使用。
 
-> **Note:** The `Common Name` or a `Subject Alternative Names` entry in the server certificate must match the `hostname` option, or the ingress controller will fail to configure correctly. Although an entry in the `Subject Alternative Names` is technically required, having a matching `Common Name` maximizes compatibility with older browsers/applications. If you want to check if your certificates are correct, see [How do I check Common Name and Subject Alternative Names in my server certificate?](/docs/faq/technical/#how-do-i-check-common-name-and-subject-alternative-names-in-my-server-certificate)
+> **注意：** 服务器证书中的`Common Name`或`Subject Alternative Names`必须与`hostname`选项匹配，否则ingress控制器将无法正确配置。尽管从技术上要求在`Subject Alternative Names`中输入一个条目，但具有匹配的`Common Name`可以最大程度地与旧的浏览器/应用程序兼容。如果要检查证书是否正确，请参阅[如何检查服务器证书中的Common Name和Subject Alternative Names？](/docs/faq/technical/#how-do-i-check-common-name-and-subject-alternative-names-in-my-server-certificate)
 
-- Set `hostname` and set `ingress.tls.source` to `secret`.
-- If you are using a Private CA signed certificate , add `--set privateCA=true` to the command shown below.
+- 设置`hostname`，并将`ingress.tls.source`设置为`secret`.
+- 如果使用的是Private CA签名的证书，则将`--set privateCA=true`添加到下面的命令中。
 
 ```
 helm install rancher rancher-<CHART_REPO>/rancher \
@@ -167,9 +166,9 @@ helm install rancher rancher-<CHART_REPO>/rancher \
   --set ingress.tls.source=secret
 ```
 
-Now that Rancher is deployed, see [Adding TLS Secrets](/docs/installation/options/tls-secrets/) to publish the certificate files so Rancher and the ingress controller can use them.
+现在已经部署了Rancher，请参阅[添加TLS Secrets](/docs/installation/options/tls-secrets/)发布证书文件，以便Rancher和ingress控制器可以使用它们。
 
-After adding the secrets, check if Rancher was rolled out successfully:
+添加secrets后，检查Rancher是否成功推出:
 
 ```
 kubectl -n cattle-system rollout status deploy/rancher
@@ -177,7 +176,7 @@ Waiting for deployment "rancher" rollout to finish: 0 of 3 updated replicas are 
 deployment "rancher" successfully rolled out
 ```
 
-If you see the following error: `error: deployment "rancher" exceeded its progress deadline`, you can check the status of the deployment by running the following command:
+如果看到以下错误： `error: deployment "rancher" exceeded its progress deadline`, 您可以通过运行以下命令来检查deployment的状态：
 
 ```
 kubectl -n cattle-system get deploy rancher
@@ -185,26 +184,26 @@ NAME      DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
 rancher   3         3         3            3           3m
 ```
 
-It should show the same count for `DESIRED` and `AVAILABLE`.
+`DESIRED`和`AVAILABLE`应该显示相同的个数。
  /tab 
  /tabs 
 
-#### Advanced Configurations
+#### 高级配置
 
-The Rancher chart configuration has many options for customizing the install to suit your specific environment. Here are some common advanced scenarios.
+Rancher chart有许多自定义安装选项以适应特定的环境。以下是一些常见的高级方案。
 
-- [HTTP Proxy](/docs/installation/options/chart-options/#http-proxy)
-- [Private Docker Image Registry](/docs/installation/options/chart-options/#private-registry-and-air-gap-installs)
-- [TLS Termination on an External Load Balancer](/docs/installation/options/chart-options/#external-tls-termination)
+- [HTTP 代理](/docs/installation/options/chart-options/#http-proxy)
+- [私有镜像仓库](/docs/installation/options/chart-options/#private-registry-and-air-gap-installs)
+- [外部负载均衡器上的TLS终止](/docs/installation/options/chart-options/#external-tls-termination)
 
-See the [Chart Options](/docs/installation/options/chart-options/) for the full list of options.
+有关选项的完整列表，请参见[Chart选项](/docs/installation/options/chart-options/).
 
-#### Save your options
+#### 保存你的选项
 
-Make sure you save the `--set` options you used. You will need to use the same options when you upgrade Rancher to new versions with Helm.
+确保保存了使用的`--set`选项。使用Helm升级Rancher到新版本时，将需要使用相同的选项。
 
-#### Finishing Up
+#### 结束
 
-That's it you should have a functional Rancher server. Point a browser at the hostname you picked and you should be greeted by the colorful login page.
+就这样，您应该具有功能正常的Rancher server。将浏览器指向您选择的主机名，您应该会看到五颜六色的登录页面。
 
-Doesn't work? Take a look at the [Troubleshooting](/docs/installation/options/troubleshooting/) Page
+不work?查看[故障排除](/docs/installation/options/troubleshooting/)页面。
