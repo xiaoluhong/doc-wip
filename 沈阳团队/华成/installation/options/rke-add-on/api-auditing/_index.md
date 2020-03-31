@@ -1,26 +1,26 @@
 ---
-title: Enable API Auditing
+标题: 启用API Auditing
 ---
 
-> **Important: RKE add-on install is only supported up to Rancher v2.0.8**
+> **重要说明: Rancher v2.0.8之前仅支持RKE附加安装**
 >
-> Please use the Rancher Helm chart to install Rancher on a Kubernetes cluster. For details, see the [Kubernetes Install - Installation Outline](/docs/installation/k8s-install/#installation-outline).
+> 请使用Rancher Helm chart在Kubernetes集群上安装Rancher。有关详细信息，请参见[Kubernetes安装-安装概述](/docs/installation/k8s-install/#installation-outline)。
 >
-> If you are currently using the RKE add-on install method, see [Migrating from a Kubernetes Install with an RKE Add-on](/docs/upgrades/upgrades/migrating-from-rke-add-on/) for details on how to move to using the helm chart.
+> 如果您当前正在使用RKE附加组件安装方法，请参阅[使用RKE附加组件从Kubernetes安装迁移](/docs/upgrades/upgrades/migrating-from-rke-add-on/)以获取有关如何使用Helm chart的详细信息。
 
-If you're using RKE to install Rancher, you can use directives to enable API Auditing for your Rancher install. You can know what happened, when it happened, who initiated it, and what cluster it affected. API auditing records all requests and responses to and from the Rancher API, which includes use of the Rancher UI and any other use of the Rancher API through programmatic use.
+如果使用RKE安装Rancher，则可以使用指令为Rancher安装启用API Auditing。您可以知道发生了什么，何时发生，由谁发起的以及它影响了哪些集群。API Auditing记录了与Rancher API之间的所有请求和响应，包括对Rancher UI的使用以及通过程序使用对Rancher API的任何其他使用。
 
-### In-line Arguments
+### 内联参数
 
-Enable API Auditing using RKE by adding arguments to your Rancher container.
+通过向Rancher容器添加参数来使用RKE启用API Auditing。
 
-To enable API auditing:
+要启用API Auditing：
 
-- Add API Auditing arguments (`args`) to your Rancher container.
-- Declare a `mountPath` in the `volumeMounts` directive of the container.
-- Declare a `path` in the `volumes` directive.
+- 将API Auditing参数 (`args`) 添加到Rancher容器中。
+- 在容器的 `volumeMounts` 指令中声明一个 `mountPath`。
+- 在 `volumes` 指令中声明一个 `path`。
 
-For more information about each argument, its syntax, and how to view API Audit logs, see [Rancher v2.0 Documentation: API Auditing](/docs/installation/api-auditing).
+有关每个参数，其语法以及如何查看API Audit日志的更多信息，请参阅[Rancher v2.0文档：API Auditing](/docs/installation/api-auditing)。
 
 ```yaml
 ...

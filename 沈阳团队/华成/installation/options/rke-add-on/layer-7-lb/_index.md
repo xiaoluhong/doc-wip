@@ -1,83 +1,83 @@
 ---
-title: Kubernetes Install with External Load Balancer (HTTPS/Layer 7)
+标题: Kubernetes使用外部负载均衡器安装 (HTTPS/Layer 7)
 ---
 
-> #### **Important: RKE add-on install is only supported up to Rancher v2.0.8**
+> #### **重要说明: Rancher v2.0.8之前仅支持RKE附加安装**
 >
-> Please use the Rancher Helm chart to install Rancher on a Kubernetes cluster. For details, see the [Kubernetes Install - Installation Outline](/docs/installation/k8s-install/#installation-outline).
+> 请使用Rancher Helm chart将Rancher安装在Kubernetes集群上。有关详细信息，请参见[Kubernetes安装-安装概述](/docs/installation/k8s-install/#installation-outline)。
 >
-> If you are currently using the RKE add-on install method, see [Migrating from a Kubernetes Install with an RKE Add-on](/docs/upgrades/upgrades/migrating-from-rke-add-on/) for details on how to move to using the helm chart.
+> 如果您当前正在使用RKE附加组件安装方法，请参阅[使用RKE附加组件从Kubernetes安装迁移](/docs/upgrades/upgrades/migrating-from-rke-add-on/)以获取有关如何使用Helm chart的详细信息。
 
-This procedure walks you through setting up a 3-node cluster using the Rancher Kubernetes Engine (RKE). The cluster's sole purpose is running pods for Rancher. The setup is based on:
+此过程将引导您使用Rancher Kubernetes引擎（RKE）设置3-node群集。 该集群的唯一目的是为Rancher运行Pod。设置基于:
 
-- Layer 7 load balancer with SSL termination (HTTPS)
-- [NGINX Ingress controller (HTTP)](https://kubernetes.github.io/ingress-nginx/)
+- 具有SSL termination（HTTPS）的第7层负载均衡器
+- [NGINX入口控制器（HTTP）](https://kubernetes.github.io/ingress-nginx/)
 
-In an HA setup that uses a layer 7 load balancer, the load balancer accepts Rancher client connections over the HTTP protocol (i.e., the application level). This application-level access allows the load balancer to read client requests and then redirect to them to cluster nodes using logic that optimally distributes load.
+在使用第7层负载均衡器的HA设置中，负载均衡器通过HTTP协议（即应用程序级别）接受Rancher客户端连接。这种应用程序级别的访问允许负载均衡器读取客户端请求，然后使用优化分配负载的逻辑将其重定向到群集节点。
 
-<sup>Rancher installed on a Kubernetes cluster with layer 7 load balancer, depicting SSL termination at load balancer</sup>
+<sup>Rancher安装在具有第7层负载均衡器的Kubernetes集群上，描绘了负载均衡器的SSL termination</sup>
 ![Rancher HA](/img/rancher/ha/rancher2ha-l7.svg)
 
-### Installation Outline
+### 安装概要
 
-Installation of Rancher in a high-availability configuration involves multiple procedures. Review this outline to learn about each procedure you need to complete.
+在高可用性配置中安装Rancher涉及多个过程。查看此概述以了解您需要完成的每个过程。
 
 <!-- TOC -->
 
-- [1. Provision Linux Hosts](#1-provision-linux-hosts)
-- [2. Configure Load Balancer](#2-configure-load-balancer)
-- [3. Configure DNS](#3-configure-dns)
-- [4. Install RKE](#4-install-rke)
-- [5. Download RKE Config File Template](#5-download-rke-config-file-template)
-- [6. Configure Nodes](#6-configure-nodes)
-- [7. Configure Certificates](#7-configure-certificates)
-- [8. Configure FQDN](#8-configure-fqdn)
-- [9. Configure Rancher version](#9-configure-rancher-version)
-- [10. Back Up Your RKE Config File](#10-back-up-your-rke-config-file)
-- [11. Run RKE](#11-run-rke)
-- [12. Back Up Auto-Generated Config File](#12-back-up-auto-generated-config-file)
+- [1. 供应Linux主机](#1-provision-linux-hosts)
+- [2. 配置负载均衡器](#2-configure-load-balancer)
+- [3. 配置DNS](#3-configure-dns)
+- [4. 安装RKE](#4-install-rke)
+- [5. 下载RKE配置文件模板](#5-download-rke-config-file-template)
+- [6. 配置节点](#6-configure-nodes)
+- [7. 配置证书](#7-configure-certificates)
+- [8. 配置FQDN](#8-configure-fqdn)
+- [9. 配置Rancher版本](#9-configure-rancher-version)
+- [10. 备份您的RKE配置文件](#10-back-up-your-rke-config-file)
+- [11. 运行RKE](#11-run-rke)
+- [12. 备份自动生成的配置文件](#12-back-up-auto-generated-config-file)
 
 <!-- /TOC -->
 
-### 1. Provision Linux Hosts
+### 1. 供应Linux主机
 
-Provision three Linux hosts according to our [Requirements](/docs/installation/requirements).
+根据我们的[要求](/docs/installation/requirements)配置三台Linux主机。
 
-### 2. Configure Load Balancer
+### 2. 配置负载均衡器
 
-When using a load balancer in front of Rancher, there's no need for the container to redirect port communication from port 80 or port 443. By passing the header `X-Forwarded-Proto: https`, this redirect is disabled. This is the expected configuration when terminating SSL externally.
+在Rancher前面使用负载平衡器时，容器无需从端口80或端口443重定向端口通信。通过传递标头`X-Forwarded-Proto: https`，将禁用此重定向。这是在外部终止SSL时的预期配置。
 
-The load balancer has to be configured to support the following:
+负载平衡器必须配置为支持以下各项：
 
-- **WebSocket** connections
-- **SPDY** / **HTTP/2** protocols
-- Passing / setting the following headers:
+- **WebSocket** 连接
+- **SPDY** / **HTTP/2** 协议
+- 传递/设置以下标题：
 
-| Header              | Value                        | Description                                                                                                                                                                    |
+| 标头                 | 值                           | 描述                                                                                                                                                                            |
 | ------------------- | ---------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Host`              | FQDN used to reach Rancher.  | To identify the server requested by the client.                                                                                                                                |
-| `X-Forwarded-Proto` | `https`                      | To identify the protocol that a client used to connect to the load balancer.<br /><br/>**Note:** If this header is present, `rancher/rancher` does not redirect HTTP to HTTPS. |
-| `X-Forwarded-Port`  | Port used to reach Rancher.  | To identify the protocol that client used to connect to the load balancer.                                                                                                     |
-| `X-Forwarded-For`   | IP of the client connection. | To identify the originating IP address of a client.                                                                                                                            |
+| `Host`              | FQDN用于连接Rancher。          | 标识客户端请求的服务器。                                                                                                                                                           |
+| `X-Forwarded-Proto` | `https`                      | 标识客户端用来连接到负载均衡器的协议。<br /><br/>**注意:** 如果存在此标头, `rancher/rancher` 则不会将HTTP重定向到HTTPS。                                                                    |
+| `X-Forwarded-Port`  | 用来连接Rancher的端口。         | To identify the protocol that client used to connect to the load balancer.                                                                                                     |
+| `X-Forwarded-For`   | 客户端连接的IP。                | To identify the originating IP address of a client.                                                                                                                            |
 
-Health checks can be executed on the `/healthz` endpoint of the node, this will return HTTP 200.
+可以在节点的`/healthz`端点上执行健康检查，这将返回HTTP 200。
 
-We have example configurations for the following load balancers:
+我们为以下负载均衡器提供了示例配置：
 
-- [Amazon ALB configuration](alb/)
-- [NGINX configuration](nginx/)
+- [Amazon ALB配置](alb/)
+- [NGINX配置](nginx/)
 
-### 3. Configure DNS
+### 3. 配置DNS
 
-Choose a fully qualified domain name (FQDN) that you want to use to access Rancher (e.g., `rancher.yourdomain.com`).<br/><br/>
+选择您要用来访问Rancher的标准域名（FQDN）（例如`rancher.yourdomain.com`）。<br/><br/>
 
-1. Log into your DNS server a create a `DNS A` record that points to the IP address of your [load balancer](#2-configure-load-balancer).
+1. 登录到DNS服务器，创建一个`DNS A`指向您的[负载平衡器](#2-configure-load-balancer)IP地址的记录。
 
-2. Validate that the `DNS A` is working correctly. Run the following command from any terminal, replacing `HOSTNAME.DOMAIN.COM` with your chosen FQDN:
+2. 验证`DNS A`能否正常工作。从任何终端运行以下命令，替换`HOSTNAME.DOMAIN.COM`为您选择的FQDN：
 
    `nslookup HOSTNAME.DOMAIN.COM`
 
-   **Step Result:** Terminal displays output similar to the following:
+   **步骤结果:** 终端显示类似于以下内容的输出：
 
    ```
    $ nslookup rancher.yourdomain.com
@@ -91,47 +91,47 @@ Choose a fully qualified domain name (FQDN) that you want to use to access Ranch
 
 <br/>
 
-### 4. Install RKE
+### 4. 安装RKE
 
-RKE (Rancher Kubernetes Engine) is a fast, versatile Kubernetes installer that you can use to install Kubernetes on your Linux hosts. We will use RKE to setup our cluster and run Rancher.
+RKE（Rancher Kubernetes引擎）是一种快速，通用的Kubernetes安装程序，可用于在Linux主机上安装Kubernetes。我们将使用RKE设置集群并运行Rancher。
 
-1. Follow the [RKE Install]({{<baseurl>}}/rke/latest/en/installation) instructions.
+1. 请遵循[RKE安装]({{<baseurl>}}/rke/latest/en/installation)说明。
 
-2. Confirm that RKE is now executable by running the following command:
+2. 通过运行以下命令，确认RKE现在是可执行的：
 
    ```
    rke --version
    ```
 
-### 5. Download RKE Config File Template
+### 5. 下载RKE配置文件模板
 
-RKE uses a YAML config file to install and configure your Kubernetes cluster. There are 2 templates to choose from, depending on the SSL certificate you want to use.
+RKE使用YAML配置文件来安装和配置Kubernetes集群。根据要使用的SSL证书，有2种模板可供选择。
 
-1. Download one of following templates, depending on the SSL certificate you're using.
+1. 下载以下模板之一，具体取决于您使用的SSL证书。
 
-   - [Template for self-signed certificate<br/> `3-node-externalssl-certificate.yml`](https://raw.githubusercontent.com/rancher/rancher/master/rke-templates/3-node-externalssl-certificate.yml)
-   - [Template for certificate signed by recognized CA<br/> `3-node-externalssl-recognizedca.yml`](https://raw.githubusercontent.com/rancher/rancher/master/rke-templates/3-node-externalssl-recognizedca.yml)
+   - [自签名证书的模板<br/> `3-node-externalssl-certificate.yml`](https://raw.githubusercontent.com/rancher/rancher/master/rke-templates/3-node-externalssl-certificate.yml)
+   - [由公认的CA签署的证书模板<br/> `3-node-externalssl-recognizedca.yml`](https://raw.githubusercontent.com/rancher/rancher/master/rke-templates/3-node-externalssl-recognizedca.yml)
 
-   > **Advanced Config Options:**
+   > **高级配置选项：**
    >
-   > - Want records of all transactions with the Rancher API? Enable the [API Auditing](/docs/installation/api-auditing) feature by editing your RKE config file. For more information, see how to enable it in [your RKE config file](/docs/installation/k8s-install/rke-add-on/api-auditing/).
-   > - Want to know the other config options available for your RKE template? See the [RKE Documentation: Config Options]({{<baseurl>}}/rke/latest/en/config-options/).
+   > - 想要Rancher API的所有事务记录? 通过编辑RKE配置文件来启用[API审核](/docs/installation/api-auditing)功能。有关更多信息，请参见如何在[RKE配置文件中](/docs/installation/k8s-install/rke-add-on/api-auditing/)中启用它。
+   > - 想知道您的RKE模板可用的其他配置选项吗？ 请参阅[RKE文档：配置选项]({{<baseurl>}}/rke/latest/en/config-options/)。
 
-2) Rename the file to `rancher-cluster.yml`.
+2) 将文件重命名为 `rancher-cluster.yml`.
 
-### 6. Configure Nodes
+### 6. 配置节点
 
-Once you have the `rancher-cluster.yml` config file template, edit the nodes section to point toward your Linux hosts.
+有了 `rancher-cluster.yml` 配置文件模板后，编辑节点部分以指向您的Linux主机。
 
-1.  Open `rancher-cluster.yml` in your favorite text editor.
+1.  在您喜欢的文本编辑器中打开`rancher-cluster.yml`。
 
-1.  Update the `nodes` section with the information of your [Linux hosts](#1-provision-linux-hosts).
+1.  `nodes` 使用[Linux主机](#1-provision-linux-hosts)的信息更新此部分。
 
-    For each node in your cluster, update the following placeholders: `IP_ADDRESS_X` and `USER`. The specified user should be able to access the Docket socket, you can test this by logging in with the specified user and run `docker ps`.
+    对于集群中的每个节点，更新以下占位符：`IP_ADDRESS_X` 和 `USER`。指定的用户应该能够访问Docket socket，您可以通过使用指定的用户登录并运行来对其进行测试`docker ps`。
 
-    > **Note:**
+    > **注意:**
     >
-    > When using RHEL/CentOS, the SSH user can't be root due to https://bugzilla.redhat.com/show_bug.cgi?id=1527565. See [Operating System Requirements]({{<baseurl>}}/rke/latest/en/installation/os#redhat-enterprise-linux-rhel-centos) for RHEL/CentOS specific requirements.
+    > 使用RHEL / CentOS时，由于https://bugzilla.redhat.com/show_bug.cgi?id=1527565导致SSH用户无法成为root用户。有关RHEL / CentOS的特定要求，请参阅[操作系统]({{<baseurl>}}/rke/latest/en/installation/os#redhat-enterprise-linux-rhel-centos)要求。
 
         nodes:
             # The IP address or hostname of the node
@@ -151,32 +151,32 @@ Once you have the `rancher-cluster.yml` config file template, edit the nodes sec
             role: [controlplane,etcd,worker]
             ssh_key_path: ~/.ssh/id_rsa
 
-1.  **Optional:** By default, `rancher-cluster.yml` is configured to take backup snapshots of your data. To disable these snapshots, change the `backup` directive setting to `false`, as depicted below.
+1.  **可选:** 默认情况下, `rancher-cluster.yml` 配置为获取数据的备份快照。要禁用这些快照，请将 `backup` 伪指令设置更改为 `false`，如下所示。
 
         services:
           etcd:
             backup: false
 
-### 7. Configure Certificates
+### 7. 配置证书
 
-For security purposes, SSL (Secure Sockets Layer) is required when using Rancher. SSL secures all Rancher network communication, like when you login or interact with a cluster.
+为了安全起见，使用Rancher时需要SSL（安全套接字层）。SSL保护所有Rancher网络通信的安全，例如在您登录集群或与集群交互时。
 
-Choose from the following options:
+从以下选项中选择：
 
  accordion id="option-a" label="Option A—Bring Your Own Certificate: Self-Signed" 
 
-> **Prerequisites:**
-> Create a self-signed certificate.
+> **先决条件:**
+> 创建一个自签名证书。
 >
-> - The certificate files must be in [PEM format](#pem).
-> - The certificate files must be encoded in [base64](#base64).
-> - In your certificate file, include all intermediate certificates in the chain. Order your certificates with your certificate first, followed by the intermediates. For an example, see [SSL FAQ / Troubleshooting](#cert-order).
+> - 证书文件必须为 [PEM 格式](#pem)。
+> - 证书文件必须使用 [base64](#base64)编码。
+> - 在您的证书文件中，包括链中的所有中间证书。请先使用证书订购证书，然后再订购中间体。有关示例，请参阅 [SSL常见问题/故障排除](#cert-order)。
 
-In `kind: Secret` with `name: cattle-keys-ingress`, replace `<BASE64_CA>` with the base64 encoded string of the CA Certificate file (usually called `ca.pem` or `ca.crt`)
+在 `kind: Secret` 中 `name: cattle-keys-ingress`, 用 `<BASE64_CA>` CA证书文件的base64编码字符串（通常称为 `ca.pem` 或 `ca.crt`）替换。
 
-> **Note:** The base64 encoded string should be on the same line as `cacerts.pem`, without any newline at the beginning, in between or at the end.
+> **注意:** base64编码的字符串应与相同 `cacerts.pem`，在开头，中间或结尾没有换行符。
 
-After replacing the values, the file should look like the example below (the base64 encoded strings should be different):
+替换值之后，文件应类似于以下示例（base64编码的字符串应不同）：
 
         ---
         apiVersion: v1
@@ -190,20 +190,20 @@ After replacing the values, the file should look like the example below (the bas
 
  /accordion 
  accordion id="option-b" label="Option B—Bring Your Own Certificate: Signed by Recognized CA" 
-If you are using a Certificate Signed By A Recognized Certificate Authority, you don't need to perform any step in this part.
+如果您使用的是由认可的证书颁发机构签署的证书，则无需执行此步骤部分。
  /accordion 
 
-### 8. Configure FQDN
+### 8. 配置 FQDN
 
-There is one reference to `<FQDN>` in the RKE config file. Replace this reference with the FQDN you chose in [3. Configure DNS](#3-configure-dns).
+`<FQDN>` RKE配置文件中有一个引用。将此引用替换为您在 [3. Configure DNS](#3-configure-dns) 选择的FQDN 。
 
-1. Open `rancher-cluster.yml`.
+1. 打开 `rancher-cluster.yml`。
 
-2. In the `kind: Ingress` with `name: cattle-ingress-http:`
+2. 在 `kind: Ingress` 与 `name: cattle-ingress-http:`
 
-   Replace `<FQDN>` with the FQDN chosen in [3. Configure DNS](#3-configure-dns).
+   替换 `<FQDN>` 为 [3. Configure DNS](#3-configure-dns)选择的FQDN 。
 
-   **Step Result:** After replacing the values, the file should look like the example below (the base64 encoded strings should be different):
+   **步骤结果:** 替换值后，文件应类似于以下示例（base64编码的字符串应不同）：
 
    ```
    apiVersion: extensions/v1beta1
@@ -225,11 +225,11 @@ There is one reference to `<FQDN>` in the RKE config file. Replace this referenc
                servicePort: 80
    ```
 
-3) Save the file and close it.
+3) 保存文件并关闭它。
 
-### 9. Configure Rancher version
+### 9. 配置Rancher版本
 
-The last reference that needs to be replaced is `<RANCHER_VERSION>`. This needs to be replaced with a Rancher version which is marked as stable. The latest stable release of Rancher can be found in the [GitHub README](https://github.com/rancher/rancher/blob/master/README.md). Make sure the version is an actual version number, and not a named tag like `stable` or `latest`. The example below shows the version configured to `v2.0.6`.
+最后一个需要替换的参考是 `<RANCHER_VERSION>`。这需要替换为标记为稳定的Rancher版本。最新的Rancher稳定版本可以在 [GitHub README](https://github.com/rancher/rancher/blob/master/README.md)中找到。确保版本是实际的版本号，而不是诸如 `stable` 或 `latest`的命名标签。以下示例显示了配置为的版本 `v2.0.6`。
 
 ```
       spec:
@@ -239,25 +239,25 @@ The last reference that needs to be replaced is `<RANCHER_VERSION>`. This needs 
           imagePullPolicy: Always
 ```
 
-### 10. Back Up Your RKE Config File
+### 10. 备份您的RKE配置文件
 
-After you close your RKE config file, `rancher-cluster.yml`, back it up to a secure location. You can use this file again when it's time to upgrade Rancher.
+关闭RKE配置文件 `rancher-cluster.yml`后, 将其备份到安全位置。升级Rancher时，可以再次使用此文件。
 
-### 11. Run RKE
+### 11. 运行RKE
 
-With all configuration in place, use RKE to launch Rancher. You can complete this action by running the `rke up` command and using the `--config` parameter to point toward your config file.
+完成所有配置后，使用RKE启动Rancher。您可以通过运行 `rke up` 命令并使用 `--config` 参数指向配置文件来完成此操作。
 
-1. From your workstation, make sure `rancher-cluster.yml` and the downloaded `rke` binary are in the same directory.
+1. 在您的工作站上，确保 `rancher-cluster.yml` 与下载的 `rke` 二进制文件位于同一目录中。
 
-2. Open a Terminal instance. Change to the directory that contains your config file and `rke`.
+2. 打开一个终端实例。转到包含配置文件和的目录 `rke`。
 
-3. Enter one of the `rke up` commands listen below.
+3. 输入下面的 `rke up` 命令之一。
 
    ```
    rke up --config rancher-cluster.yml
    ```
 
-   **Step Result:** The output should be similar to the snippet below:
+   **步骤结果:** 输出应与以下代码段相似：
 
    ```
    INFO[0000] Building Kubernetes cluster
@@ -268,17 +268,17 @@ With all configuration in place, use RKE to launch Rancher. You can complete thi
    INFO[0101] Finished building Kubernetes cluster successfully
    ```
 
-### 12. Back Up Auto-Generated Config File
+### 12. 备份自动生成的配置文件
 
-During installation, RKE automatically generates a config file named `kube_config_rancher-cluster.yml` in the same directory as the `rancher-cluster.yml` file. Copy this file and back it up to a safe location. You'll use this file later when upgrading Rancher Server.
+在安装过程中，RKE自动生成一个 `kube_config_rancher-cluster.yml` 与该 `rancher-cluster.yml` 文件位于同一目录中的配置文件。复制此文件并将其备份到安全位置。稍后在升级Rancher Server时将使用此文件。
 
-### What's Next?
+### 下一步是什么？
 
-- **Recommended:** Review [Creating Backups—High Availability Back Up and Restoration](/docs/backups/backups/ha-backups/) to learn how to backup your Rancher Server in case of a disaster scenario.
-- Create a Kubernetes cluster: [Creating a Cluster](/docs/tasks/clusters/creating-a-cluster/).
+- **推荐:** 查看 [创建备份-高可用性备份和还原](/docs/backups/backups/ha-backups/)，以了解在灾难情况下如何备份Rancher Server。
+- 创建Kubernetes集群： [创建集群](/docs/tasks/clusters/creating-a-cluster/)。
 
 <br/>
 
-### FAQ and Troubleshooting
+### 常见问题解答和故障排除
 
 {{< ssl_faq_ha >}}
