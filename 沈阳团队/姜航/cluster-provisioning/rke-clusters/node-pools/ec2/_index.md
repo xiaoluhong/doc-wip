@@ -1,124 +1,127 @@
 ---
-title: Creating an Amazon EC2 Cluster
+title: 创建Amazon EC2集群
 ---
 
-Use Rancher to create a Kubernetes cluster in Amazon EC2.
+使用Rancher在Amazon EC2中创建Kubernetes集群。
 
-#### Prerequisites
+#### 前提条件
 
-- **AWS EC2 Access Key and Secret Key** that will be used to create the instances. See [Amazon Documentation: Creating Access Keys](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#Using_CreateAccessKey) how to create an Access Key and Secret Key.
-- **IAM Policy created** to add to the user of the Access Key And Secret Key. See [Amazon Documentation: Creating IAM Policies (Console)](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_create.html#access_policies_create-start) how to create an IAM policy. See our three example JSON policies below:
-  - [Example IAM Policy](#example-iam-policy)
-  - [Example IAM Policy with PassRole](#example-iam-policy-with-passrole) (needed if you want to use [Kubernetes Cloud Provider](/docs/cluster-provisioning/rke-clusters/options/cloud-providers) or want to pass an IAM Profile to an instance)
-  - [Example IAM Policy to allow encrypted EBS volumes](#example-iam-policy-to-allow-encrypted-ebs-volumes)
-- **IAM Policy added as Permission** to the user. See [Amazon Documentation: Adding Permissions to a User (Console)](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_change-permissions.html#users_change_permissions-add-console) how to attach it to an user.
+- 创建实例时会使用**AWS EC2 访问密钥**。 请参照[Amazon 文档: 创建访问密钥](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#Using_CreateAccessKey)。
 
-## Creating an EC2 Cluster
+- 为用户的访问密钥**创建IAM策略**。 请参照[Amazon 文档: 创建IAM策略](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_create.html#access_policies_create-start)。 下面是三个JSON策略的实例:
+  - [IAM策略示例](#IAM策略示例)
+  - [包含PassRole的IAM策略示例](#包含PassRole的IAM策略示例) (如果您想要使用[Kubernetes Cloud Provider](/docs/cluster-provisioning/rke-clusters/options/cloud-providers) 或IAM实例配置文件)
+  - [允许加密EBS卷的IAM策略示例](#允许加密EBS卷的IAM策略示例)
+- 为用户添加**IAM 策略许可**。 请参照[Amazon 文档: 为用户添加许可](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_users_change-permissions.html#users_change_permissions-add-console)。
 
-The steps to create a cluster differ based on your Rancher version.
+## 创建EC2集群
+
+创建群集的步骤因您的Rancher版本而异。
 
  tabs 
  tab "Rancher v2.2.0+" 
 
-1. [Create your cloud credentials](#1-create-your-cloud-credentials)
-2. [Create a node template with your cloud credentials and information from EC2](#2-create-a-node-template-with-your-cloud-credentials-and-information-from-ec2)
-3. [Create a cluster with node pools using the node template](#3-create-a-cluster-with-node-pools-using-the-node-template)
+1. [创建云凭证](#1-创建云凭证)
+2. [使用云凭证和EC2信息创建主机模板](#2-使用云凭证和EC2信息创建主机模板)
+3. [使用主机模板创建带主机池的集群](#3-使用主机模板创建带主机池的集群)
 
-#### 1. Create your cloud credentials
 
-1. In the Rancher UI, click the user profile button in the upper right corner, and click **Cloud Credentials.**
-1. Click **Add Cloud Credential.**
-1. Enter a name for the cloud credential.
-1. In the **Cloud Credential Type** field, select **Amazon.**
-1. In the **Region** field, select the AWS region where your cluster nodes will be located.
-1. Enter your AWS EC2 **Access Key** and **Secret Key.**
-1. Click **Create.**
+#### 1. 创建云凭证
 
-**Result:** You have created the cloud credentials that will be used to provision nodes in your cluster. You can reuse these credentials for other node templates, or in other clusters.
+1. 在Rancher用户界面中，点击右上角的用户个人资料按钮，然后点击**云凭证**。
+1. 点击**添加云凭证**。
+1. 为云凭证填写名称。
+1. 在**云凭证类型**选项中,选择**Amazon**。
+1. 在**区域**选项中, 选择您将要创建主机的AWS区域。
+1. 填写您的AWS EC2 访问密钥：**Access Key** 和**Secret Key**。
+1. 点击**创建**。
 
-#### 2. Create a node template with your cloud credentials and information from EC2
+**结果：** 您已经创建了用于配置群集中节点的云凭证。 您可以将这些云凭证用于其他主机模板或其他集群。
 
-Complete each of the following forms using information available from the [EC2 Management Console](https://aws.amazon.com/ec2).
+#### 2. 使用云凭证和EC2信息创建主机模板
 
-1. In the Rancher UI, click the user profile button in the upper right corner, and click **Node Templates.**
-1. Click **Add Template.**
-1. In the **Region** field, select the same region that you used when creating your cloud credentials.
-1. In the **Cloud Credentials** field, select your newly created cloud credentials.
-1. Click **Next: Authenticate & configure nodes.**
-1. Choose an availability zone and network settings for your cluster. Click **Next: Select a Security Group.**
-1. Choose the default security group or configure a security group. Please refer to [Amazon EC2 security group when using Node Driver](/docs/cluster-provisioning/node-requirements/#security-group-for-nodes-on-aws-ec2) to see what rules are created in the `rancher-nodes` Security Group. Then click **Next: Set Instance options.**
-1. Configure the instances that will be created. Make sure you configure the correct **SSH User** for the configured AMI.
+使用[EC2管理控制台](https://aws.amazon.com/ec2)中可用的信息来完成以下内容。
 
-> If you need to pass an <b>IAM Instance Profile Name</b> (not ARN), for example, when you want to use a [Kubernetes Cloud Provider](/docs/cluster-provisioning/rke-clusters/options/cloud-providers), you will need an additional permission in your policy. See [Example IAM policy with PassRole](#example-iam-policy-with-passrole) for an example policy.
+1. 在Rancher用户界面中，点击右上角的用户个人资料按钮，然后点击**主机模板**。
+1. 点击**添加模板**。
+1. 在**区域**选项中, 选择您创建云凭证相同的区域。
+1. 在**云凭证**选项中, 选择您创建的云凭证。
+1. 点击**下一步：认证 & 设置节点**
+1. 选择您的集群的可用区和网络设置。 点击 **下一步: 选择安全组**。
+1. 选择默认的安全组或配置一个新的安全组。 请根据文档[Amazon EC2使用主机驱动时的安全组](/docs/cluster-provisioning/node-requirements/#security-group-for-nodes-on-aws-ec2)来查看`rancher-nodes`安全组创建的规则。 然后点击**下一步: 设置实例选项**。
+1. 配置将要创建的实例。确保为选择的AMI配置正确的**SSH用户**。
 
-Optional: In the **Engine Options** section of the node template, you can configure the Docker daemon. You may want to specify the docker version or a Docker registry mirror.
+> 如果您需要设定 <b>IAM 实例配置名称</b> (not ARN), 例如当您需要使用[Kubernetes Cloud Provider](/docs/cluster-provisioning/rke-clusters/options/cloud-providers), 您需要额外的许可在您的策略中。请参照[包含PassRole的IAM策略示例](#包含PassRole的IAM策略示例)。
 
-#### 3. Create a cluster with node pools using the node template
+可选：在主机模板的**引擎选项**部分中，您可以配置Docker守护程序。 您可能需要指定Docker版本或Docker镜像仓库地址。
+
+#### 3. 使用主机模板创建带主机池的集群
 
 {{< step_create-cluster_node-pools >}}
 
-1. From the **Clusters** page, click **Add Cluster**.
+1. 在**集群列表**界面中，点击**添加集群**。
 
-1. Choose **Amazon EC2**.
+1. 选择**Amazon EC2**。
 
-1. Enter a **Cluster Name**.
+1. 填写**集群名称**。
 
-1. Create a node pool for each Kubernetes role. For each node pool, choose a node template that you created.
+1. 为每个Kubernetes角色创建一个主机池。 对于每个主机池，选择您创建的主机模板。
 
-1. Click **Add Member** to add users that can access the cluster.
+1. 点击**添加成员**来添加能够访问集群的用户。
 
-1. Use the **Role** drop-down to set permissions for each user.
+1. 使用**角色**下拉菜单来为每个用户设定权限。
 
-1. Use **Cluster Options** to choose the version of Kubernetes, what network provider will be used and if you want to enable project network isolation. Refer to [Selecting Cloud Providers](/docs/cluster-provisioning/rke-clusters/options/cloud-providers/) to configure the Kubernetes Cloud Provider.
+1. 通过**集群选项**来选择Kubernetes版本, 网络插件及是否开启网络隔离。 请参照[选择Cloud Providers](/docs/cluster-provisioning/rke-clusters/options/cloud-providers/) 来设置Kubernetes Cloud Provider。
 
-1. Click **Create**.
+1. 点击**创建**。
 
 {{< result_create-cluster >}}
  /tab 
- tab "Rancher prior to v2.2.0+" 
+ tab "Rancher v2.2.0+之前的版本" 
 
-1. From the **Clusters** page, click **Add Cluster**.
+1. 在**集群列表**界面中，点击**添加集群**。
 
-1. Choose **Amazon EC2**.
+1. 选择**Amazon EC2**。
 
-1. Enter a **Cluster Name**.
+1. 填写**集群名称**。
 
 1. {{< step_create-cluster_member-roles >}}
 
-1. {{< step_create-cluster_cluster-options >}}Refer to [Selecting Cloud Providers](/docs/cluster-provisioning/rke-clusters/options/cloud-providers/) to configure the Kubernetes Cloud Provider.
+1. {{< step_create-cluster_cluster-options >}} 请参照[选择Cloud Providers](/docs/cluster-provisioning/rke-clusters/options/cloud-providers/) 来设置Kubernetes Cloud Provider。
 
 1. {{< step_create-cluster_node-pools >}}
 
-1. Click **Add Node Template**.
+1. 点击**添加主机模板**。
 
-1. Complete each of the following forms using information available from the [EC2 Management Console](https://aws.amazon.com/ec2).
+1. 使用[EC2管理控制台](https://aws.amazon.com/ec2)中可用的信息来完成以下内容。
 
 
-    - **Account Access** is where you configure the region of the nodes, and the credentials (Access Key and Secret Key) used to create the machine. See [Prerequisites](#prerequisites) how to create the Access Key and Secret Key and the needed permissions.
-    - **Zone and Network** configures the availability zone and network settings for your cluster.
-    - **Security Groups** creates or configures the Security Groups applied to your nodes. Please refer to [Amazon EC2 security group when using Node Driver](/docs/cluster-provisioning/node-requirements/#security-group-for-nodes-on-aws-ec2) to see what rules are created in the `rancher-nodes` Security Group.
-    - **Instance** configures the instances that will be created. Make sure you configure the correct **SSH User** for the configured AMI.
+    - **账户许可** 选项用于配置创建主机的区域及云凭证。关于如何创建访问密钥和权限，请参照[前提条件](#prerequisites)。
+    - **区域和网络** 选项用于配置您的集群可用区和网络设置。
+    - **安全组** 选项用于配置您的主机的安全组。 请参照 [Amazon EC2使用主机驱动的安全组](/docs/cluster-provisioning/node-requirements/#security-group-for-nodes-on-aws-ec2) 来查看`rancher-nodes`安全组中创建了哪些规则。
+    - **实例** 选项用于配置将要创建的实例。确保为选择的AMI配置正确的**SSH用户**。
 
 <br /><br />
-If you need to pass an **IAM Instance Profile Name** (not ARN), for example, when you want to use a [Kubernetes Cloud Provider](/docs/cluster-provisioning/rke-clusters/options/cloud-providers), you will need an additional permission in your policy. See [Example IAM policy with PassRole](#example-iam-policy-with-passrole) for an example policy.
+如果您需要设定 **IAM 实例配置名称** (not ARN), 例如当您需要使用[Kubernetes Cloud Provider](/docs/cluster-provisioning/rke-clusters/options/cloud-providers), 您需要额外的许可在您的策略中。请参照[包含PassRole的IAM策略示例](#包含PassRole的IAM策略示例)。
 
 1. {{< step_rancher-template >}}
-1. Click **Create**.
-1. **Optional:** Add additional node pools.
-1. Review your cluster settings to confirm they are correct. Then click **Create**.
+1. 点击**创建**。
+1. **可选：** 添加其他主机池。
+1. 检查您填写的信息以确保填写正确，然后点击 **创建**。
 
 {{< result_create-cluster >}}
  /tab 
  /tabs 
 
-#### Optional Next Steps
+#### 可选步骤
 
-After creating your cluster, you can access it through the Rancher UI. As a best practice, we recommend setting up these alternate ways of accessing your cluster:
+创建集群后，您可以通过Rancher UI访问它。 作为最佳实践，我们建议设置以下替代方法来访问集群：
 
-- **Access your cluster with the kubectl CLI:** Follow [these steps](/docs/cluster-admin/cluster-access/kubectl/#accessing-clusters-with-kubectl-on-your-workstation) to access clusters with kubectl on your workstation. In this case, you will be authenticated through the Rancher server’s authentication proxy, then Rancher will connect you to the downstream cluster. This method lets you manage the cluster without the Rancher UI.
-- **Access your cluster with the kubectl CLI, using the authorized cluster endpoint:** Follow [these steps](/docs/cluster-admin/cluster-access/kubectl/#authenticating-directly-with-a-downstream-cluster) to access your cluster with kubectl directly, without authenticating through Rancher. We recommend setting up this alternative method to access your cluster so that in case you can’t connect to Rancher, you can still access the cluster.
+- **通过kubectl CLI访问集群:** 请按照[这些步骤](/docs/cluster-admin/cluster-access/kubectl/#accessing-clusters-with-kubectl-on-your-workstation)来通过kubectl访问您的集群. 在这种情况下，您将通过Rancher服务器的身份验证代理进行身份验证，然后Rancher会将您连接到下游集群。 此方法使您无需Rancher UI即可管理集群。
 
-#### Example IAM Policy
+- **通过kubectl CLI和授权的集群地址访问您的集群:** 请按照[这些步骤](/docs/cluster-admin/cluster-access/kubectl/#authenticating-directly-with-a-downstream-cluster)来通过kubectl直接访问您的集群,而不需要通过Rancher进行认证. 我们建议您设定此方法访问集群，这样在您无法连接Rancher时您仍然能够访问集群。
+
+#### IAM策略示例
 
 ```json
 {
@@ -168,7 +171,7 @@ After creating your cluster, you can access it through the Rancher UI. As a best
 }
 ```
 
-#### Example IAM Policy with PassRole
+#### 包含PassRole的IAM策略示例
 
 ```json
 {
@@ -219,7 +222,7 @@ After creating your cluster, you can access it through the Rancher UI. As a best
 }
 ```
 
-#### Example IAM Policy to allow encrypted EBS volumes
+#### 允许加密EBS卷的IAM策略示例
 
 ```json
 {

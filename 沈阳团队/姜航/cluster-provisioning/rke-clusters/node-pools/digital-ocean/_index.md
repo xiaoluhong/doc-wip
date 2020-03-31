@@ -1,14 +1,14 @@
 ---
-title: Creating a DigitalOcean Cluster
+title: 创建DigitalOcean集群
 ---
 
-Use {{< product >}} to create a Kubernetes cluster using DigitalOcean.
+使用 {{< product >}} 在DigitalOcean中创建Kubernetes集群。
 
-1.  From the **Clusters** page, click **Add Cluster**.
+1.  在`集群列表`界面中，点击`添加集群`。
 
-2.  Choose **DigitalOcean**.
+2.  选择**DigitalOcean**。
 
-3.  Enter a **Cluster Name**.
+3.  输入**集群名称**。
 
 4.  {{< step_create-cluster_member-roles >}}
 
@@ -16,29 +16,31 @@ Use {{< product >}} to create a Kubernetes cluster using DigitalOcean.
 
 6.  {{< step_create-cluster_node-pools >}}
 
-        1.	Click **Add Node Template**. Note: As of v2.2.0, account access information is stored as a cloud credentials. Cloud credentials are stored as Kubernetes secrets. Multiple node templates can use the same cloud credential. You can use an existing cloud credential or create a new one. To create a new cloud credential, enter **Name** and **Account Access** data, then click **Create.**
+        1.	点击 **添加主机模板**。 注意：从v2.2.0开始，账户访问信息存储为云凭证。 云凭证会存储为Kubernetes的secret。 多个主机模板可以使用相同的云凭证。 您可以使用现有的云凭证或创建新的云凭证。 要创建新的云凭证，请输入**名称**和**账户访问**数据，然后单击**创建**。
 
-        2.  Complete the **Digital Ocean Options** form.
+        2.  完成 ***Digital Ocean选项** 表单的填写。
 
-        	- **Access Token** stores your DigitalOcean Personal Access Token. Refer to [DigitalOcean Instructions: How To Generate a Personal Access Token](https://www.digitalocean.com/community/tutorials/how-to-use-the-digitalocean-api-v2#how-to-generate-a-personal-access-token).
+        	- **访问令牌** 会存储您的Digital Ocean个人访问令牌. 请参照[DigitalOcean 说明：如何生成个人令牌](https://www.digitalocean.com/community/tutorials/how-to-use-the-digitalocean-api-v2#how-to-generate-a-personal-access-token)。
 
-        	- **Droplet Options** provision your cluster's geographical region and specifications.
+        	- **Droplet Options** 设置集群的地理区域和规格。
 
         4. {{< step_rancher-template >}}
 
-        5. Click **Create**.
+        5. 点击**创建**。
 
-        6. **Optional:** Add additional node pools.
+        6. **可选:** 添加其他主机池。
 
     <br/>
 
-7.  Review your options to confirm they're correct. Then click **Create**.
+7.  检查您填写的信息以确保填写正确，然后点击 **创建**。
 
 {{< result_create-cluster >}}
 
-## Optional Next Steps
+## 可选步骤
 
-After creating your cluster, you can access it through the Rancher UI. As a best practice, we recommend setting up these alternate ways of accessing your cluster:
+创建集群后，您可以通过Rancher UI访问它。 作为最佳实践，我们建议设置以下替代方法来访问集群：
 
-- **Access your cluster with the kubectl CLI:** Follow [these steps](/docs/cluster-admin/cluster-access/kubectl/#accessing-clusters-with-kubectl-on-your-workstation) to access clusters with kubectl on your workstation. In this case, you will be authenticated through the Rancher server’s authentication proxy, then Rancher will connect you to the downstream cluster. This method lets you manage the cluster without the Rancher UI.
-- **Access your cluster with the kubectl CLI, using the authorized cluster endpoint:** Follow [these steps](/docs/cluster-admin/cluster-access/kubectl/#authenticating-directly-with-a-downstream-cluster) to access your cluster with kubectl directly, without authenticating through Rancher. We recommend setting up this alternative method to access your cluster so that in case you can’t connect to Rancher, you can still access the cluster.
+- **通过kubectl CLI访问集群:** 请按照[这些步骤](/docs/cluster-admin/cluster-access/kubectl/#accessing-clusters-with-kubectl-on-your-workstation)来通过kubectl访问您的集群. 在这种情况下，您将通过Rancher服务器的身份验证代理进行身份验证，然后Rancher会将您连接到下游集群。 此方法使您无需Rancher UI即可管理集群。
+
+- **通过kubectl CLI和授权的集群地址访问您的集群:** 请按照[这些步骤](/docs/cluster-admin/cluster-access/kubectl/#authenticating-directly-with-a-downstream-cluster)来通过kubectl直接访问您的集群,而不需要通过Rancher进行认证. 我们建议您设定此方法访问集群，这样在您无法连接Rancher时您仍然能够访问集群。
+

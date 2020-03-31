@@ -1,41 +1,41 @@
 ---
-title: Creating a vSphere Cluster
+title: 创建vSphere集群
 ---
 
-By using Rancher with vSphere, you can bring cloud operations on-premises.
+使用Rancher和vSphere，您可以在本地体验云环境的操作。
 
-Rancher can provision nodes in vSphere and install Kubernetes on them. When creating a Kubernetes cluster in vSphere, Rancher first provisions the specified number of virtual machines by communicating with the vCenter API. Then it installs Kubernetes on top of them.
+Rancher可以在vSphere中创建主机并在其上安装Kubernetes。 在vSphere中创建Kubernetes集群时，Rancher首先通过与vCenter API通信来创建指定数量的虚拟机。 然后将Kubernetes安装在主机上。
 
-A vSphere cluster may consist of multiple groups of VMs with distinct properties, such as the amount of memory or the number of vCPUs. This grouping allows for fine-grained control over the sizing of nodes for each Kubernetes role.
+vSphere集群可能由具有不同属性（例如内存或vCPU数量）的多组虚拟机组成。 该分组允许对每个Kubernetes角色的主机大小进行细粒度的控制。
 
-## vSphere Enhancements
+## vSphere增强
 
-The vSphere node templates have been updated, allowing you to bring cloud operations on-premises with the following enhancements:
+更新后的vSphere主机模板，使您可以通过以下增强功能在本地体验云环境的部署操作：
 
-#### Self-healing Node Pools
+#### 自我修复的主机池
 
-_Available as of v2.3.0_
+_从Rancher v2.3.0开始可用_
 
-One of the biggest advantages of provisioning vSphere nodes with Rancher is that it allows you to take advantage of Rancher's self-healing node pools, also called the [node auto-replace feature,](/docs/cluster-provisioning/rke-clusters/node-pools/#node-auto-replace) in your on-premises clusters. Self-healing node pools are designed to help you replace worker nodes for stateless applications. When Rancher provisions nodes from a node template, Rancher can automatically replace unreachable nodes.
+使用Rancher设置vSphere节点的最大优势之一是，它允许您在本地集群中利用Rancher的自我修复主机池，也称为[主机自动替换功能](/docs/cluster-provisioning/rke-clusters/node-pools/#node-auto-replace)。 自我修复主机池旨在帮助您替换无状态应用程序的工作主机。 当Rancher通过主机模板创建主机时，Rancher可以自动替换无法访问的主机。
 
-> **Important:** It is not recommended to enable node auto-replace on a node pool of master nodes or nodes with persistent volumes attached, because VMs are treated ephemerally. When a node in a node pool loses connectivity with the cluster, its persistent volumes are destroyed, resulting in data loss for stateful applications.
+> **重要：** 不建议在主主机或具有持久卷连接的主机的主机池上启用主机自动替换。 当主机池中的主机失去与集群的连接时，其持久卷将被破坏，从而导致有状态应用程序丢失数据。
 
-#### Dynamically Populated Options for Instances and Scheduling
+#### 实例配置选项的动态填充
 
-_Available as of v2.3.3_
+_从Rancher v2.3.3开始可用_
 
-Node templates for vSphere have been updated so that when you create a node template with your vSphere credentials, the template is automatically populated with the same options for provisioning VMs that you have access to in the vSphere console.
+更新后的vSphere的主机模板在使用vSphere凭证创建主机模板时，模板选项会自动填充与在vSphere控制台中配置VM相同的内容。
 
-For the fields to be populated, your setup needs to fulfill the [prerequisites.](/docs/cluster-provisioning/rke-clusters/node-pools/vsphere/provisioning-vsphere-clusters/#prerequisites)
+对于要自动填充的字段，您的设置需要满足一些[前提条件](/docs/cluster-provisioning/rke-clusters/node-pools/vsphere/provisioning-vsphere-clusters/#prerequisites)。
 
-#### More Supported Operating Systems
+#### 更多操作系统的支持
 
-In Rancher v2.3.3+, you can provision VMs with any operating system that supports `cloud-init`. Only YAML format is supported for the [cloud config.](https://cloudinit.readthedocs.io/en/latest/topics/examples.html)
+在Rancher v2.3.3+中，您可以在创建虚拟机时选择任意支持`cloud-init`的操作系统。目前[cloud config](https://cloudinit.readthedocs.io/en/latest/topics/examples.html)只支持YAML格式。
 
-In Rancher prior to v2.3.3, the vSphere node driver included in Rancher only supported the provisioning of VMs with [RancherOS]({{<baseurl>}}/os/v1.x/en/) as the guest operating system.
+在v2.3.3之前版本的Rancher中包含的vSphere主机驱动程序仅支持以[RancherOS]({{<baseurl>}}/os/v1.x/en/)作为VM的操作系统。
 
-## Video Walkthrough of v2.3.3 Node Template Features
+## v2.3.3主机模板功能的视频介绍
 
-In this YouTube video, we demonstrate how to set up a node template with the new features designed to help you bring cloud operations to on-premises clusters.
+在这段YouTube视频中，我们演示了如何使用新的主机模板来帮助您在本地环境体验云环境一样的操作。
 
 {{< youtube id="dPIwg6x1AlU">}}
