@@ -1,58 +1,58 @@
 ---
-title: Default Alerts for Cluster Monitoring
+title: 集群监视的默认告警
 ---
 
-When you create a cluster, some alert rules are predefined. These alerts notify you about signs that the cluster could be unhealthy. You can receive these alerts if you configure a [notifier](/docs/cluster-admin/tools/notifiers) for them.
+创建集群时，Rancher已经预定义一些告警规则。这些告警会通知您有关集群可能不正常的迹象。为它们配置 [接受者](/docs/cluster-admin/tools/notifiers) 就可以收到这些告警。
 
-Several of the alerts use Prometheus expressions as the metric that triggers the alert. For more information on how expressions work, you can refer to the Rancher [documentation about Prometheus expressions]({{< baseurl >}}
-/rancher/v2.x/en/cluster-admin/tools/monitoring/expression/) or the Prometheus [documentation about querying metrics](https://prometheus.io/docs/prometheus/latest/querying/basics/).
+一些告警使用Prometheus表达式作为触发指标。表达式如何工作的详情，参考Rancher [Prometheus 表达式有关文档]({{< baseurl >}}
+/rancher/v2.x/en/cluster-admin/tools/monitoring/expression/) 或者 Prometheus [查询表达式文档](https://prometheus.io/docs/prometheus/latest/querying/basics/).
 
-## Alerts for etcd
+## etcd告警
 
-Etcd is the key-value store that contains the state of the Kubernetes cluster. Rancher provides default alerts if the built-in monitoring detects a potential problem with etcd. You don't have to enable monitoring to receive these alerts.
+Etcd是键值存储数据库，它存储了Kubernetes集群状态。Rancher提供Etcd健康状态告警和表达式告警，健康状态告警不必启用监控即可接收这些告警。
 
-A leader is the node that handles all client requests that need cluster consensus. For more information, you can refer to this [explanation of how etcd works.](https://rancher.com/blog/2019/2019-01-29-what-is-etcd/#how-does-etcd-work)
+leader是处理所有需要集群共识的客户端请求的节点。详情参考[etcd工作原理](https://rancher.com/blog/2019/2019-01-29-what-is-etcd/#how-does-etcd-work)
 
-The leader of the cluster can change in response to certain events. It is normal for the leader to change, but too many changes can indicate a problem with the network or a high CPU load. With longer latencies, the default etcd configuration may cause frequent heartbeat timeouts, which trigger a new leader election.
+集群的leader可以改变。leader改变是正常的，但是改变太多可能表示网络出现问题或CPU负载过高。延迟较长时，默认的etcd配置可能会导致频繁的心跳超时，从而触发新的leader选举。
 
-| Alert                                                                 | Explanation                                                                                            |
+| 告警                                                                 | 说明                                                                                            |
 | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| A high number of leader changes within the etcd cluster are happening | A warning alert is triggered when the leader changes more than three times in one hour.                |
-| Database usage close to the quota 500M                                | A warning alert is triggered when the size of etcd exceeds 500M.                                       |
-| Etcd is unavailable                                                   | A critical alert is triggered when etcd becomes unavailable.                                           |
-| Etcd member has no leader                                             | A critical alert is triggered when the etcd cluster does not have a leader for at least three minutes. |
+| A high number of leader changes within the etcd cluster are happening | 当leader在一小时内更换三次以上时，将触发告警。                |
+| Database usage close to the quota 500M                                | 当etcd的大小超过500M时，将触发告警。                                      |
+| Etcd is unavailable                                                   | etcd变得不可用时，将触发严重告警。                                           |
+| Etcd member has no leader                                             | 当etcd集群至少三分钟没有leader时，将触发严重告警。 |
 
-## Alerts for Kubernetes Components
+## Kubernetes系统组件告警
 
-Rancher provides alerts when core Kubernetes system components become unhealthy.
+当核心Kubernetes系统组件变得不正常时，Rancher会发出告警。
 
-Controllers update Kubernetes resources based on changes in etcd. The [controller manager](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-controller-manager/) monitors the cluster desired state through the Kubernetes API server and makes the necessary changes to the current state to reach the desired state.
+控制器根据etcd中的改变更新Kubernetes资源。[控制器](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-controller-manager/) 通过Kubernetes API服务器监控集群期望状态，并对当前状态进行必要的更改以达到期望状态。
 
-The [scheduler](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-scheduler/) service is a core component of Kubernetes. It is responsible for scheduling cluster workloads to nodes, based on various configurations, metrics, resource requirements and workload-specific requirements.
+[调度器](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-scheduler/) 服务是Kubernetes的核心组件。它负责根据各种配置，指标，资源需求和特定工作负载的需求，将集群工作负载调度到节点。
 
-| Alert                             | Explanation                                                                                |
+| 告警                             | 说明                                                                                |
 | --------------------------------- | ------------------------------------------------------------------------------------------ |
-| Controller Manager is unavailable | A critical warning is triggered when the cluster’s controller-manager becomes unavailable. |
-| Scheduler is unavailable          | A critical warning is triggered when the cluster’s scheduler becomes unavailable.          |
+| Controller Manager is unavailable | 当集群的控制器不可用时，将触发严重警告。 |
+| Scheduler is unavailable          | 当集群的调度器不可用时，将触发严重警告。          |
 
-## Alerts for Events
+## 事件告警
 
-Kubernetes events are objects that provide insight into what is happening inside a cluster, such as what decisions were made by the scheduler or why some pods were evicted from the node. In the Rancher UI, from the project view, you can see events for each workload.
+Kubernetes事件是可以深入了解集群内部事件的对象，例如调度程序做出了哪些决定或为什么从节点上驱逐了某些Pod。在Rancher UI中，从项目视图中，您可以查看每个工作负载的事件。
 
-| Alert                        | Explanation                                                                |
+| 告警                        | 说明                                                                |
 | ---------------------------- | -------------------------------------------------------------------------- |
-| Get warning deployment event | A warning alert is triggered when a warning event happens on a deployment. |
+| Get warning deployment event | 当部署中发生警告事件时，将触发警告告警。 |
 
-## Alerts for Nodes
+## 节点告警
 
-Alerts can be triggered based on node metrics. Each computing resource in a Kubernetes cluster is called a node. [Nodes](/docs/cluster-admin/#kubernetes-cluster-node-components) can be either bare-metal servers or virtual machines.
+可以基于节点指标触发告警。 Kubernetes集群中的每个计算资源都称为一个节点。 [节点](/docs/cluster-admin/#kubernetes-cluster-node-components) 可以是物理机或虚拟机。
 
-| Alert                                     | Explanation                                                                                                                                             |
+| 告警                                     | 说明                                                                                                                                             |
 | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| High CPU load                             | A warning alert is triggered if the node uses more than 100 percent of the node’s available CPU seconds for at least three minutes.                     |
-| High node memory utilization              | A warning alert is triggered if the node uses more than 80 percent of its available memory for at least three minutes.                                  |
-| Node disk is running full within 24 hours | A critical alert is triggered if the disk space on the node is expected to run out in the next 24 hours based on the disk growth over the last 6 hours. |
+| High CPU load                             | 如果节点在至少三分钟内使用了超过100％的CPU时间，则会触发警告告警。                     |
+| High node memory utilization              | 如果节点至少在三分钟内使用了其80％以上的可用内存，则会触发警告告警。                               |
+| Node disk is running full within 24 hours | 如果根据过去6个小时的磁盘增长情况，预期节点的磁盘空间在接下来的24小时内用完，则会触发严重告警。 |
 
-## Project-level Alerts
+## 项目级别告警
 
-When you enable monitoring for the project, some project-level alerts are provided. For details, refer to the [section on project-level alerts.](/docs/project-admin/tools/alerts/#default-project-level-alerts)
+启用对项目的监视时，将提供一些项目级别的告警。有关详细信息，请参阅 [项目级别告警](/docs/project-admin/tools/alerts/#default-project-level-alerts)

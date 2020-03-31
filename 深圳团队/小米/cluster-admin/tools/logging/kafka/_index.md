@@ -2,39 +2,39 @@
 title: Kafka
 ---
 
-If your organization uses [Kafka](https://kafka.apache.org/), you can configure Rancher to send it Kubernetes logs. Afterwards, you can log into your Kafka server to view logs.
+如果您的组织使用[Kafka](https://kafka.apache.org/)则可以配置Rancher向其发送Kubernetes日志。之后，您可以到Kafka服务器以查看日志。
 
-> **Prerequisite:** You must have a Kafka server configured.
+> **前提:** 配置Kafka服务器。
 
-### Kafka Server Configuration
+### Kafka服务器配置
 
-1. Select the type of **Endpoint** your Kafka server is using:
+1. 选择您的Kafka服务器使用的**访问端点**类型：
 
-- **Zookeeper**: Enter the IP address and port. By default, Zookeeper uses port `2181`. Please note that a Zookeeper endpoint cannot enable TLS.
-- **Broker**: Click on **Add Endpoint**. For each Kafka broker, enter the IP address and port. By default, Kafka brokers use port `9092`.
+- **Zookeeper**: 输入IP地址和端口。默认情况下，Zookeeper使用端口`2181`。注意，Zookeeper类型无法启用TLS。
+- **Broker**: 点击**添加访问地址**。对于每个Kafka Broker，输入IP地址和端口。默认情况下，Kafka Broker使用端口`9092`。
 
-1. In the **Topic** field, enter the name of a Kafka [topic](https://kafka.apache.org/documentation/#basic_ops_add_topic) that your Kubernetes cluster submits logs to.
+1. 在**主题**字段中，输入Kubernetes集群提交日志的Kafka [topic](https://kafka.apache.org/documentation/#basic_ops_add_topic) 名称。
 
-### **Broker** Endpoint Type
+### **Broker**访问地址类型
 
-#### SSL Configuration
+#### SSL配置
 
-If your Kafka cluster is using SSL for the **Broker**, you need to complete the **SSL Configuration** form.
+如果您的Kafka的**Broker**使用SSL则需要填写**SSL配置**.
 
-1. Provide the **Client Private Key** and **Client Certificate**. You can either copy and paste them or upload them by using the **Read from a file** button.
+1. 提供**客户端私钥**和**客户端证书**。您可以复制和粘贴它们，也可以使用**从文件读取**按钮上载它们。
 
-1. Provide the **CA Certificate PEM**. You can either copy and paste the certificate or upload it using the **Read from a file** button.
+1. 提供**PEM格式的CA证书**。您可以复制和粘贴证书，也可以使用**从文件读取**按钮上载证书。
 
-> **Note:** Kafka does not support self-signed certificates when client authentication is enabled.
+> **注意:** 启用客户端身份验证时，Kafka不支持自签名证书。
 
-#### SASL configuration
+#### SASL配置
 
-If your Kafka cluster is using [SASL authentication](https://kafka.apache.org/documentation/#security_sasl) for the Broker, you need to complete the **SASL Configuration** form.
+如果您的Kafka集群的Broker使用[SASL身份验证](https://kafka.apache.org/documentation/#security_sasl) ，则需要填写**SASL配置**
 
-1. Enter the SASL **Username** and **Password**.
+1. 输入SASL的**用户名**和**密码**。
 
-1. Select the **SASL Type** that your Kafka cluster is using.
+1. 选择您的Kafka集群使用的**SASL类型**。
 
-   - If your Kafka is using **Plain**, please ensure your Kafka cluster is using SSL.
+   - 如果您的Kafka使用的是**Plain**，请确保您的Kafka群集配置了SSL。
 
-   - If your Kafka is using **Scram**, you need to select which **Scram Mechanism** Kafka is using.
+   - 如果您的Kafka使用**Scram**，则需要选择使用的**Scram机制**
