@@ -1,17 +1,17 @@
 ---
-title: Installing Docker
+title: 安装 Docker
 ---
 
-Docker is required to be installed on any node that runs the Rancher server.
+任何运行Rancher server的节点上都需要安装Docker。
 
-There are a couple of options for installing Docker. One option is to refer to the [official Docker documentation](https://docs.docker.com/install/) about how to install Docker on Linux. The steps will vary based on the Linux distribution.
+有两种安装Docker的选项。一种选择是参考[官方Docker文档](https://docs.docker.com/install/)来了解如何在Linux上安装Docker。这些安装步骤将根据Linux发行版而有所不同。
 
-Another option is to use one of Rancher's Docker installation scripts, which are available for most recent versions of Docker.
+另一种选择是使用Rancher提供的Docker安装脚本，该脚本可用于Docker的最新版本。
 
-For example, this command could be used to install Docker 18.09 on Ubuntu:
+例如，此命令可用于在Ubuntu上安装Docker 18.09：
 
 ```
 curl https://releases.rancher.com/install-docker/18.09.sh | sh
 ```
 
-To find out whether a script is available for installing a certain Docker version, refer to this [GitHub repository,](https://github.com/rancher/install-docker) which contains all of Rancher's Docker installation scripts.
+要了解某个Docker版本是否有可用的安装脚本，请参考这个[GitHub存储库，](https://github.com/rancher/install-docker)这里包含了Rancher的所有Docker安装脚本。

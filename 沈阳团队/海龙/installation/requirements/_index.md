@@ -1,210 +1,211 @@
 ---
-title: Installation Requirements
+title: 安装要求
 ---
 
-This page describes the software, hardware, and networking requirements for the nodes where the Rancher server will be installed. The Rancher server can be installed on a single node or a high-availability Kubernetes cluster.
+这个页面描述了安装Rancher server节点的软件，硬件和网络要求。 Rancher server可以安装在单个节点或高可用的Kubernetes群集上。
 
-> It is important to note that if you install Rancher on a Kubernetes cluster, requirements are different from the [node requirements for downstream user clusters,](/docs/cluster-provisioning/node-requirements/) which will run your apps and services.
+> 请务必注意，如果在Kubernetes群集上安装Rancher，则要求与[用户群集的节点要求](/docs/cluster-provisioning/node-requirements/)不同，后者将运行您的应用程序和服务。
 
-Make sure the node(s) for the Rancher server fulfill the following requirements:
+请确保Rancher server的节点满足以下要求:
 
-- [Operating Systems and Docker Requirements](#operating-systems-and-docker-requirements)
-- [Hardware Requirements](#hardware-requirements)
-  - [CPU and Memory](#cpu-and-memory)
-  - [Disks](#disks)
-- [Networking Requirements](#networking-requirements)
-  - [Node IP Addresses](#node-ip-addresses)
-  - [Port Requirements](#port-requirements)
+- [操作系统和Docker要求](#operating-systems-and-docker-requirements)
+- [硬件要求](#hardware-requirements)
+  - [CPU 和 Memory](#cpu-and-memory)
+  - [磁盘](#disks)
+- [网络要求](#networking-requirements)
+  - [节点IP地址](#node-ip-addresses)
+  - [端口要求](#port-requirements)
 
-For a list of best practices that we recommend for running the Rancher server in production, refer to the [best practices section.](/docs/best-practices/deployment-types/)
+有关在生产环境中运行Rancher server的最佳实践列表，请参阅[最佳实践](/docs/best-practices/deployment-types/)部分。
 
-The Rancher UI works best in Firefox or Chrome.
+Rancher UI 最适合Firefox 或 Chrome.
 
-## Operating Systems and Docker Requirements
+## 操作系统和Docker要求
 
-Rancher should work with any modern Linux distribution and any modern Docker version.
+Rancher可以兼容当前任何Linux发行版和Docker版本。
 
-Rancher has been tested and is supported with Ubuntu, CentOS, Oracle Linux, RancherOS, and RedHat Enterprise Linux.
+Rancher已经过测试，支持Ubuntu，CentOS，Oracle Linux，RancherOS和RedHat Enterprise Linux
 
-For details on which OS and Docker versions were tested with each Rancher version, refer to the [support maintenance terms.](https://rancher.com/support-maintenance-terms/)
+有关每个Rancher版本测试了哪些OS和Docker版本的详细信息，请参阅[支持维护条款](https://rancher.com/support-maintenance-terms/)。
 
-All supported operating systems are 64-bit x86.
+所有受支持的操作系统都是 64-bit x86。
 
-The `ntp` (Network Time Protocol) package should be installed. This prevents errors with certificate validation that can occur when the time is not synchronized between the client and server.
+应该安装 `ntp` (Network Time Protocol)，这样可以防止在客户端和服务器之间因为时钟不同步而发生证书验证错误。
 
-Some distributions of Linux derived from RHEL, including Oracle Linux, may have default firewall rules that block communication with Helm. This [how-to guide](/docs/installation/options/firewall) shows how to check the default firewall rules and how to open the ports with `firewalld` if necessary.
+一些源自RHEL的Linux发行版，包括Oracle Linux，可能有默认的防火墙规则来阻止与Helm的通信。本[操作指南](/docs/installation/options/firewall)展示了如何检查默认的防火墙规则，以及在必要时如何使用`firewalld`开放端口。
 
-If you plan to run Rancher on ARM64, see [Running on ARM64 (Experimental).](/docs/installation/options/arm64-platform/)
+如果计划在ARM64上运行Rancher，请参阅[在ARM64上运行（实验性）](/docs/installation/options/arm64-platform/)。
 
-#### Installing Docker
+#### 安装 Docker
 
-Docker can be installed by following the steps in the official [Docker documentation.](https://docs.docker.com/) Rancher also provides [scripts](/docs/installation/requirements/installing-docker) to install Docker with one command.
+可以按照[Docker官方文档](https://docs.docker.com/)中的步骤安装Docker。 Rancher还提供了使用命令来安装Docker的[脚本](/docs/installation/requirements/installing-docker)。
 
-## Hardware Requirements
+## 硬件要求
 
-This section describes the CPU, memory, and disk requirements for the nodes where the Rancher server is installed.
+本节描述安装Rancher server的节点的CPU、内存和磁盘要求。
 
-#### CPU and Memory
+#### CPU 和 内存
 
-Hardware requirements scale based on the size of your Rancher deployment. Provision each individual node according to the requirements. The requirements are different depending on if you are installing Rancher with Docker or on a Kubernetes cluster.
+硬件要求根据您的Rancher部署规模而定。根据要求配置每个单独的节点要求是不同的，具体取决于您是将Rancher与Docker一起安装还是在Kubernetes集群上安装。
 
  tabs 
- tab "Nodes in Kubernetes Install" 
+ tab "在Kubernetes中安装Rancher" 
 
-These requirements apply to [installing Rancher on a Kubernetes cluster.](/docs/installation/k8s-install/)
+这些要求适用于[在Kubernetes集群上安装Rancher](/docs/installation/k8s-install/)。
 
-| Deployment Size | Clusters  | Nodes      | vCPUs                                           | RAM                                             |
+| 部署规模 | 集群  | 节点      | vCPUs                                           | 内存                                             |
 | --------------- | --------- | ---------- | ----------------------------------------------- | ----------------------------------------------- |
-| Small           | Up to 5   | Up to 50   | 2                                               | 8 GB                                            |
-| Medium          | Up to 15  | Up to 200  | 4                                               | 16 GB                                           |
-| Large           | Up to 50  | Up to 500  | 8                                               | 32 GB                                           |
-| X-Large         | Up to 100 | Up to 1000 | 32                                              | 128 GB                                          |
-| XX-Large        | 100+      | 1000+      | [Contact Rancher](https://rancher.com/contact/) | [Contact Rancher](https://rancher.com/contact/) |
+| Small           | 最多5个   | 最多50个   | 2                                               | 8 GB                                            |
+| Medium          | 最多15个  | 最多200个  | 4                                               | 16 GB                                           |
+| Large           | 最多50个  | 最多500个  | 8                                               | 32 GB                                           |
+| X-Large         | 最多100个 | 最多1000个 | 32                                              | 128 GB                                          |
+| XX-Large        | 100+      | 1000+      | [联系 Rancher](https://rancher.com/contact/) | [联系 Rancher](https://rancher.com/contact/) |
 
  /tab 
- tab "Node in Docker Install" 
+ tab "在Docker中安装Rancher" 
 
-These requirements apply to [single node](/docs/installation/other-installation-methods/single-node-docker) installations of Rancher.
+这些要求适用于Rancher的[单节点](/docs/installation/other-installation-methods/single-node-docker)安装。
 
-| Deployment Size | Clusters | Nodes     | vCPUs | RAM  |
+| 部署规模 | 集群 | 节点     | vCPUs | 内存  |
 | --------------- | -------- | --------- | ----- | ---- |
-| Small           | Up to 5  | Up to 50  | 1     | 4 GB |
-| Medium          | Up to 15 | Up to 200 | 2     | 8 GB |
+| Small           | 最多5个  | 最多50个  | 1     | 4 GB |
+| Medium          | 最多15个 | 最多200个 | 2     | 8 GB |
 
  /tab 
  /tabs 
 
-#### Disks
+#### 磁盘
 
-Rancher performance depends on etcd in the cluster performance. To ensure optimal speed, we recommend always using SSD disks to back your Rancher management Kubernetes cluster. On cloud providers, you will also want to use the minimum size that allows the maximum IOPS. In larger clusters, consider using dedicated storage devices for etcd data and wal directories.
+Rancher的性能取决于etcd在集群中的性能。为了确保最佳速度，我们建议使用SSD磁盘来支持Rancher管理Kubernetes集群。在云提供商上，您还需要使用允许最大IOPS的最小大小。在较大的集群中，请考虑使用专用存储设备存储etcd数据和wal目录。
 
-## Networking Requirements
+## 网络要求
 
-This section describes the networking requirements for the node(s) where the Rancher server is installed.
+本节描述了安装Rancher server的节点的网络要求。
 
-#### Node IP Addresses
+#### 节点IP地址
 
-Each node used should have a static IP configured, regardless of whether you are installing Rancher on a single node or on an HA cluster. In case of DHCP, each node should have a DHCP reservation to make sure the node gets the same IP allocated.
+无论您是在单个节点上还是在HA群集上安装Rancher，每个节点都应配置一个静态IP。如果使用DHCP，则每个节点应具有DHCP预留，以确保该节点分配的相同IP地址。
 
-#### Port Requirements
+#### 端口要求
 
-This section describes the port requirements for nodes running the `rancher/rancher` container.
+本节描述运行`rancher/rancher`容器的节点的端口要求。
 
-The port requirements are different depending on whether you are installing Rancher on a single node or on a high-availability Kubernetes cluster.
+端口要求会有所不同，这取决于您是在单个节点上还是在高可用性Kubernetes群集上安装Rancher。
 
-- **For a Docker installation,** you only need to open the ports required to enable Rancher to communicate with downstream user clusters.
-- **For a high-availability installation,** the same ports need to be opened, as well as additional ports required to set up the Kubernetes cluster that Rancher is installed on.
+- **对于Docker安装，** 您只需要开放使Rancher能够与下游用户集群通信所需的端口即可。
+- **对于高可用安装,** 需要开放相同的端口，以及建立Rancher所安装的Kubernetes集群所需的其他端口。
 
  tabs 
- tab "Kubernetes Install Port Requirements" 
+ tab "Kubernetes安装的端口要求" 
 
-#### Ports for Communication with Downstream Clusters
+#### 用于与下游集群通信的端口
 
-To communicate with downstream clusters, Rancher requires different ports to be open depending on the infrastructure you are using.
+为了与下游群集通信，Rancher要求开放不同的端口，具体取决于您使用的基础架构。
 
-For example, if you are deploying Rancher on nodes hosted by an infrastructure provider, port `22` must be open for SSH.
+例如，如果您在基础设施提供商托管的节点上部署Rancher，则必须为SSH开放`22`端口。
 
-The following diagram depicts the ports that are opened for each [cluster type](/docs/cluster-provisioning).
+下图描述了为每种[群集类型](/docs/cluster-provisioning)开放的端口。
 
-<figcaption>Port Requirements for the Rancher Management Plane</figcaption>
+<figcaption>Rancher管理平台的端口要求</figcaption>
 
 ![Basic Port Requirements](/img/rancher/port-communications.svg)
 
-The following tables break down the port requirements for inbound and outbound traffic:
+下表细分了入站和出站流量的端口要求：
 
-<figcaption>Inbound Rules for Rancher Nodes</figcaption>
+<figcaption>Rancher节点的入站规则</figcaption>
 
-| Protocol | Port | Source                                                                                                                                                                                | Description                                          |
+| 协议 | 端口 | 源                                                                                                                                                                                | 描述                                          |
 | -------- | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
-| TCP      | 80   | Load balancer/proxy that does external SSL termination                                                                                                                                | Rancher UI/API when external SSL termination is used |
-| TCP      | 443  | <ul><li>etcd nodes</li><li>controlplane nodes</li><li>worker nodes</li><li>hosted/imported Kubernetes</li><li>any source that needs to be able to use the Rancher UI or API</li></ul> | Rancher agent, Rancher UI/API, kubectl               |
+| TCP      | 80   | 进行外部SSL终止的负载均衡器/代理                                                                                                                                | 使用外部SSL终止时的Rancher UI/API |
+| TCP      | 443  | <ul><li>etcd 节点</li><li>controlplane 节点</li><li>worker 节点</li><li>托管/导入 Kubernetes</li><li>任何需要使用Rancher UI或API的资源</li></ul> | Rancher agent, Rancher UI/API, kubectl               |
 
-<figcaption>Outbound Rules for Rancher Nodes</figcaption>
+<figcaption>Rancher节点的出站规则</figcaption>
 
-| Protocol | Port | Destination                                              | Description                                   |
+| 协议 | 端口 | 目的                                              | 描述                                   |
 | -------- | ---- | -------------------------------------------------------- | --------------------------------------------- |
-| TCP      | 22   | Any node IP from a node created using Node Driver        | SSH provisioning of nodes using Node Driver   |
+| TCP      | 22   | 使用Node Driver创建的节点中的任何节点IP      | 使用Node Driver通过SSH进行节点配置   |
 | TCP      | 443  | `35.160.43.145/32`, `35.167.242.46/32`, `52.33.59.17/32` | git.rancher.io (catalogs)                     |
-| TCP      | 2376 | Any node IP from a node created using Node driver        | Docker daemon TLS port used by Docker Machine |
-| TCP      | 6443 | Hosted/Imported Kubernetes API                           | Kubernetes API server                         |
+| TCP      | 2376 | 使用Node Driver创建的节点中的任何节点IP      | 使用Node Driver通过SSH进行节点配置        | Docker Machine使用的Docker守护程序TLS端口 |
+| TCP      | 6443 | 托管/导入 Kubernetes API                           | Kubernetes API server                         |
 
-**Note** Rancher nodes may also require additional outbound access for any external [authentication provider](/docs/admin-settings/authentication/) which is configured (LDAP for example).
+**注意** 对于所有已经配置的外部[身份验证程序](/docs/admin-settings/authentication/)（例如LDAP），Rancher节点可能还需要其他出站规则。
 
-#### Additional Port Requirements for Nodes in an HA/Kubernetes Cluster
+#### HA/Kubernetes集群中节点的其他端口需求
 
-You will need to open additional ports to launch the Kubernetes cluster that are required for a high-availability installation of Rancher.
+启动Kubernetes集群你还需要开放其他的端口，这是Rancher高可用安装所必须的。
 
-If you follow the Rancher installation documentation for setting up a Kubernetes cluster using RKE, you will set up a cluster in which all three nodes have all three roles: etcd, controlplane, and worker. In that case, you can refer to this list of requirements for each node with all three roles:
+如果您按照Rancher安装文档来使用RKE设置Kubernetes集群，您将设置一个集群，其中所有三个节点都具有所有三个角色:etcd、controlplane和worker。在这种情况下，您可以参考具有所有三个角色的每个节点的需求列表:
 
-<figcaption>Inbound Rules for Nodes with All Three Roles: etcd, Controlplane, and Worker</figcaption>
+<figcaption>具有所有三个角色的节点的入站规则:etcd、Controlplane和Worker</figcaption>
 
-| Protocol | Port        | Source                                                                                                 | Description                                                                                  |
+| 协议 | 端口        | 源                                                                                                 | 描述                                                                                  |
 | -------- | ----------- | ------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------- |
-| TCP      | 22          | Linux worker nodes only, and any network that you want to be able to remotely access this node from.   | Remote access over SSH                                                                       |
-| TCP      | 80          | Any source that consumes Ingress services                                                              | Ingress controller (HTTP)                                                                    |
-| TCP      | 443         | Any source that consumes Ingress services                                                              | Ingress controller (HTTPS)                                                                   |
-| TCP      | 2376        | Rancher nodes                                                                                          | Docker daemon TLS port used by Docker Machine (only needed when using Node Driver/Templates) |
-| TCP      | 2379        | etcd nodes and controlplane nodes                                                                      | etcd client requests                                                                         |
-| TCP      | 2380        | etcd nodes and controlplane nodes                                                                      | etcd peer communication                                                                      |
-| TCP      | 3389        | Windows worker nodes only, and any network that you want to be able to remotely access this node from. | Remote access over RDP                                                                       |
-| TCP      | 6443        | etcd nodes, controlplane nodes, and worker nodes                                                       | Kubernetes apiserver                                                                         |
-| UDP      | 8472        | etcd nodes, controlplane nodes, and worker nodes                                                       | Canal/Flannel VXLAN overlay networking                                                       |
-| TCP      | 9099        | the node itself (local traffic, not across nodes)                                                      | Canal/Flannel livenessProbe/readinessProbe                                                   |
-| TCP      | 10250       | controlplane nodes                                                                                     | kubelet                                                                                      |
-| TCP      | 10254       | the node itself (local traffic, not across nodes)                                                      | Ingress controller livenessProbe/readinessProbe                                              |
-| TCP/UDP  | 30000-32767 | Any source that consumes NodePort services                                                             | NodePort port range                                                                          |
+| TCP      | 22          | 仅Linux worker节点，以及您希望从远程访问这个节点的任何网络。  | 通过SSH进行远程访问                                                                       |
+| TCP      | 80          | 任何使用Ingress服务的资源                                                              | Ingress controller (HTTP)                                                                    |
+| TCP      | 443         | 任何使用Ingress服务的资源                                                              | Ingress controller (HTTPS)                                                                   |
+| TCP      | 2376        | Rancher 节点                                                                                          | Docker Machine使用的Docker守护进程TLS的端口（仅在使用Node Driver/Templates时需要) |
+| TCP      | 2379        | etcd 节点 和 controlplane 节点                                                                      | etcd 客户端请求                                                                         |
+| TCP      | 2380        | etcd nodes 和 controlplane nodes                                                                      | etcd 节点通信                                                                      |
+| TCP      | 3389        | 仅Windows worker节点，以及您希望能够从远程访问这个节点的任何网络。 | 通过RDP远程访问                                                                       |
+| TCP      | 6443        | etcd节点, controlplane节点, 和worker节点                                                       | Kubernetes apiserver                                                                         |
+| UDP      | 8472        | etcd节点, controlplane节点, 和worker节点                                                       | Canal/Flannel VXLAN overlay 网络                                                       |
+| TCP      | 9099        | 节点本身 (本地流量， 不跨节点)                                                      | Canal/Flannel livenessProbe/readinessProbe                                                   |
+| TCP      | 10250       | controlplane 节点                                                                                     | kubelet                                                                                      |
+| TCP      | 10254       | 节点本身 (本地流量， 不跨节点)                                                      | Ingress controller livenessProbe/readinessProbe                                              |
+| TCP/UDP  | 30000-32767 | 任何使用NodePort服务的资源                                                             | NodePort 端口范围                                                                          |
 
-<figcaption>Outbound Rules for Nodes with All Three Roles: etcd, Controlplane, and Worker</figcaption>
+<figcaption>具有所有三个角色的节点的出站规则:etcd、Controlplane和Worker</figcaption>
 
-| Protocol | Port  | Source                                            | Destination                                       | Description                     |
+| 协议 | 端口  | 源                                            | 目的                                       | 描述                     |
 | -------- | ----- | ------------------------------------------------- | ------------------------------------------------- | ------------------------------- |
-| TCP      | 22    | RKE node                                          | Any node configured in Cluster Configuration File | SSH provisioning of node by RKE |
-| TCP      | 443   | Rancher nodes                                     | Rancher agent                                     |
-| TCP      | 2379  | etcd nodes                                        | etcd client requests                              |
-| TCP      | 2380  | etcd nodes                                        | etcd peer communication                           |
-| TCP      | 6443  | RKE node                                          | controlplane nodes                                | Kubernetes API server           |
-| TCP      | 6443  | controlplane nodes                                | Kubernetes API server                             |
-| UDP      | 8472  | etcd nodes, controlplane nodes, and worker nodes  | Canal/Flannel VXLAN overlay networking            |
-| TCP      | 9099  | the node itself (local traffic, not across nodes) | Canal/Flannel livenessProbe/readinessProbe        |
-| TCP      | 10250 | etcd nodes, controlplane nodes, and worker nodes  | kubelet                                           |
-| TCP      | 10254 | the node itself (local traffic, not across nodes) | Ingress controller livenessProbe/readinessProbe   |
+| TCP      | 22    | RKE 节点                                          | 集群配置文件中配置的任何节点 | RKE通过SSH进行节点的配置 |
+| TCP      | 443   | Rancher 节点                                     | Rancher agent                                     |
+| TCP      | 2379  | etcd 节点                                        | etcd 客户端请求                              |
+| TCP      | 2380  | etcd 节点                                        | etcd 节点通信                           |
+| TCP      | 6443  | RKE 节点                                          | controlplane 节点                                | Kubernetes API server           |
+| TCP      | 6443  | controlplane 节点                                | Kubernetes API server                             |
+| UDP      | 8472  | etcd节点, controlplane节点, 和worker节点  | Canal/Flannel VXLAN overlay 网络            |
+| TCP      | 9099  | 节点本身（本地流量，不跨节点） | Canal/Flannel livenessProbe/readinessProbe        |
+| TCP      | 10250 | etcd节点, controlplane节点和worker节点  | kubelet                                           |
+| TCP      | 10254 | 节点本身（本地流量，不跨节点 | Ingress controller livenessProbe/readinessProbe   |
 
-The ports that need to be opened for each node depend on the node's Kubernetes role: etcd, controlplane, or worker. If you installed Rancher on a Kubernetes cluster that doesn't have all three roles on each node, refer to the [port requirements for the Rancher Kubernetes Engine (RKE).]({{<baseurl>}}/rke/latest/en/os/#ports) The RKE docs show a breakdown of the port requirements for each role.
+每个节点需要开放的端口取决于节点的Kubernetes角色：etcd、controlplane或worker。如果您将Rancher安装在Kubernetes集群上，而该集群在每个节点上没有这三个角色，请参阅[Rancher Kubernetes引擎（RKE）的端口要求]({{<baseurl>}}/rke/latest/en/os/#ports)。RKE文档显示了每个角色的端口需求。
+
  /tab 
- tab "Single Node Port Requirements" 
+ tab "单节点端口需求" 
 
-#### Ports for Communication with Downstream Clusters
+#### 与下游集群通信的端口
 
-To communicate with downstream clusters, Rancher requires different ports to be open depending on the infrastructure you are using.
+为了与下游群集通信，Rancher要求开放不同的端口，具体端口取决于使用的基础架构。
 
-For example, if you are deploying Rancher on nodes hosted by an infrastructure provider, port `22` must be open for SSH.
+例如，如果要在基础设施提供商托管的节点上部署Rancher，则必须为SSH开放`22`端口。
 
-The following diagram depicts the ports that are opened for each [cluster type](/docs/cluster-provisioning).
+下图描述了为每种[群集类型](/docs/cluster-provisioning)开放的端口 .
 
-<figcaption>Port Requirements for the Rancher Management Plane</figcaption>
+<figcaption>Rancher管理平台的端口要求</figcaption>
 
 ![Basic Port Requirements](/img/rancher/port-communications.svg)
 
-The following tables break down the port requirements for inbound and outbound traffic:
+下表细分了入站和出站流量的端口要求：
 
-**Note** Rancher nodes may also require additional outbound access for any external [authentication provider](/docs/admin-settings/authentication/) which is configured (LDAP for example).
+**注意** 对于所有已经配置的外部[身份验证程序](/docs/admin-settings/authentication/)（例如LDAP），Rancher节点可能还需要其他出站规则。
 
-<figcaption>Inbound Rules for Rancher Nodes</figcaption>
+<figcaption>Rancher节点的入站规则</figcaption>
 
-| Protocol | Port | Source                                                                                                                                                                                | Description                                          |
+| 协议 | 端口 | 源                                                                                                                                                                                | 描述                                          |
 | -------- | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
-| TCP      | 80   | Load balancer/proxy that does external SSL termination                                                                                                                                | Rancher UI/API when external SSL termination is used |
-| TCP      | 443  | <ul><li>etcd nodes</li><li>controlplane nodes</li><li>worker nodes</li><li>hosted/imported Kubernetes</li><li>any source that needs to be able to use the Rancher UI or API</li></ul> | Rancher agent, Rancher UI/API, kubectl               |
+| TCP      | 80   | 进行外部SSL终止的负载均衡器/代理                                                                                                                                | 使用外部SSL终止时的Rancher UI/API |
+| TCP      | 443  | <ul><li>etcd 节点</li><li>controlplane 节点</li><li>worker 节点</li><li>管/导入 Kubernetes</li><li>任何需要使用Rancher UI或API的资源</li></ul> | Rancher agent, Rancher UI/API, kubectl               |
 
-<figcaption>Outbound Rules for Rancher Nodes</figcaption>
+<figcaption>Rancher节点的出站规则</figcaption>
 
-| Protocol | Port | Source                                                   | Description                                   |
+| 协议 | 端口 | 源                                                   | Description                                   |
 | -------- | ---- | -------------------------------------------------------- | --------------------------------------------- |
-| TCP      | 22   | Any node IP from a node created using Node Driver        | SSH provisioning of nodes using Node Driver   |
+| TCP      | 22   | 使用Node Driver创建的节点中的任何节点IP        | 使用Node Driver通过SSH进行节点配置   |
 | TCP      | 443  | `35.160.43.145/32`, `35.167.242.46/32`, `52.33.59.17/32` | git.rancher.io (catalogs)                     |
-| TCP      | 2376 | Any node IP from a node created using Node driver        | Docker daemon TLS port used by Docker Machine |
-| TCP      | 6443 | Hosted/Imported Kubernetes API                           | Kubernetes API server                         |
+| TCP      | 2376 | 使用Node Driver创建的节点中的任何节点IP        | 使用Node Driver创建的节点中的任何节点IP |
+| TCP      | 6443 | 托管/导入 Kubernetes API                           | Kubernetes API server                         |
 
-**Note** Rancher nodes may also require additional outbound access for any external [authentication provider](/docs/admin-settings/authentication/) which is configured (LDAP for example).
+**注意** 对于所有已经配置的外部[身份验证程序](/docs/admin-settings/authentication/)（例如LDAP），Rancher节点可能还需要其他出站规则。
  /tab 
  /tabs 
