@@ -1,65 +1,62 @@
 ---
-title: Cloning Clusters
+title: 复制集群
 ---
 
-If you have a cluster in Rancher that you want to use as a template for creating similar clusters, you can use Rancher CLI to clone the cluster's configuration, edit it, and then use it to quickly launch the cloned cluster.
+如果要在Rancher中有一个群集，并希望用作创建相似群集的模板，则可以使用Rancher CLI克隆该群集的配置，对其进行编辑，然后使用它来快速启动克隆的群集。
 
-You can clone clusters only if the nodes in the cluster are hosted by an infrastructure provider, such as EC2, Azure, or DigitalOcean.
+仅当群集中的节点由基础结构提供程序（例如EC2，Azure或DigitalOcean）托管时，才可以克隆群集。
 
-Duplication of imported clusters, clusters in hosted Kubernetes providers, and custom clusters provisioned using Docker machine is not supported.
+不支持复制导入的群集，托管的Kubernetes提供程序中的群集以及使用Docker计算机配置的自定义群集。
 
-| Cluster Type                                                                                   | Cloneable? |
+| 集群类型                                                                                   | 知否支持克隆 |
 | ---------------------------------------------------------------------------------------------- | ---------- |
-| [Nodes Hosted by Infrastructure Provider](/docs/cluster-provisioning/rke-clusters/node-pools/) | ✓          |
-| [Hosted Kubernetes Providers](/docs/cluster-provisioning/hosted-kubernetes-clusters/)          |            |
-| [Custom Cluster](/docs/cluster-provisioning/custom-clusters/)                                  |            |
-| [Imported Cluster](/docs/cluster-provisioning/imported-clusters/)                              |            |
+| [节点运行在基础架构提供商上的集群](/docs/cluster-provisioning/rke-clusters/node-pools/) | ✓          |
+| [云服务提供的Kubernetes集群](/docs/cluster-provisioning/hosted-kubernetes-clusters/)          |            |
+| [自定义集群](/docs/cluster-provisioning/custom-clusters/)                                  |            |
+| [引入的集群]](/docs/cluster-provisioning/imported-clusters/)                              |            |
 
-> **Warning:** During the process of duplicating a cluster, you will edit a config file full of cluster settings. However, we recommend editing only values explicitly listed in this document, as cluster duplication is designed for simple cluster copying, _not_ wide scale configuration changes. Editing other values may invalidate the config file, which will lead to cluster deployment failure.
+> **Warning:** 在复制集群的过程中，您将编辑一个充满集群设置的配置文件。 但是，我们建议仅编辑本文档中明确列出的值，因为群集复制是为简单的群集复制而设计的，因此 _不能_ 进行大规模配置更改。 编辑其他值可能会使配置文件无效，这将导致群集部署失败。
 
-### Prerequisites
+### 先决条件
 
-Download and install [Rancher CLI](/docs/cli). Remember to [create an API bearer token](/docs/user-settings/api-keys) if necessary.
+下载并安装[Rancher CLI](/docs/cli)。请记住，如有必要，请[创建API Key](/docs/user-settings/api-keys)。
 
-### 1. Export Cluster Config
+### 1. 导出群集配置
 
-Begin by using Rancher CLI to export the configuration for the cluster that you want to clone.
+首先使用Rancher CLI导出要克隆的群集的配置。
 
-1. Open Terminal and change your directory to the location of the Rancher CLI binary, `rancher`.
+1. 打开终端，然后将目录更改为Rancher CLI二进制文件 `rancher` 的位置。
 
-1. Enter the following command to list the clusters managed by Rancher.
-
+1. 输入以下命令以列出Rancher管理的集群。
 
         ./rancher cluster ls
 
-1. Find the cluster that you want to clone, and copy either its resource `ID` or `NAME` to your clipboard. From this point on, we'll refer to the resource `ID` or `NAME` as `<RESOURCE_ID>`, which is used as a placeholder in the next step.
+1. 找到要克隆的群集，然后将其资源 `ID` 或 `NAME` 复制到剪贴板。 从这一点开始，我们将资源 `ID` 或 `NAME` 称为 `<RESOURCE_ID>`，在下一步中将其用作占位符。
 
-1. Enter the following command to export the configuration for your cluster.
-
+1. 输入以下命令以导出集群的配置。
 
         ./rancher clusters export <RESOURCE_ID>
 
+**步骤结果：** 克隆集群的YAML输出到终端。
 
-    **Step Result:** The YAML for a cloned cluster prints to Terminal.
+1. 将YAML复制到剪贴板，并将其粘贴到新文件中。 将文件另存为 `cluster-template.yml`（或其他任何名称，只要扩展名为 `.yml` 即可）。
 
-1. Copy the YAML to your clipboard and paste it in a new file. Save the file as `cluster-template.yml` (or any other name, as long as it has a `.yml` extension).
+### 2. 修改集群配置
 
-### 2. Modify Cluster Config
+使用您喜欢的文本编辑器为克隆的集群修改`cluster-template.yml`中的集群配置。
 
-Use your favorite text editor to modify the cluster configuration in `cluster-template.yml` for your cloned cluster.
+> **注意：**从Rancher v2.3.0开始，群集配置指令必须嵌套在`cluster.yml`中的`rancher_kubernetes_engine_config`指令下。有关更多信息，请参阅[Rancher v2.3.0 +中的配置文件结构。](/docs/cluster-provisioning/rke-clusters/options/#config-file-structure-in-rancher-v2-3-0)
 
-> **Note:** As of Rancher v2.3.0, cluster configuration directives must be nested under the `rancher_kubernetes_engine_config` directive in `cluster.yml`. For more information, refer to the section on [the config file structure in Rancher v2.3.0+.](/docs/cluster-provisioning/rke-clusters/options/#config-file-structure-in-rancher-v2-3-0)
+1. 在您常用的文本编辑器中打开`cluster-template.yml`（或任何您命名的配置）。
 
-1. Open `cluster-template.yml` (or whatever you named your config) in your favorite text editor.
+   > **警告：** 仅编辑下面明确指定的集群配置值。此文件中列出的许多值用于配置克隆的群集，并且编辑它们的值可能会中断配置过程。
 
-   > **Warning:** Only edit the cluster config values explicitly called out below. Many of the values listed in this file are used to provision your cloned cluster, and editing their values may break the provisioning process.
-
-1) As depicted in the example below, at the `<CLUSTER_NAME>` placeholder, replace your original cluster's name with a unique name (`<CLUSTER_NAME>`). If your cloned cluster has a duplicate name, the cluster will not provision successfully.
+1）如下例所示，在`<CLUSTER_NAME>`占位符处，用唯一的名称（`<CLUSTER_NAME>`）替换原始集群的名称。如果克隆的群集具有重复名称，则该群集将无法成功配置。
 
    ```yml
    Version: v3
    clusters:
-     <CLUSTER_NAME>: # ENTER UNIQUE NAME
+     <CLUSTER_NAME>: # 输入唯一的集群名称
      dockerRootDir: /var/lib/docker
      enableNetworkPolicy: false
      rancherKubernetesEngineConfig:
@@ -72,7 +69,7 @@ Use your favorite text editor to modify the cluster configuration in `cluster-te
      ignoreDockerVersion: true
    ```
 
-1) For each `nodePools` section, replace the original nodepool name with a unique name at the `<NODEPOOL_NAME>` placeholder. If your cloned cluster has a duplicate nodepool name, the cluster will not provision successfully.
+1）对于每个`nodePools`部分，在 `<NODEPOOL_NAME>` 占位符处用唯一名称替换原始节点池名称。 如果克隆的群集具有重复的节点池名称，则该群集将无法成功配置。
 
    ```yml
    nodePools:
@@ -86,12 +83,12 @@ Use your favorite text editor to modify the cluster configuration in `cluster-te
      worker: true
    ```
 
-1) When you're done, save and close the configuration.
+1）完成后，保存并关闭配置。
 
-### 3. Launch Cloned Cluster
+### 3. 启动克隆集群
 
-Move `cluster-template.yml` into the same directory as the Rancher CLI binary. Then run this command:
+将`cluster-template.yml`移到与Rancher CLI二进制文件相同的目录中。 然后运行以下命令：
 
     ./rancher up --file cluster-template.yml
 
-**Result:** Your cloned cluster begins provisioning. Enter `./rancher cluster ls` to confirm. You can also log into the Rancher UI and open the **Global** view to watch your provisioning cluster's progress.
+**结果：**您克隆的群集开始配置。 输入`./rancher cluster ls`进行确认。 您还可以登录Rancher UI并打开**全局**视图以查看预配置群集的进度。
