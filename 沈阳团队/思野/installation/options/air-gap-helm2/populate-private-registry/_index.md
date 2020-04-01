@@ -1,36 +1,36 @@
 ---
-title: '2. Collect and Publish Images to your Private Registry'
+title: '2. 收集镜像并将其推送到您的私有镜像仓库'
 ---
 
-> **Prerequisites:** You must have a [private registry](https://docs.docker.com/registry/deploying/) available to use.
+> **先决条件:** 您必须具有可用的[私有镜像仓库](https://docs.docker.com/registry/deploying/)。
 >
-> **Note:** Populating the private registry with images is the same process for HA and Docker installations, the differences in this section is based on whether or not you are planning to provision a Windows cluster or not.
+> **注意:** 镜像推送到私有镜像仓库与安装 HA 和 Docker 的过程相同，本节中的区别基于您是否计划支持 Windows 群集。
 
-By default, all images used to [provision Kubernetes clusters](/docs/cluster-provisioning/) or launch any [tools](/docs/tools/) in Rancher, e.g. monitoring, pipelines, alerts, are pulled from Docker Hub. In an air gap installation of Rancher, you will need a private registry that is located somewhere accessible by your Rancher server. Then, you will load the registry with all the images.
+默认情况下，用于[配置 Kubernetes clusters](/docs/cluster-provisioning/) 或在 Rancher 中使用到的[工具](/docs/tools/)所需要的镜像，例如 monitoring, pipelines, alerts, 都是从 Docker Hub 中提取的. 在离线环境下安装 Rancher, 您将需要一个私有镜像仓库, 确保 Rancher server 可以访问该私有镜像仓库。然后，您将从私有镜像仓库中拉取所有镜像。
 
-This section describes how to set up your private registry so that when you install Rancher, Rancher will pull all the required images from this registry.
+本节介绍如何设置私有镜像仓库,以便在安装 Rancher 时，Rancher 可以从此镜像仓库中拉取所有必需的镜像。
 
-By default, we provide the steps of how to populate your private registry assuming you are provisioning Linux only clusters, but if you plan on provisioning any [Windows clusters](/docs/cluster-provisioning/rke-clusters/windows-clusters/), there are separate instructions to support the images needed for a Windows cluster.
+默认情况下，假设您仅支持 Linux 群集, 我们将提供如何推送镜像到私有镜像仓库的步骤, 但是如果您打算支持 [Windows clusters](/docs/cluster-provisioning/rke-clusters/windows-clusters/),则有单独的说明来支持 Windows 群集。
 
  tabs 
  tab "Linux Only Clusters" 
 
-For Rancher servers that will only provision Linux clusters, these are the steps to populate your private registry.
+对于仅需支持 Linux 群集的 Rancher server，这些是填充私有镜像仓库的步骤。
 
-A. Find the required assets for your Rancher version <br />
-B. Collect all the required images <br />
-C. Save the images to your workstation <br />
-D. Populate the private registry
+A. 查找您需要的 Rancher 版本 <br />
+B. 收集所有必需的镜像 <br />
+C. 将镜像保存在您的主机上 <br />
+D. 推送镜像到您的私有镜像仓库
 
-#### Prerequisites
+#### 先决条件
 
-These steps expect you to use a Linux workstation that has internet access, access to your private registry, and at least 20 GB of disk space.
+这些步骤要求您可以访问互联网，可访问到您的私有镜像仓库以及至少 20GB 磁盘空间的Linux主机
 
-#### A. Find the required assets for your Rancher version
+#### A. 查找您需要的 Rancher 版本
 
-1. Browse to our [releases page](https://github.com/rancher/rancher/releases) and find the Rancher v2.x.x release that you want to install. Don't download releases marked `rc` or `Pre-release`, as they are not stable for production environments.
+1. 访问 [releases page](https://github.com/rancher/rancher/releases) 找到您要安装的 Rancher 版本 v2.x.x release。 不要下载标记为 `rc` 或者 `Pre-release` 的版本，因为它们对于生产环境而言不稳定。
 
-2. From the release's **Assets** section (pictured above), download the following files, which are required to install Rancher in an air gap environment:
+2. 从 release's **Assets** 部分 (如上图所示), 下载以下文件，这些文件是在离线环境下安装 Rancher 所必需的:
 
 | Release File             | Description                                                                                                                          |
 | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
@@ -38,13 +38,13 @@ These steps expect you to use a Linux workstation that has internet access, acce
 | `rancher-save-images.sh` | This script pulls all the images in the `rancher-images.txt` from Docker Hub and saves all of the images as `rancher-images.tar.gz`. |
 | `rancher-load-images.sh` | This script loads images from the `rancher-images.tar.gz` file and pushes them to your private registry.                             |
 
-#### B. Collect all the required images (For Kubernetes Installs using Rancher Generated Self-Signed Certificate)
+#### B. 收集所有必需的镜像 (对于使用Rancher生成的自签名证书进行的Kubernetes安装)
 
-In a Kubernetes Install, if you elect to use the Rancher default self-signed TLS certificates, you must add the [`cert-manager`](https://hub.helm.sh/charts/jetstack/cert-manager) image to `rancher-images.txt` as well. You skip this step if you are using you using your own certificates.
+在 Kubernetes 安装中，如果您选择使用 Rancher 默认的自签名TLS证书， 则 `rancher-images.txt` 还必须添加 [`cert-manager`](https://hub.helm.sh/charts/jetstack/cert-manager) 镜像。如果您使用自己的证书，则可以跳过此步骤。
 
-1.  Fetch the latest `cert-manager` Helm chart and parse the template for image details:
+1.  下载最新的 `cert-manager` 并解析模板以获取镜像详细信息：
 
-    > **Note:** Recent changes to cert-manager require an upgrade. If you are upgrading Rancher and using a version of cert-manager older than v0.9.1, please see our [upgrade documentation](/docs/installation/options/upgrading-cert-manager/).
+    > **注意:** 最近对证书管理器的更改需要升级。如果要升级 Rancher 并使用 v0.9.1 之前的 cert-manager 版本，请参阅 [upgrade documentation](/docs/installation/options/upgrading-cert-manager/).
 
     ```plain
     helm repo add jetstack https://charts.jetstack.io
@@ -53,71 +53,71 @@ In a Kubernetes Install, if you elect to use the Rancher default self-signed TLS
     helm template ./cert-manager-<version>.tgz | grep -oP '(?<=image: ").*(?=")' >> ./rancher-images.txt
     ```
 
-2.  Sort and unique the images list to remove any overlap between the sources:
+2.  对镜像列表进行排序和去重, 用来消除数据源的重复:
 
     ```plain
     sort -u rancher-images.txt -o rancher-images.txt
     ```
 
-#### C. Save the images to your workstation
+#### C. 将镜像保存在您的主机上
 
-1. Make `rancher-save-images.sh` an executable:
+1. 制作 `rancher-save-images.sh` 可执行文件:
 
    ```
    chmod +x rancher-save-images.sh
    ```
 
-1. Run `rancher-save-images.sh` with the `rancher-images.txt` image list to create a tarball of all the required images:
+1. 运行 `rancher-save-images.sh` 与 `rancher-images.txt` 镜像列表创建所需的所有镜像的压缩包:
    ```plain
    ./rancher-save-images.sh --image-list ./rancher-images.txt
    ```
-   **Result:** Docker begins pulling the images used for an air gap install. Be patient. This process takes a few minutes. When the process completes, your current directory will output a tarball named `rancher-images.tar.gz`. Check that the output is in the directory.
+   **结果:** Docker开始拉取用于离线安装 Rancher 的所有镜像。 耐心点。此过程需要几分钟。该过程完成后，当前目录将输出名为的tarball rancher-images.tar.gz。检查输出是否在目录中。
 
-#### D. Populate the private registry
+#### D. 推送镜像到您的私有镜像仓库
 
-Move the images in the `rancher-images.tar.gz` to your private registry using the scripts to load the images. The `rancher-images.txt` is expected to be on the workstation in the same directory that you are running the `rancher-load-images.sh` script.
+使用脚本将 `rancher-images.tar.gz` 中的镜像推送到您的私有镜像仓库，保证 `rancher-images.txt` 和 `rancher-load-images.sh` 在同一工作目录。
 
-1.  Log into your private registry if required:
+1.  登录到您的私有镜像仓库:
     ```plain
     docker login <REGISTRY.YOURDOMAIN.COM:PORT>
     ```
-1.  Make `rancher-load-images.sh` an executable:
+1.  制作 `rancher-load-images.sh` 可执行文件：
 
     ```
     chmod +x rancher-load-images.sh
     ```
 
-1.  Use `rancher-load-images.sh` to extract, tag and push `rancher-images.txt` and `rancher-images.tar.gz` to your private registry:
+1.  使用 `rancher-load-images.sh` 自动执行 extract， tag, push `rancher-images.txt` 和 `rancher-images.tar.gz` 到您的私有镜像仓库：
     `plain ./rancher-load-images.sh --image-list ./rancher-images.txt --registry <REGISTRY.YOURDOMAIN.COM:PORT>`
      /tab 
      tab "Linux and Windows Clusters" 
 
 _Available as of v2.3.0_
 
-For Rancher servers that will provision Linux and Windows clusters, there are distinctive steps to populate your private registry for the Windows images and the Linux images. Since a Windows cluster is a mix of Linux and Windows nodes, the Linux images pushed into the private registry are manifests.
+对与同时支持 Linux 和 Windows 集群的 Rancher servers，会有不同的步骤来为私有镜像仓库填充 Windows 镜像和 Linux 镜像的. 由于 Windows 群集是Linux 和 Windows混合的节点，所以 Linux 镜像只是一个推送到私有Registry的清单。
 
 #### Windows Steps
 
-The Windows images need to be collected and pushed from a Windows server workstation.
+需要从 Windows server 工作站收集并推送 Windows 镜像。
 
-A. Find the required assets for your Rancher version <br />
-B. Save the images to your Windows Server workstation <br />
-C. Prepare the Docker daemon <br />
-D. Populate the private registry
+A. 查找您需要的 Rancher 版本 <br />
+B. 将镜像保存到 Windows Server 工作站 <br />
+C. 准备 Docker 守护程序 <br />
+D. 填充私有镜像仓库
 
- accordion label="Collecting and Populating Windows Images into the Private Registry"
+ accordion label="将 Windows 镜像填充到私有镜像仓库"
 
-#### Prerequisites
+#### 先决条件
 
-These steps expect you to use a Windows Server 1809 workstation that has internet access, access to your private registry, and at least 50 GB of disk space.
+执行这些步骤的前提需要您使用 Windows Server 1809 工作站， 有权访问到您的私有镜像仓库以及至少50 GB的磁盘空间。
 
-The workstation must have Docker 18.02+ in order to support manifests, which are required when provisioning Windows clusters.
+工作站必须安装 Docker 18.02+ 才能支持清单，在配置 Windows 群集时需要这些清单。
 
-#### A. Find the required assets for your Rancher version
+#### A. 查找您需要的 Rancher 版本
 
-1. Browse to our [releases page](https://github.com/rancher/rancher/releases) and find the Rancher v2.x.x release that you want to install. Don't download releases marked `rc` or `Pre-release`, as they are not stable for production environments.
+1. 访问 [releases page](https://github.com/rancher/rancher/releases) 找到您要安装的 Rancher 版本 v2.x.x release。不要下载标记为 `rc` 或者 `Pre-release` 的版本，因为它们对于生产环境而言不稳定。
 
-2. From the release's "Assets" section, download the following files:
+2. 从 release's **Assets** 部分 (如上图所示)，下载以下文件：
 
    | Release File                 | Description                                                                                                                                          |
    | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -125,21 +125,21 @@ The workstation must have Docker 18.02+ in order to support manifests, which are
    | `rancher-save-images.ps1`    | This script pulls all the images in the `rancher-windows-images.txt` from Docker Hub and saves all of the images as `rancher-windows-images.tar.gz`. |
    | `rancher-load-images.ps1`    | This script loads the images from the `rancher-windows-images.tar.gz` file and pushes them to your private registry.                                 |
 
-#### B. Save the images to your Windows Server workstation
+#### B. 将镜像保存到 Windows Server 工作站
 
-1. Using `powershell`, go to the directory that has the files that were downloaded in the previous step.
+1. 使用 `powershell`，跳转到包含在上一步中下载的文件的目录。
 
-1. Run `rancher-save-images.ps1` to create a tarball of all the required images:
+1. 运行 `rancher-save-images.ps1` 以创建所有必需镜像的压缩包：
 
    ```plain
    ./rancher-save-images.ps1
    ```
 
-   **Step Result:** Docker begins pulling the images used for an air gap install. Be patient. This process takes a few minutes. When the process completes, your current directory will output a tarball named `rancher-windows-images.tar.gz`. Check that the output is in the directory.
+   **结果:** Docker开始拉取用于离线安装 Rancher 的所有镜像。耐心点。此过程需要几分钟。该过程完成后，当前目录将输出名为的tarball rancher-windows-images.tar.gz。检查输出是否在目录中。
 
 #### C. Prepare the Docker daemon
 
-1. Append your private registry address to the `allow-nondistributable-artifacts` config field in the Docker daemon (`C:\ProgramData\Docker\config\daemon.json`). Since the base image of Windows images are maintained by the `mcr.microsoft.com` registry, this step is required as the layers in the Microsoft registry are missing from Docker Hub and need to be pulled into the private registry.
+1. 将您的私有镜像仓库地址附加到Docker 守护程序 (`C:\ProgramData\Docker\config\daemon.json`) 中的 `allow-nondistributable-artifacts` config字段。由于Windows镜像的基本镜像由 mcr.microsoft.com registry 维护，因此此步骤是必需的，因为 Docker Hub 中缺少 Microsoft registry 中的各层，因此需要将其拉到私有镜像仓库中。
 
    ```json
    {
@@ -152,17 +152,17 @@ The workstation must have Docker 18.02+ in order to support manifests, which are
    }
    ```
 
-#### D. Populate the private registry
+#### D. 填充私人镜像仓库
 
-Move the images in the `rancher-windows-images.tar.gz` to your private registry using the scripts to load the images. The `rancher-windows-images.txt` is expected to be on the workstation in the same directory that you are running the `rancher-load-images.ps1` script.
+使用脚本将 `rancher-windows-images.tar.gz` 中的镜像移动到您的私有镜像仓库，保证 `rancher-windows-images.txt` 和 `rancher-load-images.sh` 在同一工作目录。
 
-1. Using `powershell`, log into your private registry if required:
+1. 使用 `powershell`，如果需要，登录到您的私有镜像仓库：
 
    ```plain
    docker login <REGISTRY.YOURDOMAIN.COM:PORT>
    ```
 
-1. Using `powershell`, use `rancher-load-images.ps1` to extract, tag and push the images from `rancher-images.tar.gz` to your private registry:
+1. 使用 `powershell`，`rancher-load-images.ps1` 自动执行 extract，tag，push 从 `rancher-images.tar.gz` 中提取镜像到您的私有镜像仓库：
 
    ```plain
    ./rancher-load-images.ps1 --registry <REGISTRY.YOURDOMAIN.COM:PORT>
@@ -172,28 +172,28 @@ Move the images in the `rancher-windows-images.tar.gz` to your private registry 
 
 #### Linux Steps
 
-The Linux images needs to be collected and pushed from a Linux host, but _must be done after_ populating the Windows images into the private registry. These step are different from the Linux only steps as the Linux images that are pushed will actually manifests that support Windows and Linux images.
+需要从 Linux 主机收集并推送 Linux 镜像，必须在将 Windows 镜像填充到私有镜像仓库之后进行。需要执行的步骤不同于仅在 Linux 环境下部署 Rancher,因为需要推送的 Linux 镜像既支持 Linux 又支持 Windows
 
-A. Find the required assets for your Rancher version <br />
-B. Collect all the required images <br />
-C. Save the images to your Linux workstation <br />
-D. Populate the private registry
+A. 查找您需要的 Rancher 版本 <br />
+B. 收集所有必需的镜像 <br />
+C. 将镜像保存在您的主机上 <br />
+D. 推送镜像到您的私有镜像仓库
 
- accordion label="Collecting and Populating Linux Images into the Private Registry" 
+ accordion label="将 Linux 镜像收集并填充到私有镜像仓库" 
 
-#### Prerequisites
+#### 先决条件
 
-You must populate the private registry with the Windows images before populating the private registry with Linux images. If you have already populated the registry with Linux images, you will need to follow these instructions again as they will publish manifests that support Windows and Linux images.
+在使用 Linux 镜像填充私有镜像仓库之前，必须先用 Windows 镜像填充私有镜像仓库。如果您已经用 Linux 镜像填充了私有镜像仓库，您需要遵循一下说明，因为它们将发布支持 Windows 和 Linux 镜像的清单
 
-These steps expect you to use a Linux workstation that has internet access, access to your private registry, and at least 20 GB of disk space.
+要求您的 Linux 工作站具有Internet访问权限，可以访问您的私有镜像仓库以及至少20 GB磁盘空间。
 
-The workstation must have Docker 18.02+ in order to support manifests, which are required when provisioning Windows clusters.
+工作站必须安装 Docker 18.02+ 才能支持清单，在配置 Windows 群集时需要这些清单。
 
-#### A. Find the required assets for your Rancher version
+#### A. 查找您需要的 Rancher 版本
 
-1. Browse to our [releases page](https://github.com/rancher/rancher/releases) and find the Rancher v2.x.x release that you want to install. Don't download releases marked `rc` or `Pre-release`, as they are not stable for production environments.
+1. 访问 [releases page](https://github.com/rancher/rancher/releases) 找到您要安装的 Rancher 版本 v2.x.x release。不要下载标记为 `rc` 或者 `Pre-release` 的版本, 因为它们对于生产环境而言不稳定。
 
-2. From the release's **Assets** section (pictured above), download the following files, which are required to install Rancher in an air gap environment:
+2. 从 release's **Assets** 部分 (如上图所示)，下载以下文件，这些文件是在离线环境下安装 Rancher 所必需的：
 
    | Release File                 | Description                                                                                                                          |
    | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
@@ -202,13 +202,13 @@ The workstation must have Docker 18.02+ in order to support manifests, which are
    | `rancher-save-images.sh`     | This script pulls all the images in the `rancher-images.txt` from Docker Hub and saves all of the images as `rancher-images.tar.gz`. |
    | `rancher-load-images.sh`     | This script loads images from the `rancher-images.tar.gz` file and pushes them to your private registry.                             |
 
-#### B. Collect all the required images
+#### B. 收集所有必需的镜像
 
-1. **For Kubernetes Installs using Rancher Generated Self-Signed Certificate:** In a Kubernetes Install, if you elect to use the Rancher default self-signed TLS certificates, you must add the [`cert-manager`](https://hub.helm.sh/charts/jetstack/cert-manager) image to `rancher-images.txt` as well. You skip this step if you are using you using your own certificates.
+1. **对于使用Rancher生成的自签名证书进行的Kubernetes安装:** 在 Kubernetes 安装中，如果您选择使用 Rancher 默认的自签名TLS证书， 则 `rancher-images.txt` 还必须添加 [`cert-manager`](https://hub.helm.sh/charts/jetstack/cert-manager) 镜像。如果您使用自己的证书，则可以跳过此步骤。
 
-   1. Fetch the latest `cert-manager` Helm chart and parse the template for image details:
+   1. 下载最新的 `cert-manager` 并解析模板以获取镜像详细信息：
 
-      > **Note:** Recent changes to cert-manager require an upgrade. If you are upgrading Rancher and using a version of cert-manager older than v0.9.1, please see our [upgrade documentation](/docs/installation/options/upgrading-cert-manager/).
+      > **Note:** Recent changes to cert-manager require an upgrade. If you are upgrading Rancher and using a version of cert-manager older than v0.9.1, please see our [upgrade documentation](/docs/installation/options/upgrading-cert-manager/)。
 
       ```plain
       helm repo add jetstack https://charts.jetstack.io
@@ -217,45 +217,45 @@ The workstation must have Docker 18.02+ in order to support manifests, which are
       helm template ./cert-manager-<version>.tgz | grep -oP '(?<=image: ").*(?=")' >> ./rancher-images.txt
       ```
 
-   2. Sort and unique the images list to remove any overlap between the sources:
+   2. 对镜像列表进行排序和去重，用来消除数据源的重复：
 
       ```plain
       sort -u rancher-images.txt -o rancher-images.txt
       ```
 
-#### C. Save the images to your workstation
+#### C. 将镜像保存在您的主机上
 
-1. Make `rancher-save-images.sh` an executable:
+1. 制作 `rancher-save-images.sh` 可执行文件：
 
    ```
    chmod +x rancher-save-images.sh
    ```
 
-1. Run `rancher-save-images.sh` with the `rancher-images.txt` image list to create a tarball of all the required images:
+1. 运行 `rancher-save-images.sh` 与 `rancher-images.txt` 镜像列表创建所需的所有镜像的压缩包：
 
    ```plain
    ./rancher-save-images.sh --image-list ./rancher-images.txt
    ```
 
-   **Step Result:** Docker begins pulling the images used for an air gap install. Be patient. This process takes a few minutes. When the process completes, your current directory will output a tarball named `rancher-images.tar.gz`. Check that the output is in the directory.
+   **结果:** Docker开始拉取用于离线安装 Rancher 的所有镜像。耐心点。此过程需要几分钟。该过程完成后，当前目录将输出名为的tarball rancher-images.tar.gz。检查输出是否在目录中。
 
-#### D. Populate the private registry
+#### D. 推送镜像到您的私有镜像仓库
 
-Move the images in the `rancher-images.tar.gz` to your private registry using the `rancher-load-images.sh script` to load the images. The `rancher-images.txt` / `rancher-windows-images.txt` image list is expected to be on the workstation in the same directory that you are running the `rancher-load-images.sh` script.
+使用脚本将 `rancher-images.tar.gz` 中的镜像推送到您的私有镜像仓库，保证 `rancher-images.txt` 和 `rancher-load-images.sh` 在同一工作目录。
 
-1. Log into your private registry if required:
+1. 登录到您的私有镜像仓库：
 
    ```plain
    docker login <REGISTRY.YOURDOMAIN.COM:PORT>
    ```
 
-1. Make `rancher-load-images.sh` an executable:
+1. 制作 `rancher-load-images.sh` 可执行文件：
 
    ```
    chmod +x rancher-load-images.sh
    ```
 
-1. Use `rancher-load-images.sh` to extract, tag and push the images from `rancher-images.tar.gz` to your private registry:
+1. 使用 `rancher-load-images.sh` 自动执行 extract, tag, push `rancher-images.txt` 到您的私有镜像仓库：
 
    ```plain
    ./rancher-load-images.sh --image-list ./rancher-images.txt \
