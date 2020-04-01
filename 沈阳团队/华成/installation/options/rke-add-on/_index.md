@@ -1,14 +1,14 @@
 ---
-title: RKE Add-On Install
+标题: RKE附加安装
 ---
 
-> **Important: RKE add-on install is only supported up to Rancher v2.0.8**
+> #### **重要说明: Rancher v2.0.8之前仅支持RKE附加安装**
 >
-> Please use the Rancher helm chart to install Rancher on a Kubernetes cluster. For details, see the [Kubernetes Install - Installation Outline](/docs/installation/k8s-install/#installation-outline).
+> 请使用Rancher helm chart将Rancher安装在Kubernetes集群上。 有关详细信息，请参见 [Kubernetes安装-安装概述](/docs/installation/k8s-install/#installation-outline).
 >
-> If you are currently using the RKE add-on install method, see [Migrating from a Kubernetes Install with an RKE Add-on](/docs/upgrades/upgrades/migrating-from-rke-add-on/) for details on how to move to using the helm chart.
+> 如果您当前正在使用RKE附加组件安装方法, 请参阅 [使用RKE附加组件从Kubernetes安装迁移](/docs/upgrades/upgrades/migrating-from-rke-add-on/) 以获取有关如何使用helm chart的详细信息。
 
-- [Kubernetes Installation with External Load Balancer (TCP/Layer 4)](/docs/installation/options/rke-add-on/layer-4-lb)
-- [Kubernetes Installation with External Load Balancer (HTTPS/Layer 7)](/docs/installation/options/rke-add-on/layer-7-lb)
-- [HTTP Proxy Configuration for a Kubernetes installation](/docs/installation/options/rke-add-on/proxy/)
-- [Troubleshooting RKE Add-on Installs](/docs/installation/options/rke-add-on/troubleshooting/)
+- [使用外部负载平衡器安装Kubernetes（TCP /第4层）)](/docs/installation/options/rke-add-on/layer-4-lb)
+- [使用外部负载平衡器安装Kubernetes（HTTPS /第7层）](/docs/installation/options/rke-add-on/layer-7-lb)
+- [Kubernetes安装的HTTP代理配置](/docs/installation/options/rke-add-on/proxy/)
+- [对RKE附加安装进行故障排除](/docs/installation/options/rke-add-on/troubleshooting/)

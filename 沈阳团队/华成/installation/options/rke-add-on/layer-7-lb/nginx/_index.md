@@ -1,26 +1,26 @@
 ---
-title: NGINX Configuration
+标题: NGINX配置
 ---
 
-> #### **Important: RKE add-on install is only supported up to Rancher v2.0.8**
+> #### **重要说明: Rancher v2.0.8之前仅支持RKE附加安装**
 >
-> Please use the Rancher Helm chart to install Rancher on a Kubernetes cluster. For details, see the [Kubernetes Install - Installation Outline](/docs/installation/k8s-install/#installation-outline).
+> 请使用Rancher Helm chart将Rancher安装在Kubernetes集群上。有关详细信息，请参见[Kubernetes安装-安装概述](/docs/installation/k8s-install/#installation-outline)。
 >
-> If you are currently using the RKE add-on install method, see [Migrating from a Kubernetes Install with an RKE Add-on](/docs/upgrades/upgrades/migrating-from-rke-add-on/) for details on how to move to using the helm chart.
+> 如果您当前正在使用RKE附加组件安装方法，请参阅[使用RKE附加组件从Kubernetes安装迁移](/docs/upgrades/upgrades/migrating-from-rke-add-on/)以获取有关如何使用Helm chart的详细信息。
 
-### Install NGINX
+### 安装 NGINX
 
-Start by installing NGINX on your load balancer host. NGINX has packages available for all known operating systems.
+首先在负载均衡器主机上安装NGINX。NGINX具有可用于所有已知操作系统的软件包。
 
-For help installing NGINX, refer to their [install documentation](https://www.nginx.com/resources/wiki/start/topics/tutorials/install/).
+有关安装NGINX的帮助，请参阅其 [安装文档](https://www.nginx.com/resources/wiki/start/topics/tutorials/install/)。
 
-### Create NGINX Configuration
+### 创建NGINX配置
 
-See [Example NGINX config](/docs/installation/options/chart-options/#example-nginx-config).
+请参见 [示例NGINX config](/docs/installation/options/chart-options/#example-nginx-config)。
 
-### Run NGINX
+### 运行NGINX
 
-- Reload or restart NGINX
+- 重新加载或重启NGINX
 
   ```
   # Reload NGINX
@@ -32,6 +32,6 @@ See [Example NGINX config](/docs/installation/options/chart-options/#example-ngi
   systemctl restart nginx
   ```
 
-### Browse to Rancher UI
+### 浏览Rancher UI
 
-You should now be to able to browse to `https://FQDN`.
+您现在应该能够浏览到 `https://FQDN`。

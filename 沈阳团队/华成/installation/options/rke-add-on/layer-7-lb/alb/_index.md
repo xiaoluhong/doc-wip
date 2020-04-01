@@ -1,101 +1,101 @@
 ---
-title: Amazon ALB Configuration
+标题: Amazon ALB配置
 ---
 
-> #### **Important: RKE add-on install is only supported up to Rancher v2.0.8**
+> #### **重要说明: Rancher v2.0.8之前仅支持RKE附加安装**
 >
-> Please use the Rancher helm chart to install Rancher on a Kubernetes cluster. For details, see the [Kubernetes Install - Installation Outline](/docs/installation/k8s-install/#installation-outline).
+> 请使用Rancher Helm chart将Rancher安装在Kubernetes集群上。有关详细信息，请参见[Kubernetes安装-安装概述](/docs/installation/k8s-install/#installation-outline)。
 >
-> If you are currently using the RKE add-on install method, see [Migrating from a Kubernetes Install with an RKE Add-on](/docs/upgrades/upgrades/migrating-from-rke-add-on/) for details on how to move to using the helm chart.
+> 如果您当前正在使用RKE附加组件安装方法, 请参阅[使用RKE附加组件从Kubernetes安装迁移](/docs/upgrades/upgrades/migrating-from-rke-add-on/)以获取有关如何使用Helm chart的详细信息。
 
-### Objectives
+### 目标
 
-Configuring an Amazon ALB is a multistage process. We've broken it down into multiple tasks so that it's easy to follow.
+配置Amazon ALB是一个多阶段过程。我们将其分解为多个任务，因此更易于理解。
 
-1. [Create Target Group](#create-target-group)
+1. [创建目标组](#create-target-group)
 
-   Begin by creating one target group for the http protocol. You'll add your Linux nodes to this group.
+   首先为http协议创建一个目标组。您将Linux节点添加到该组中。
 
-2. [Register Targets](#register-targets)
+2. [注册目标](#register-targets)
 
-   Add your Linux nodes to the target group.
+   将Linux节点添加到目标组。
 
-3. [Create Your ALB](#create-your-alb)
+3. [创建您的ALB](#create-your-alb)
 
-   Use Amazon's Wizard to create an Application Load Balancer. As part of this process, you'll add the target groups you created in **1. Create Target Groups**.
+   使用Amazon的Wizard创建应用程序负载平衡器。作为此过程的一部分，您将添加在**1. 创建目标组**中创建的目标组。
 
-### Create Target Group
+### 创建目标组
 
-Your first ALB configuration step is to create one target group for HTTP.
+您的第一个ALB配置步骤是为HTTP创建一个目标组。
 
-Log into the [Amazon AWS Console](https://console.aws.amazon.com/ec2/) to get started.
+登录到[Amazon AWS Console](https://console.aws.amazon.com/ec2/)控制台开始使用。
 
-The document below will guide you through this process. Use the data in the tables below to complete the procedure.
+以下文档将指导您完成此过程。使用下表中的数据来完成该过程。
 
-[Amazon Documentation: Create a Target Group](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-target-group.html)
+[Amazon文档：创建目标组](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-target-group.html)
 
-#### Target Group (HTTP)
+#### 目标组 (HTTP)
 
-| Option                      | Setting           |
-| --------------------------- | ----------------- |
-| Target Group Name           | `rancher-http-80` |
-| Protocol                    | `HTTP`            |
-| Port                        | `80`              |
-| Target type                 | `instance`        |
-| VPC                         | Choose your VPC   |
-| Protocol<br/>(Health Check) | `HTTP`            |
-| Path<br/>(Health Check)     | `/healthz`        |
+| 选项               | 设置              |
+| ----------------- | ----------------- |
+| 目标组名称          | `rancher-http-80` |
+| 协议               | `HTTP`            |
+| 端口               | `80`              |
+| 目标类型            | `instance`        |
+| VPC                | 选择您的VPC        |
+| 协议<br/>(健康检查)  | `HTTP`            |
+| 路径<br/>(健康检查)  | `/healthz`        |
 
-### Register Targets
+### 注册目标
 
-Next, add your Linux nodes to your target group.
+接下来，将Linux节点添加到目标组。
 
-[Amazon Documentation: Register Targets with Your Target Group](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/target-group-register-targets.html)
+[Amazon文档：向您的目标组注册目标](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/target-group-register-targets.html)
 
-#### Create Your ALB
+#### 创建您的ALB
 
-Use Amazon's Wizard to create an Application Load Balancer. As part of this process, you'll add the target group you created in [Create Target Group](#create-target-group).
+使用Amazon的Wizard创建应用程序负载平衡器。作为此过程的一部分，您将添加在[创建目标组](#create-target-group)中创建的目标组。
 
-1.  From your web browser, navigate to the [Amazon EC2 Console](https://console.aws.amazon.com/ec2/).
+1.  在您的Web浏览器中，访问[Amazon EC2 Console](https://console.aws.amazon.com/ec2/)。
 
-2.  From the navigation pane, choose **LOAD BALANCING** > **Load Balancers**.
+2.  在页面窗口中, 选择 **LOAD BALANCING** > **负载均衡器**.
 
-3.  Click **Create Load Balancer**.
+3.  点击 **创建负载均衡器**.
 
-4.  Choose **Application Load Balancer**.
+4.  选择 **应用程序负载均衡器**.
 
-5.  Complete the **Step 1: Configure Load Balancer** form.
+5.  完成 **步骤1：配置负载均衡器** 表单。
 
-    - **Basic Configuration**
+    - **基本配置**
 
-      - Name: `rancher-http`
-      - Scheme: `internet-facing`
-      - IP address type: `ipv4`
+      - 名称: `rancher-http`
+      - 模式: `面向 internet`
+      - IP地址类型: `ipv4`
 
-    - **Listeners**
+    - **侦听器**
 
-          	Add the **Load Balancer Protocols** and **Load Balancer Ports** below.
+          	在下面添加 **负载均衡器协议** 和 **负载均衡器端口** 。
           	- `HTTP`: `80`
           	- `HTTPS`: `443`
 
-    - **Availability Zones**
+    - **可用区**
 
-      - Select Your **VPC** and **Availability Zones**.
+      - 选择您的 **VPC** 和 **可用区**。
 
-6.  Complete the **Step 2: Configure Security Settings** form.
+6.  完成 **步骤2：配置安全设置** 表单。
 
-    Configure the certificate you want to use for SSL termination.
+    配置要用于SSL termination的证书。
 
-7.  Complete the **Step 3: Configure Security Groups** form.
+7.  完成 **步骤3：配置安全组** 表单。
 
-8.  Complete the **Step 4: Configure Routing** form.
+8.  完成 **步骤4：配置路由** 表单。
 
-    - From the **Target Group** drop-down, choose **Existing target group**.
+    - 从 **目标组** 下拉列表中，选择 **现有目标组**。
 
-    - Add target group `rancher-http-80`.
+    - 添加目标组 `rancher-http-80`.
 
-9.  Complete **Step 5: Register Targets**. Since you registered your targets earlier, all you have to do it click **Next: Review**.
+9.  完成 **步骤5：注册目标**。 由于您早先注册了目标，因此您只需单击 **下一步: 审核**。
 
-10. Complete **Step 6: Review**. Look over the load balancer details and click **Create** when you're satisfied.
+10. 完成 **步骤6：检查**。 查看负载均衡器的详细信息，并在满意时单击 **创建**。
 
-11. After AWS creates the ALB, click **Close**.
+11. AWS创建ALB之后，单击 **关闭**。
