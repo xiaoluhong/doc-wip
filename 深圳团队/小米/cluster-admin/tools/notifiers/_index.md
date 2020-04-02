@@ -1,86 +1,85 @@
 ---
-title: Notifiers
+title: 通知
 ---
 
-Notifiers are services that inform you of alert events. You can configure notifiers to send alert notifications to staff best suited to take corrective action.
+通知服务是通知您告警事件的服务。您可以配置通知服务，以将告警通知发送给最适合采取措施的人员。
 
-Notifiers are configured at the cluster level. This model ensures that only cluster owners need to configure notifiers, leaving project owners to simply configure alerts in the scope of their projects. You don't need to dispense privileges like SMTP server access or cloud account access.
+通知程序是在集群级别配置的。可确保仅集群所有者需要配置通知程序，而项目所有者则可以仅在其项目范围内使用已经定义好的通知作为告警接收者。无需考虑SMTP服务器访问或云帐户访问权限等问题。
 
-Rancher integrates with a variety of popular IT services, including:
+Rancher集成了多种流行的通知服务，包括：
 
-- **Slack**: Send alert notifications to your Slack channels.
-- **Email**: Choose email recipients for alert notifications.
-- **PagerDuty**: Route notifications to staff by phone, SMS, or personal email.
-- **WebHooks**: Update a webpage with alert notifications.
-- **WeChat**: Send alert notifications to your Enterprise WeChat contacts.
+- **Slack**: 将告警通知发送到您的Slack频道。
+- **Email**: 选择电子邮件收件人以接收告警通知。
+- **PagerDuty**: 通过电话，短信或个人电子邮件将告警发送给员工。
+- **WebHooks**: 将告警发送到Webhook服务器。
+- **WeChat**: 向您的企业微信联系人发送告警通知。
 
-### Adding Notifiers
+### 添加通知接收者
 
-Set up a notifier so that you can begin configuring and sending alerts.
+设置通知接收者，以便您可以开始配置和发送告警。
 
-1. From the **Global View**, open the cluster that you want to add a notifier.
+1. 在**全局视图**中，打开要添加通知的集群。
 
-1. From the main menu, select **Tools > Notifiers**. Then click **Add Notifier**.
+1. 在主菜单中，选择**工具>通知**。然后点击**添加通知**。
 
-1. Select the service you want to use as your notifier, and then fill out the form.
+1. 选择要用作接收者的服务，然后填入所需配置。
     accordion id="slack" label="Slack" 
-1. Enter a **Name** for the notifier.
-1. From Slack, create a webhook. For instructions, see the [Slack Documentation](https://get.slack.help/hc/en-us/articles/115005265063-Incoming-WebHooks-for-Slack).
-1. From Rancher, enter your Slack webhook **URL**.
-1. Enter the name of the channel that you want to send alert notifications in the following format: `#<channelname>`.
+1. 输入通知接收者的**名称**
+1. From Slack，创建一个Webhook。有关说明，请参见 [Slack文档](https://get.slack.help/hc/en-us/articles/115005265063-Incoming-WebHooks-for-Slack).
+1. 在Rancher中，输入您的Slack Webhook **URL**。
+1. 以以下格式输入要发送告警的频道名称: `#<channelname>`.
 
-   Both public and private channels are supported.
+   支持公有和私有频道。
 
-1. Click **Test**. If the test is successful, the Slack channel you're configuring for the notifier outputs `Slack setting validated`.
+1. 点击**测试**。如果测试成功，则您配置的Slack频道将收到 `Slack setting validated`。
     /accordion 
     accordion id="email" label="Email" 
-1. Enter a **Name** for the notifier.
-1. In the **Sender** field, enter an email address available on your mail server that you want to send the notification.
-1. In the **Host** field, enter the IP address or hostname for your SMTP server. Example: `smtp.email.com`
-1. In the **Port** field, enter the port used for email. Typically, TLS uses `587` and SSL uses `465`. If you're using TLS, make sure **Use TLS** is selected.
-1. Enter a **Username** and **Password** that authenticate with the SMTP server.
-1. In the **Default Recipient** field, enter the email address that you want to receive the notification.
-1. Click **Test**. If the test is successful, Rancher prints `settings validated` and you receive a test notification email.
+1. 输入通知接收者的**名称**
+1. 在**发件人**字段中，输入要发送通知的邮件服务器上可用的电子邮件地址。
+1. 在**主机**字段中，输入SMTP服务器的IP地址或主机名。示例： `smtp.email.com`
+1. 在**端口**字段中，输入用于电子邮件服务的端口。通常，TLS使用`587` ，而SSL使用`465`。如果您使用的是TLS，请确保勾选**使用TLS**。
+1. 输入通过SMTP服务器进行身份验证的**用户名**和**密码**。
+1. 在**默认收件人**字段中，输入要接收通知的电子邮件地址。
+1. 单击**测试**。如果测试成功，Rancher将打印 `settings validated`，并且您会收到测试通知电子邮件。
     /accordion 
     accordion id="pagerduty" label="PagerDuty" 
-1. Enter a **Name** for the notifier.
-1. From PagerDuty, create a webhook. For instructions, see the [PagerDuty Documentation](https://support.pagerduty.com/docs/webhooks).
-1. From PagerDuty, copy the webhook's **Integration Key**.
-1. From Rancher, enter the key in the **Service Key** field.
-1. Click **Test**. If the test is successful, your PagerDuty endpoint outputs `PageDuty setting validated`.
+1. 输入通知接收者的**名称**
+1. 从PagerDuty创建一个Webhook。有关说明，请参阅 [PagerDuty文档](https://support.pagerduty.com/docs/webhooks).
+1. 从PagerDuty中，复制Webhook的 **Integration Key**.
+1. 在Rancher中，在 **Service Key** 中输入密钥。
+1. 点击 **测试**。如果测试成功，则您的PagerDuty端点将输出 `PageDuty setting validated`.
     /accordion 
     accordion id="webhook" label="WebHook" 
-1. Enter a **Name** for the notifier.
-1. Using the app of your choice, create a webhook URL.
-1. Enter your webhook **URL**.
-1. Click **Test**. If the test is successful, the URL you're configuring as a notifier outputs `Webhook setting validated`.
+1. 输入通知接收者的**名称**
+1. 输入您的Webhook **URL**.
+1. 点击 **测试**。如果测试成功，您配置的Webhook地址将会收到 `Webhook setting validated`.
     /accordion 
     accordion id="WeChat" label="WeChat" 
 
 _Available as of v2.2.0_
 
-1. Enter a **Name** for the notifier.
-1. In the **Corporation ID** field, enter the "EnterpriseID" of your corporation, you could get it from [Profile page](https://work.weixin.qq.com/wework_admin/frame#profile).
-1. From Enterprise WeChat, create an application in the [Application page](https://work.weixin.qq.com/wework_admin/frame#apps), and then enter the "AgentId" and "Secret" of this application to the **Application Agent ID** and **Application Secret** fields.
-1. Select the **Recipient Type** and then enter a corresponding id to **Default Recipient** field, for example, the party id, tag id or user account that you want to receive the notification. You could get contact information from [Contacts page](https://work.weixin.qq.com/wework_admin/frame#contacts).
+1. 输入通知接收者的**名称**
+1. 在 **企业 ID** 字段中，输入您公司的 "EnterpriseID"，您可以在企业微信的 [Profile page](https://work.weixin.qq.com/wework_admin/frame#profile)获取。
+1. 从企业微信中，在[Application page](https://work.weixin.qq.com/wework_admin/frame#apps)创建一个应用程序，然后将应用的 "AgentId" and "Secret" 填入 **应用代理 ID** 和 **应用密钥t** 字段。
+1. 选择 **接收者类型** 然后在 **默认接收者** 字段中输入相应的ID，例如，您要接收通知的参与者ID，标签ID或用户帐户。您可以从 [Contacts page](https://work.weixin.qq.com/wework_admin/frame#contacts)获取联系信息。
     /accordion 
 
-1. _Available as of v2.3.0_ - Select **Enable** for **Send Resolved Alerts** if you wish to notify about resolved alerts.
-1. Click **Add** to complete adding the notifier.
+1. _Available as of v2.3.0_ - 如果希望通知已解决的告警，请勾选**发送已解决的告警**
+1. 点击**添加**以完成添加通知接收者。
 
-**Result:** Your notifier is added to Rancher.
+**结果:** 您的通知接收者已添加到Rancher。
 
-### What's Next?
+### 下一步是什么?
 
-After creating a notifier, set up alerts to receive notifications of Rancher system events.
+创建通知程序接受者后，设置告警以接收Rancher告警事件。
 
-- [Cluster owners](/docs/admin-settings/rbac/cluster-project-roles/#cluster-roles) can set up alerts at the [cluster level](/docs/cluster-admin/tools/alerts/).
-- [Project owners](/docs/admin-settings/rbac/cluster-project-roles/#project-roles) can set up alerts at the [project level](/docs/project-admin/tools/alerts/).
+- [集群所有者](/docs/admin-settings/rbac/cluster-project-roles/#cluster-roles) 可以设置 [集群级别](/docs/cluster-admin/tools/alerts/)的告警。
+- [项目所有者](/docs/admin-settings/rbac/cluster-project-roles/#project-roles) 可以设置 [项目级别](/docs/project-admin/tools/alerts/)的告警。
 
-### Managing Notifiers
+### 管理通知
 
-After you set up notifiers, you can manage them. From the **Global** view, open the cluster that you want to manage your notifiers. Select **Tools > Notifiers**. You can:
+设置通知程序后，您可以对其进行管理。从**全局**视图中，打开要管理通知者的集群。选择**工具>通知程序**。您可以：
 
-- **Edit** their settings that you configured during their initial setup.
-- **Clone** them, to quickly setup slightly different notifiers.
-- **Delete** them when they're no longer necessary.
+- **编辑** 初始配置。
+- **Clone** 通知，快速设置略有不同的通知。
+- **Delete** 不再需要的通知。

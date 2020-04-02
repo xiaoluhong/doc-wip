@@ -1,46 +1,46 @@
 ---
-title: Tools for Logging, Monitoring, and Visibility
+title: 日志，监视和可视化的工具
 ---
 
-Rancher contains a variety of tools that aren't included in Kubernetes to assist in your DevOps operations. Rancher can integrate with external services to help your clusters run more efficiently. Tools are divided into following categories:
+Rancher包含Kubernetes中未包含的各种工具，可帮助您进行DevOps操作。 Rancher可以与外部服务集成，以帮助您的集群更高效地运行。工具分为以下几类：
 
 <!-- TOC -->
 
-- [Notifiers and Alerts](#notifiers-and-alerts)
-- [Logging](#logging)
-- [Monitoring](#monitoring)
+- [通知和告警](#notifiers-and-alerts)
+- [日志](#logging)
+- [监控](#monitoring)
 - [Istio](#istio)
 
 <!-- /TOC -->
 
-### Notifiers and Alerts
+### 通知和告警
 
-Notifiers and alerts are two features that work together to inform you of events in the Rancher system.
+通知程序和告警是两个协同工作的功能，向您通知Rancher系统中的事件。
 
-[Notifiers](/docs/cluster-admin/tools/notifiers) are services that inform you of alert events. You can configure notifiers to send alert notifications to staff best suited to take corrective action. Notifications can be sent with Slack, email, PagerDuty, WeChat, and webhooks.
+[通知](/docs/cluster-admin/tools/notifiers) 是通知您告警事件的服务。您可以配置通知接收者，以将告警通知发送给最适合采取措施的人员。通知可以通过Slack，电子邮件，PagerDuty，微信和Webhooks发送。
 
-[Alerts](/docs/cluster-admin/tools/alerts) are rules that trigger those notifications. Before you can receive alerts, you must configure one or more notifier in Rancher. The scope for alerts can be set at either the cluster or project level.
+[告警](/docs/cluster-admin/tools/alerts) 是触发通知的规则。在接收告警之前，必须在Rancher中配置一个或多个通知接收者。告警范围可以在集群或项目级别设置。
 
-### Logging
+### 日志
 
-Logging is helpful because it allows you to:
+日志服务很有用，因为它使您能够：
 
-- Capture and analyze the state of your cluster
-- Look for trends in your environment
-- Save your logs to a safe location outside of your cluster
-- Stay informed of events like a container crashing, a pod eviction, or a node dying
-- More easily debugg and troubleshoot problems
+- 捕获并分析集群的状态
+- 在您的环境中发现趋势
+- 将日志保存到群集之外的安全位置
+- 随时了解容器崩溃，Pod驱逐或节点死亡等事件
+- 更轻松地调试和排除故障
 
-Rancher can integrate with Elasticsearch, splunk, kafka, syslog, and fluentd.
+Rancher可以与Elasticsearch，Splunk，Kafka，Syslog和Fluentd集成。
 
-For details, refer to the [logging section.](/docs/cluster-admin/tools/logging)
+有关详细信息，请参阅[日志部分](/docs/cluster-admin/tools/logging)
 
-### Monitoring
+### 监控
 
 _Available as of v2.2.0_
 
-Using Rancher, you can monitor the state and processes of your cluster nodes, Kubernetes components, and software deployments through integration with [Prometheus](https://prometheus.io/), a leading open-source monitoring solution. For details, refer to the [monitoring section.](/docs/cluster-admin/tools/monitoring)
+在Rancher，您可以通过领先的开源监控解决方案[Prometheus](https://prometheus.io/)监控群集节点，Kubernetes系统组件和软件部署的状态和过程。有关详细信息，请参阅[监控部分](/docs/cluster-admin/tools/monitoring)
 
 ### Istio
 
-[Istio](https://istio.io/) is an open-source tool that makes it easier for DevOps teams to observe, control, troubleshoot, and secure the traffic within a complex network of microservices. For details on how to enable Istio in Rancher, refer to the [Istio section.](/docs/cluster-admin/tools/istio)
+[Istio](https://istio.io/) 是一种开源工具，可使DevOps团队更轻松地观察，控制，故障排除和在复杂的微服务网络中的保证流量传输。有关如何在Rancher中启用Istio的详细信息，请参阅[Istio部分](/docs/cluster-admin/tools/istio)
