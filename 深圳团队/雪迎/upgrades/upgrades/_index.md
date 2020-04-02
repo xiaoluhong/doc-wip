@@ -5,11 +5,9 @@ title: 升级
 
 本节包含有关如何将Rancher服务器升级到较新版本的信息。无论您是否安装在内网的环境中，升级步骤都主要取决于您是否具有Rancher的单节点安装或高可用性安装。从以下选项中选择：
 
-
 - [升级使用Docker安装的Rancher](/docs/upgrades/upgrades/single-node/)
 - [升级安装在Kubernetes集群上的Rancher](/docs/upgrades/upgrades/ha/)
 
- 
 #### 已知的升级问题
 
 下表列出了升级Rancher时要考虑的一些最值得注意的问题。可以在[GitHub](https://github.com/rancher/rancher/releases)和 [Rancher forums](https://forums.rancher.com/c/announcements/12)的发行说明中找到有关每个Rancher版本的已知问题的更完整列表。

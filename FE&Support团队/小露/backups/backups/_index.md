@@ -1,10 +1,10 @@
 ---
-title: Backups
+title: 备份
 ---
 
-This section contains information about how to create backups of your Rancher data and how to restore them in a disaster scenario.
+本节包含关于如何创建Rancher数据备份以及如何在灾难场景中恢复数据。
 
-- [Docker Install Backups](./single-node-backups/)
-- [Kubernetes Install Backups](./ha-backups/)
+- [Docker单容器安装备份](./single-node-backups/)
+- [HA安装备份](./ha-backups/)
 
-If you are looking to back up your [Rancher launched Kubernetes cluster](/docs/cluster-provisioning/rke-clusters/), please refer [here](/docs/cluster-admin/backing-up-etcd/).
+如果你想备份你的[Rancher自定义Kubernetes集群](/docs/cluster-provisioning/rke-clusters/), 请参考[文档](/docs/cluster-admin/backing-up-etcd/).

@@ -2,27 +2,27 @@
 title: API Tokens
 ---
 
-By default, some cluster-level API tokens are generated with infinite time-to-live (`ttl=0`). In other words, API tokens with `ttl=0` never expire unless you invalidate them. Tokens are not invalidated by changing a password.
+默认情况下，一些集群级别的API Tokens是永久有效(`ttl=0`)，除非删除它们，否则用不失效，并且API Tokens不会因更改用户密码而失效。
 
-You can deactivate API tokens by deleting them or by deactivating the user account.
+您可以通过删除API Tokens或禁用用户来禁用它们。
 
-To delete a token,
+删除 API Tokens:
 
-1. Go to the list of all tokens in the Rancher API view at `https://<Rancher-Server-IP>/v3/tokens`.
+1. 访问Rancher API视图中的所有Tokens列表：`https://<Rancher-Server-IP>/v3/tokens`.
 
-1. Access the token you want to delete by its ID. For example, `https://<Rancher-Server-IP>/v3/tokens/kubectl-shell-user-vqkqt`
+1. 通过要删除的Tokens ID访问，例如：`https://<Rancher-Server-IP>/v3/tokens/kubectl-shell-user-vqkqt`
 
-1. Click **Delete.**
+1. 点击**Delete.**
 
-Here is the complete list of tokens that are generated with `ttl=0`:
+以下是用`ttl=0`生成的Tokens完整列表:
 
-| Token             | Description                                                                            |
-| ----------------- | -------------------------------------------------------------------------------------- |
-| `kubeconfig-*`    | Kubeconfig token                                                                       |
-| `kubectl-shell-*` | Access to `kubectl` shell in the browser                                               |
-| `agent-*`         | Token for agent deployment                                                             |
-| `compose-token-*` | Token for compose                                                                      |
-| `helm-token-*`    | Token for Helm chart deployment                                                        |
-| `*-pipeline*`     | Pipeline token for project                                                             |
-| `telemetry-*`     | Telemetry token                                                                        |
+| Token             | 描述                                                         |
+| ----------------- | ------------------------------------------------------------ |
+| `kubeconfig-*`    | Kubeconfig Token                                             |
+| `kubectl-shell-*` | web shell执行`kubectl`命令Token                          |
+| `agent-*`         | agent部署Token                                               |
+| `compose-token-*` | Token for compose                                            |
+| `helm-token-*`    | Helm chart部署Token                                          |
+| `*-pipeline*`     | 项目Pipeline Token                                           |
+| `telemetry-*`     | Telemetry Token                                              |
 | `drain-node-*`    | Token for drain (we use `kubectl` for drain because there is no native Kubernetes API) |

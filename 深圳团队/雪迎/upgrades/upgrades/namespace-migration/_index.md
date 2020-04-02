@@ -72,7 +72,7 @@ title: 升级到 v2.0.7+ — 命名空间迁移
 
 1.  在修复网络之前，请运行以下两个命令以确保您的节点的状态为 `Ready` ，并且集群组件的状态为 `Healthy`.
 
-    ```
+    ```bash
     kubectl --kubeconfig kube_config_rancher-cluster.yml get nodes
 
     NAME                          STATUS    ROLES                      AGE       VERSION
@@ -104,7 +104,7 @@ title: 升级到 v2.0.7+ — 命名空间迁移
 
     > **提示:** 如果您想为所有已创建的集群启用`networkPolicy`，则可以运行以下命令为`local`集群（即Rancher Server节点）禁用:
     >
-    > ```
+    > ```bash
     >  kubectl --kubeconfig kube_config_rancher-cluster.yml patch cluster local --type merge -p '{"spec": {"enableNetworkPolicy": false},"status": {"appliedSpec": {"enableNetworkPolicy": false }}}'
     > ```
 

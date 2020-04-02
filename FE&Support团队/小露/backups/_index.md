@@ -1,15 +1,13 @@
 ---
-title: Backups and Disaster Recovery
+title: 备份和恢复
 ---
 
-This section is devoted to protecting your data in a disaster scenario.
+本节专门讨论在灾难场景中保护数据，为了保护您不受灾难场景的影响，您应该定期创建备份。
 
-To protect yourself from a disaster scenario, you should create backups on a regular basis.
+- [Rancher Server 备份](/docs/backups/backups)
+- [备份Rancher创建的Kubernetes集群](/docs/cluster-admin/backing-up-etcd/)
 
-- [Rancher Server Backups](/docs/backups/backups)
-- [Backing up Rancher Launched Kubernetes Clusters](/docs/cluster-admin/backing-up-etcd/)
+在灾难场景中，可以通过恢复备份来恢复`etcd`的数据。
 
-In a disaster scenario, you can restore your `etcd` database by restoring a backup.
-
-- [Rancher Server Restorations](/docs/backups/restorations)
-- [Restoring Rancher Launched Kubernetes Clusters](/docs/cluster-admin/restoring-etcd/)
+- [Rancher Server恢复](/docs/backups/restorations)
+- [恢复Rancher创建的Kubernetes集群](/docs/cluster-admin/restoring-etcd/)

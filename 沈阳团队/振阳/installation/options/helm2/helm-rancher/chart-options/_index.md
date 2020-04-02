@@ -48,7 +48,7 @@ title: Chart 选项
 
 开启 [API审计日志](/docs/installation/api-auditing/)。
 
-您可以像收集任何容器日志一样收集此日志。 为Rancher Server群集上的`System`项目启用 [Logging service under Rancher Tools](/docs/tools/logging/)。
+您可以像收集任何容器日志一样收集此日志。 为Rancher Server集群上的`System`项目启用 [Logging service under Rancher Tools](/docs/tools/logging/)。
 
 ```plain
 --set auditLog.level=1
@@ -116,7 +116,7 @@ _v2.0.15, v2.1.10 和 v2.2.4可用_
 
 Rancher需要Internet访问才能使用某些功能 (helm charts)。 使用`proxy`设置您的代理服务器。
 
-在`noProxy`添加例外的IP。确保添加了Service cluster IP(默认: 10.43.0.1/16)和任何worker群集`controlplane`节点。Rancher在此列表中支持CIDR范围表示法。
+在`noProxy`添加例外的IP。确保添加了Service cluster IP(默认: 10.43.0.1/16)和任何worker集群`controlplane`节点。Rancher在此列表中支持CIDR范围表示法。
 
 ```plain
 --set proxy="http://<username>:<password>@<proxy_url>:<proxy_port>/"
@@ -148,7 +148,7 @@ kubectl -n cattle-system create secret generic tls-ca-additional --from-file=ca-
 
 我们建议将负载平衡器配置为4层平衡器，将普通80/tcp和443/tcp转发到Rancher管理集群节点。 集群上的Ingress Controller会将端口80上的http通信重定向到端口443上的https。
 
-您可以在Rancher集群（ingress）外部的L7负载平衡器上终止SSL/TLS。 使用`--set tls=external`选项，将负载均衡器指向所有Rancher群集节点上的端口http 80。 这将在http端口80上公开Rancher接口。 请注意，允许直接连接到Rancher集群的客户端将不会被加密。 如果您选择这样做，我们建议您将网络级别上的直接访问限制为仅用于您的负载均衡器。
+您可以在Rancher集群（ingress）外部的L7负载平衡器上终止SSL/TLS。 使用`--set tls=external`选项，将负载均衡器指向所有Rancher集群节点上的端口http 80。 这将在http端口80上公开Rancher接口。 请注意，允许直接连接到Rancher集群的客户端将不会被加密。 如果您选择这样做，我们建议您将网络级别上的直接访问限制为仅用于您的负载均衡器。
 
 > **注意事项:** 如果您使用的是专用CA签名的证书，请添加`--set privateCA=true`并参阅[添加 TLS Secrets - 使用私有的CA签名证书](/docs/installation/options/helm2/helm-rancher/tls-secrets/#using-a-private-ca-signed-certificate)来完成给Rancher添加CA证书。
 

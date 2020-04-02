@@ -2,7 +2,7 @@
 title: Port 要求
 ---
 
-为了保证运行，Rancher要求在Rancher节点和下游Kubernetes群集节点上开放许多端口。
+为了保证运行，Rancher要求在Rancher节点和下游Kubernetes集群节点上开放许多端口。
 
 ### Rancher 节点
 
@@ -14,7 +14,7 @@ title: Port 要求
 
 ### 下游Kubernetes集群节点
 
-群集节点需要开放的端口会根据群集的启动方式而变化。下面的每个选项卡都列出了需要为不同[集群创建选项](/docs/cluster-provisioning/#cluster-creation-options)开放的端口。
+集群节点需要开放的端口会根据集群的启动方式而变化。下面的每个选项卡都列出了需要为不同[集群创建选项](/docs/cluster-provisioning/#cluster-creation-options)开放的端口。
 
 > **提示：**
 >
@@ -43,7 +43,7 @@ title: Port 要求
 
  tab "托管的集群" 
 
-下表描述了[托管群集](/docs/cluster-provisioning/hosted-kubernetes-clusters)的端口要求。
+下表描述了[托管集群](/docs/cluster-provisioning/hosted-kubernetes-clusters)的端口要求。
 
 {{< ports-imported-hosted >}}
 
@@ -51,7 +51,7 @@ title: Port 要求
 
  tab "导入的集群" 
 
-下表描述了[导入群集](/docs/cluster-provisioning/imported-clusters/)的端口要求。
+下表描述了[导入集群](/docs/cluster-provisioning/imported-clusters/)的端口要求。
 
 {{< ports-imported-hosted >}}
 
@@ -63,7 +63,7 @@ title: Port 要求
 
 #### 常用端口
 
-这些端口通常在Kubernetes节点上打开，无论它是哪种类型的群集。
+这些端口通常在Kubernetes节点上打开，无论它是哪种类型的集群。
 
 | 协议 |    端口     | 描述                                         |
 | :------: | :---------: | --------------------------------------------------- |
@@ -95,7 +95,7 @@ title: Port 要求
 
 #### Rancher AWS EC2 安全组
 
-在使用[AWS EC2 node driver](/docs/cluster-provisioning/rke-clusters/node-pools/ec2/)在Rancher中配置群集节点时，您可以选择让Rancher创建一个名为rancher-nodes的安全组。以下规则将自动添加到此安全组。
+在使用[AWS EC2 node driver](/docs/cluster-provisioning/rke-clusters/node-pools/ec2/)在Rancher中配置集群节点时，您可以选择让Rancher创建一个名为rancher-nodes的安全组。以下规则将自动添加到此安全组。
 
 | 类型            | 协议 | 端口范围  | 源/目的     | 规则类型 |
 | --------------- | :------: | :---------: | ---------------------- | :-------: |

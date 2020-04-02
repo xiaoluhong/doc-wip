@@ -89,7 +89,7 @@ If you elect to use a self-signed certificate to encrypt communication, you must
  accordion id="option-b" label="Option B-Bring Your Own Certificate: Signed by Recognized CA" 
  选项B - 使用机构颁发的证书
 If your cluster is public facing, it's best to use a certificate signed by a recognized CA.
-如果您的群集是面向公众的，则最好使用由公认的CA签名的证书。
+如果您的集群是面向公众的，则最好使用由公认的CA签名的证书。
 
 > **Prerequisites:**
 >

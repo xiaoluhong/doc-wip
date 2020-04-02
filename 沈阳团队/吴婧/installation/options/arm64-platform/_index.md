@@ -15,7 +15,7 @@ _自v2.2.0起可用_
 - 创建自定义集群并添加基于ARM64的节点
   - Kubernetes集群版本必须为1.12或更高
   - CNI网络提供商必须为[Flannel](/docs/faq/networking/cni-providers/#flannel)
-- 导入包含基于ARM64的节点的群集
+- 导入包含基于ARM64的节点的集群
   - Kubernetes集群版本必须为1.12或更高
 
 请参阅[集群选项](/docs/cluster-provisioning/rke-clusters/options/) 如何配置集群选项。

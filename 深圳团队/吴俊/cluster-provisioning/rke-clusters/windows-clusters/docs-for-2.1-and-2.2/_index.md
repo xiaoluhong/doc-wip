@@ -4,15 +4,15 @@ title: v2.1.x和v2.2.x Windows 文档（实验性）
 
 _可用于 v2.1.0 到 v2.1.9 和 v2.2.0 到 v2.2.3_
 
-本节介绍如何在 Rancher v2.1.x 和 v2.2.x版本中配置 Windows 群集. 如果您正在使用 Rancher v2.3.0 或更高版本, 请参阅新的文档 [v2.3.0 或更高版本](/docs/cluster-provisioning/rke-clusters/windows-clusters/).
+本节介绍如何在 Rancher v2.1.x 和 v2.2.x版本中配置 Windows 集群. 如果您正在使用 Rancher v2.3.0 或更高版本, 请参阅新的文档 [v2.3.0 或更高版本](/docs/cluster-provisioning/rke-clusters/windows-clusters/).
 
 当你创建一个 [自定义集群](/docs/cluster-provisioning/custom-clusters/), Rancher 使用 RKE (the Rancher Kubernetes Engine) 在现有的基础设施上配置 Kubernetes 集群.
 
-您可以通过将 Linux 和 Windows 主机混合使用作为群集节点来使用 Rancher 设置自定义 Windows 群集.
+您可以通过将 Linux 和 Windows 主机混合使用作为集群节点来使用 Rancher 设置自定义 Windows 集群.
 
 > **重要:** 在v2.3之前的Rancher版本中, 对 Windows 节点的支持是实验性的. 因此, 如果您在v2.3之前使用 Rancher,则不建议在生产环境中使用 Windows 节点.
 
-本指南将引导您完成创建包含三个节点的自定义群集:
+本指南将引导您完成创建包含三个节点的自定义集群:
 
 - 一个 Linux 节点, 用作 Kubernetes controlplane 节点
 - 另一个 Linux 节点, 用作 Kubernetes worker, 用于支持集群的入口
@@ -22,7 +22,7 @@ _可用于 v2.1.0 到 v2.1.9 和 v2.2.0 到 v2.2.3_
 
 ### 操作系统和容器要求
 
-- 对于使用 Rancher v2.1.x 和 v2.2.x 配置的群集, 容器必须运行在 Windows Server 1809 或以上.
+- 对于使用 Rancher v2.1.x 和 v2.2.x 配置的集群, 容器必须运行在 Windows Server 1809 或以上.
 - 您必须在 Windows Server 核心版本1809或更高版本上构建容器, 才能在同一服务器版本上运行这些容器.
 
 ### 创建支持Windows的集群
@@ -33,7 +33,7 @@ _可用于 v2.1.0 到 v2.1.9 和 v2.2.0 到 v2.2.3_
 
 - [1. 配置主机](#1-provision-hosts)
 - [2. 云托管 VM 网络配置](#2-cloud-hosted-vm-networking-configuration)
-- [3. 创建自定义群集](#3-create-the-custom-cluster)
+- [3. 创建自定义集群](#3-create-the-custom-cluster)
 - [4. 添加支持入口的Linux主机](#4-add-linux-host-for-ingress-support)
 - [5. 添加 Windows Workers](#5-adding-windows-workers)
 - [6. 云托管 VM 路由配置](#6-cloud-hosted-vm-routes-configuration)
@@ -93,7 +93,7 @@ _可用于 v2.1.0 到 v2.1.9 和 v2.2.0 到 v2.2.3_
 
 #### 节点配置
 
-群集中的第一个节点应该是充当控制面角色的Linux主机. 在将Windows主机添加到集群之前, 必须完成此角色. 至少，节点必须启用此角色, 但我们建议同时启用这三个角色. 下表列出了我们的推荐设置 (稍后我们将为节点2和节点3提供推荐设置).
+集群中的第一个节点应该是充当控制面角色的Linux主机. 在将Windows主机添加到集群之前, 必须完成此角色. 至少，节点必须启用此角色, 但我们建议同时启用这三个角色. 下表列出了我们的推荐设置 (稍后我们将为节点2和节点3提供推荐设置).
 
 | 选项                | 设置                               |
 | --------------------- | ------------------------------------- |
@@ -106,7 +106,7 @@ _可用于 v2.1.0 到 v2.1.9 和 v2.2.0 到 v2.2.3_
 
 在自定义集群的初始设置之后, 集群只有一个Linux主机. 添加另一个Linux主机, 该主机将用于支持集群的入口.
 
-1. 使用内容菜单, 打开在[2. 创建自定义群集](#2-create-the-custom-cluster)中创建的自定义集群.
+1. 使用内容菜单, 打开在[2. 创建自定义集群](#2-create-the-custom-cluster)中创建的自定义集群.
 
 1. 从主菜单中, 选择**节点**.
 
@@ -148,7 +148,7 @@ _可用于 v2.1.0 到 v2.1.9 和 v2.2.0 到 v2.2.3_
 
 ### 6. 云托管 VM 路由配置
 
-在 Windows 群集中, 容器使用 Flannel 的`host-gw`模式相互通信I. 在`host-gw`模式下, 同一节点上的所有容器都属于私有子网, 并且通信路由从一个节点上的子网到另一个节点上的子网通过主机网络.
+在 Windows 集群中, 容器使用 Flannel 的`host-gw`模式相互通信I. 在`host-gw`模式下, 同一节点上的所有容器都属于私有子网, 并且通信路由从一个节点上的子网到另一个节点上的子网通过主机网络.
 
 - 当工作节点配置在AWS、虚拟化集群或裸机服务器上时, 确保它们属于相同的第2层子网. 如果节点不属于同一第2层子网，则`host-gw`网络将不起作用.
 

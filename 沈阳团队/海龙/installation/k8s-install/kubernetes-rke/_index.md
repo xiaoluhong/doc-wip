@@ -7,7 +7,7 @@ title: 2. 设置Kubernetes集群
 对于无法直接访问Internet的系统，请参阅[Air Gap：Kubernetes安装。](/docs/installation/air-gap-high-availability/)
 
 > **单节点安装提示：**
-> 在单节点Kubernetes集群中，Rancher server不具有高可用性，这对于在生产环境中运行Rancher至关重要。但是，如果要在短期内通过使用单个节点来节省资源，同时保留高可用性迁移路径，则在单节点群集上安装Rancher可能会很有用。
+> 在单节点Kubernetes集群中，Rancher server不具有高可用性，这对于在生产环境中运行Rancher至关重要。但是，如果要在短期内通过使用单个节点来节省资源，同时保留高可用性迁移路径，则在单节点集群上安装Rancher可能会很有用。
 >
 > 要设置单节点集群，在使用RKE配置集群时，只需在`cluster.yml`中配置一个节点。单个节点应该具有所有三个角色:`etcd`、`controlplane`和`worker`。这样，Rancher就可以像安装在其他集群上一样，使用Helm安装集群。
 
@@ -53,7 +53,7 @@ ingress:
 | `address`          | yes      | 公用DNS或IP地址                                                           |
 | `user`             | yes      | 可以运行docker命令的用户                                                    |
 | `role`             | yes      | 分配给节点的Kubernetes角色列表                                          |
-| `internal_address` | no       | 内部群集流量的专用DNS或IP地址                             |
+| `internal_address` | no       | 内部集群流量的专用DNS或IP地址                             |
 | `ssh_key_path`     | no       | 用于对节点进行身份验证的SSH私钥的路径（默认为`~/.ssh/id_rsa`） |
 
 ##### 高级配置
@@ -125,13 +125,13 @@ kube-system     rke-network-plugin-deploy-job-6pbgj       0/1       Completed   
 #### 保存文件
 
 > **重要**
-> 需要以下文件来维护，故障排除和升级群集。
+> 需要以下文件来维护，故障排除和升级集群。
 
 将以下文件的副本保存在安全的位置：
 
-- `rancher-cluster.yml`: RKE群集配置文件。
+- `rancher-cluster.yml`: RKE集群配置文件。
 - `kube_config_rancher-cluster.yml`: 集群的[Kubeconfig文件]({{<baseurl>}}/rke/latest/en/kubeconfig/)，此文件包含用于访问集群的凭据。
-- `rancher-cluster.rkestate`: [Kubernetes群集状态文件]({{<baseurl>}}/rke/latest/en/installation/#kubernetes-cluster-state)，此文件包含用于完全访问群集的凭据。<br/><br/>_Kubernetes集群状态文件仅在使用RKE v0.2.0或更高版本时创建。_
+- `rancher-cluster.rkestate`: [Kubernetes集群状态文件]({{<baseurl>}}/rke/latest/en/installation/#kubernetes-cluster-state)，此文件包含用于完全访问集群的凭据。<br/><br/>_Kubernetes集群状态文件仅在使用RKE v0.2.0或更高版本时创建。_
 
 #### 问题或错误？
 

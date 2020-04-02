@@ -59,9 +59,9 @@ title: 推荐的集群架构
 
 使用`worker`角色添加多个节点将确保在节点失败时可以重新调度工作负载.
 
-#### 为什么对 Rancher 群集和运行应用程序的群集的生产要求不同
+#### 为什么对 Rancher 集群和运行应用程序的集群的生产要求不同
 
-您可能已经注意到, 我们的 [Kubernetes 安装](/docs/installation/k8s-install/)指令不符合我们对生产就绪群集的定义, 因为`Worker`角色没有专用节点. 但是,对于 Rancher 的安装, 这三个节点群集是有效的, 因为:
+您可能已经注意到, 我们的 [Kubernetes 安装](/docs/installation/k8s-install/)指令不符合我们对生产就绪集群的定义, 因为`Worker`角色没有专用节点. 但是,对于 Rancher 的安装, 这三个节点集群是有效的, 因为:
 - 它允许一个`etcd`节点失败.
 - 它通过拥有多个`controlplane`节点来维护主组件的多个实例.
 - 除了Rancher本身之外, 不应该在此集群上创建其他工作负载.

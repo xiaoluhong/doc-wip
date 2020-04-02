@@ -7,7 +7,7 @@ title: Rancher 代理
 - [cattle-cluster-agent](#cattle-cluster-agent)
 - [cattle-node-agent](#cattle-node-agent)
 
-有关 Rancher 服务器如何配置群集并与之通信的概念概述，请参阅 [架构](/docs/overview/architecture/)
+有关 Rancher 服务器如何配置集群并与之通信的概念概述，请参阅 [架构](/docs/overview/architecture/)
 
 #### cattle-cluster-agent
 

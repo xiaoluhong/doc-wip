@@ -2,9 +2,9 @@
 title: 安装要求
 ---
 
-这个页面描述了安装Rancher server节点的软件，硬件和网络要求。 Rancher server可以安装在单个节点或高可用的Kubernetes群集上。
+这个页面描述了安装Rancher server节点的软件，硬件和网络要求。 Rancher server可以安装在单个节点或高可用的Kubernetes集群上。
 
-> 请务必注意，如果在Kubernetes群集上安装Rancher，则要求与[用户群集的节点要求](/docs/cluster-provisioning/node-requirements/)不同，后者将运行您的应用程序和服务。
+> 请务必注意，如果在Kubernetes集群上安装Rancher，则要求与[用户集群的节点要求](/docs/cluster-provisioning/node-requirements/)不同，后者将运行您的应用程序和服务。
 
 请确保Rancher server的节点满足以下要求:
 
@@ -84,13 +84,13 @@ Rancher的性能取决于etcd在集群中的性能。为了确保最佳速度，
 
 #### 节点IP地址
 
-无论您是在单个节点上还是在HA群集上安装Rancher，每个节点都应配置一个静态IP。如果使用DHCP，则每个节点应具有DHCP预留，以确保该节点分配的相同IP地址。
+无论您是在单个节点上还是在HA集群上安装Rancher，每个节点都应配置一个静态IP。如果使用DHCP，则每个节点应具有DHCP预留，以确保该节点分配的相同IP地址。
 
 #### 端口要求
 
 本节描述运行`rancher/rancher`容器的节点的端口要求。
 
-端口要求会有所不同，这取决于您是在单个节点上还是在高可用性Kubernetes群集上安装Rancher。
+端口要求会有所不同，这取决于您是在单个节点上还是在高可用性Kubernetes集群上安装Rancher。
 
 - **对于Docker安装，** 您只需要开放使Rancher能够与下游用户集群通信所需的端口即可。
 - **对于高可用安装,** 需要开放相同的端口，以及建立Rancher所安装的Kubernetes集群所需的其他端口。
@@ -100,11 +100,11 @@ Rancher的性能取决于etcd在集群中的性能。为了确保最佳速度，
 
 #### 用于与下游集群通信的端口
 
-为了与下游群集通信，Rancher要求开放不同的端口，具体取决于您使用的基础架构。
+为了与下游集群通信，Rancher要求开放不同的端口，具体取决于您使用的基础架构。
 
 例如，如果您在基础设施提供商托管的节点上部署Rancher，则必须为SSH开放`22`端口。
 
-下图描述了为每种[群集类型](/docs/cluster-provisioning)开放的端口。
+下图描述了为每种[集群类型](/docs/cluster-provisioning)开放的端口。
 
 <figcaption>Rancher管理平台的端口要求</figcaption>
 
@@ -176,11 +176,11 @@ Rancher的性能取决于etcd在集群中的性能。为了确保最佳速度，
 
 #### 与下游集群通信的端口
 
-为了与下游群集通信，Rancher要求开放不同的端口，具体端口取决于使用的基础架构。
+为了与下游集群通信，Rancher要求开放不同的端口，具体端口取决于使用的基础架构。
 
 例如，如果要在基础设施提供商托管的节点上部署Rancher，则必须为SSH开放`22`端口。
 
-下图描述了为每种[群集类型](/docs/cluster-provisioning)开放的端口 .
+下图描述了为每种[集群类型](/docs/cluster-provisioning)开放的端口 .
 
 <figcaption>Rancher管理平台的端口要求</figcaption>
 

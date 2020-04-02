@@ -35,6 +35,6 @@ title: Kafka
 
 1. 选择您的Kafka集群使用的**SASL类型**。
 
-   - 如果您的Kafka使用的是**Plain**，请确保您的Kafka群集配置了SSL。
+   - 如果您的Kafka使用的是**Plain**，请确保您的Kafka集群配置了SSL。
 
    - 如果您的Kafka使用**Scram**，则需要选择使用的**Scram机制**

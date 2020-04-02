@@ -1,10 +1,10 @@
 ---
-title: Restorations
+title: 恢复
 ---
 
-If you lose the data on your Rancher Server, you can restore it if you have backups stored in a safe location.
+如果您丢失了Rancher Server的数据，你可以通过备份的数据进行恢复。
 
-- [Restoring Backups—Docker Installs](/docs/backups/restorations/single-node-restoration/)
-- [Restoring Backups—Kubernetes installs](/docs/backups/restorations/ha-restoration/)
+- [Docker单容器安装恢复](/docs/backups/restorations/single-node-restoration/)
+- [HA安装恢复](/docs/backups/restorations/ha-restoration/)
 
-If you are looking to restore your [Rancher launched Kubernetes cluster](/docs/cluster-provisioning/rke-clusters/), please refer [here](/docs/cluster-admin/restoring-etcd/).
+如果你想恢复[Rancher自定义Kubernetes集群](/docs/cluster-provisioning/rke-clusters/)，请参考[此处](/docs/cluster-admin/ restore -etcd/)。

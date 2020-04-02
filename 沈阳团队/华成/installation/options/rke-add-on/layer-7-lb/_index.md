@@ -8,12 +8,12 @@
 >
 > 如果您当前正在使用RKE附加组件安装方法，请参阅[使用RKE附加组件从Kubernetes安装迁移](/docs/upgrades/upgrades/migrating-from-rke-add-on/)以获取有关如何使用Helm chart的详细信息。
 
-此过程将引导您使用Rancher Kubernetes引擎（RKE）设置3-node群集。 该集群的唯一目的是为Rancher运行Pod。设置基于:
+此过程将引导您使用Rancher Kubernetes引擎（RKE）设置3-node集群。 该集群的唯一目的是为Rancher运行Pod。设置基于:
 
 - 具有SSL termination（HTTPS）的第7层负载均衡器
 - [NGINX入口控制器（HTTP）](https://kubernetes.github.io/ingress-nginx/)
 
-在使用第7层负载均衡器的HA设置中，负载均衡器通过HTTP协议（即应用程序级别）接受Rancher客户端连接。这种应用程序级别的访问允许负载均衡器读取客户端请求，然后使用优化分配负载的逻辑将其重定向到群集节点。
+在使用第7层负载均衡器的HA设置中，负载均衡器通过HTTP协议（即应用程序级别）接受Rancher客户端连接。这种应用程序级别的访问允许负载均衡器读取客户端请求，然后使用优化分配负载的逻辑将其重定向到集群节点。
 
 <sup>Rancher安装在具有第7层负载均衡器的Kubernetes集群上，描绘了负载均衡器的SSL termination</sup>
 ![Rancher HA](/img/rancher/ha/rancher2ha-l7.svg)
