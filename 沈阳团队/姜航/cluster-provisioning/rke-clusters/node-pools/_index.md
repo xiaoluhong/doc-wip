@@ -1,118 +1,118 @@
 ---
-title: Launching Kubernetes on New Nodes in an Infrastructure Provider
+title: 基于基础架构提供商创建新主机并启动Kubernetes
 ---
 
-Using Rancher, you can create pools of nodes based on a [node template](/docs/cluster-provisioning/rke-clusters/node-pools/#node-templates). This node template defines the parameters you want to use to launch nodes in your infrastructure providers or cloud providers.
+使用Rancher，您可以基于[主机模板](/docs/cluster-provisioning/rke-clusters/node-pools/#node-templates)来创建主机池。该主机模板定义了用于在基础设施提供商或云服务商中启动主机的参数。
 
-One benefit of installing Kubernetes on node pools hosted by an infrastructure provider is that if a node loses connectivity with the cluster, Rancher can automatically create another node to join the cluster to ensure that the count of the node pool is as expected.
+在基础设施提供商托管的主机池上安装Kubernetes的一个好处是，如果某个主机与集群失去连接，Rancher可以自动创建另一个主机加入集群，以确保主机池的数量符合预期。
 
-The available cloud providers to create a node template are decided based on active [node drivers](/docs/cluster-provisioning/rke-clusters/node-pools/#node-drivers).
+有哪些可用于创建主机模板的云提供商取决于启用了哪些[主机驱动](/docs/cluster-provisioning/rke-clusters/node-pools/#node-drivers).
 
-This section covers the following topics:
+本节涵盖以下主题：
 
-- [Node templates](#node-templates)
-  - [Node labels](#node-labels)
-  - [Node taints](#node-taints)
-- [Node pools](#node-pools)
-  - [Node pool taints](#node-pool-taints)
-  - [About node auto-replace](#about-node-auto-replace)
-  - [Enabling node auto-replace](#enabling-node-auto-replace)
-  - [Disabling node auto-replace](#disabling-node-auto-replace)
-- [Cloud credentials](#cloud-credentials)
-- [Node drivers](#node-drivers)
+- [主机模板](#主机模板)
+  - [主机标签](#主机标签)
+  - [主机污点](#主机污点)
+- [主机池](#主机池)
+  - [主机池污点](#主机池污点)
+  - [关于自动替换主机](#关于自动替换主机)
+  - [开启自动替换主机](#开启自动替换主机)
+  - [关闭自动替换主机](#关闭自动替换主机)
+- [云凭证](#云凭证)
+- [主机驱动](#主机驱动)
 
-## Node Templates
+## 主机模板
 
-A node template is the saved configuration for the parameters to use when provisioning nodes in a specific cloud provider. These nodes can be launched from the UI. Rancher uses [Docker Machine](https://docs.docker.com/machine/) to provision these nodes. The available cloud providers to create node templates are based on the active node drivers in Rancher.
+主机模板保存了用于配置指定云提供商中的主机时使用的参数。这些主机可以从UI中启动。Rancher使用[Docker Machine](https://docs.docker.com/machine/)来启动这些主机。具体有哪些可用于创建主机模板的云提供商取决于在Rancher中开启了哪些主机驱动。
 
-After you create a node template in Rancher, it's saved so that you can use this template again to create node pools. Node templates are bound to your login. After you add a template, you can remove them from your user profile.
+在Rancher中创建并保存主机模板后，您可以再次使用该模板来创建主机池。主机模板会绑定到您登录的用户中。您可以在用户个人资料中将创建的主机模板删除。
 
-#### Node Labels
+#### 主机标签
 
-You can add [labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/) on each node template, so that any nodes created from the node template will automatically have these labels on them.
+您可以在主机模板中添加[标签](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)，这样从该主机模板创建的所有主机都将自动具有这些标签。
 
-#### Node Taints
+#### 主机污点
 
-_Available as of Rancher v2.3.0_
+_从Rancher v2.3.0开始可用_
 
-You can add [taints](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/) on each node template, so that any nodes created from the node template will automatically have these taints on them.
+您可以在主机模板中添加[污点](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/)，这样从该主机模板创建的所有主机都将自动具有这些污点。
 
-Since taints can be added at a node template and node pool, if there is no conflict with the same key and effect of the taints, all taints will be added to the nodes. If there are taints with the same key and different effect, the taints from the node pool will override the taints from the node template.
+由于可以同时在主机模板和主机池中添加污点，因此如果添加了相同键的污点并且效果没有冲突，则所有污点都将被添加到主机。 如果存在具有相同键但不同效果的污点，则主机池中的污点将覆盖主机模板中的污点。
 
-## Node Pools
+## 主机池
 
-Using Rancher, you can create pools of nodes based on a [node template](#node-templates). The benefit of using a node pool is that if a node is destroyed or deleted, you can increase the number of live nodes to compensate for the node that was lost. The node pool helps you ensure that the count of the node pool is as expected.
+使用Rancher，您可以基于[主机模板](#node-templates)创建主机池。 使用主机池的好处是，如果主机被破坏或删除，您可以增加活动主机的数量以补偿丢失的主机。 主机池可帮助您确保主机的数量符合预期。
 
-Each node pool is assigned with a [node component](/docs/cluster-provisioning/#kubernetes-cluster-node-components) to specify how these nodes should be configured for the Kubernetes cluster.
+每个主机池都分配有一个[主机组件](/docs/cluster-provisioning/#kubernetes-cluster-node-components)以指定如何为Kubernetes集群配置这些主机。
 
-#### Node Pool Taints
+#### 主机池污点
 
-_Available as of Rancher v2.3.0_
+_从Rancher v2.3.0开始可用_
 
-If you haven't defined [taints](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/) on your node template, you can add taints for each node pool. The benefit of adding taints at a node pool is beneficial over adding it at a node template is that you can swap out the node templates without worrying if the taint is on the node template.
+如果您尚未在主机模板上定义[污点](https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/)，则可以为每个主机池添加污点。 相比在主机模板上添加污点，在主机池上添加污点的好处在于，您可以替换主机模板，而不必担心污点是否在主机模板中。
 
-For each taint, they will automatically be added to any created node in the node pool. Therefore, if you add taints to a node pool that have existing nodes, the taints won't apply to existing nodes in the node pool, but any new node added into the node pool will get the taint.
+对于每个污点，它们将自动添加到主机池中创建的主机。 因此，如果您在已有主机的主机池中添加污点，这些污点将不适用于该主机池中的已有的主机，但是该主机池中的任何新主机都将获得该污点。
 
-When there are taints on the node pool and node template, if there is no conflict with the same key and effect of the taints, all taints will be added to the nodes. If there are taints with the same key and different effect, the taints from the node pool will override the taints from the node template.
+当主机模板和主机池中同时添加了污点时，如果添加了相同键的污点的效果没有冲突，则所有污点都将被添加到主机。 如果存在具有相同键但不同效果的污点，则主机池中的污点将覆盖主机模板中的污点。
 
-#### About Node Auto-replace
+#### 关于主机自动替换
 
-_Available as of Rancher v2.3.0_
+_从Rancher v2.3.0开始可用_
 
-If a node is in a node pool, Rancher can automatically replace unreachable nodes. Rancher will use the existing node template for the given node pool to recreate the node if it becomes inactive for a specified number of minutes.
+如果主机在主机池中，Rancher能够自动替换不可达的主机。 如果主机在指定的时间中处于非活动状态，Rancher将使用该主机池的主机模板来重新创建主机。
 
-> **Important:** Self-healing node pools are designed to help you replace worker nodes for **stateless** applications. It is not recommended to enable node auto-replace on a node pool of master nodes or nodes with persistent volumes attached, because VMs are treated ephemerally. When a node in a node pool loses connectivity with the cluster, its persistent volumes are destroyed, resulting in data loss for stateful applications.
+> **重要:** 自我修复主机池旨在帮助您为**无状态**应用程序替换工作主机。 不建议在主主机或具有持久卷连接的主机的主机池上启用主机自动替换。 当主机池中的主机失去与集群的连接时，其持久卷将被破坏，从而导致有状态应用程序丢失数据。
 
- accordion id="how-does-node-auto-replace-work" label="How does Node Auto-replace Work?" 
-Node auto-replace works on top of the Kubernetes node controller. The node controller periodically checks the status of all the nodes (configurable via the `--node-monitor-period` flag of the `kube-controller`). When a node is unreachable, the node controller will taint that node. When this occurs, Rancher will begin its deletion countdown. You can configure the amount of time Rancher waits to delete the node. If the taint is not removed before the deletion countdown ends, Rancher will proceed to delete the node object. Rancher will then provision a node in accordance with the set quantity of the node pool.
+ accordion id="how-does-node-auto-replace-work" label="主机自动替换是如何工作的?" 
+主机自动替换在Kubernetes主机控制器之上工作。 主机控制器会定期检查所有主机的状态（可通过`kube-controller`的`--node-monitor-period`参数进行配置）。 当主机不可访问时，主机控制器将为该主机添加污点。 发生这种情况时，Rancher将开始其删除倒计时。 您可以配置Rancher等待删除主机的时间。 如果在删除倒计时结束之前污点没有被移除，Rancher将删除该主机。然后Rancher将根据主机池的设置主机数量来创建新的主机。
  /accordion 
+ 
+#### 开启主机自动替换
 
-#### Enabling Node Auto-replace
+创建主机池时，您可以指定Rancher替换无响应主机的等待时间（以分钟为单位）。
 
-When you create the node pool, you can specify the amount of time in minutes that Rancher will wait to replace an unresponsive node.
+1. 在创建集群表单中, 选择**主机池**选项卡.
+1. 选择要开启主机自动替换功能的主机池，在**自动替换**列中输入Rancher自动替换主机需要的等待时间。
+1. 填写表单中的其他信息并创建集群。
 
-1. In the form for creating a cluster, go to the **Node Pools** section.
-1. Go to the node pool where you want to enable node auto-replace. In the **Recreate Unreachable After** field, enter the number of minutes that Rancher should wait for a node to respond before replacing the node.
-1. Fill out the rest of the form for creating a cluster.
+**结果:** 主机池开启了主机自动替换功能。
 
-**Result:** Node auto-replace is enabled for the node pool.
+您还可以通过以下步骤在创建集群后启用主机自动替换功能：
 
-You can also enable node auto-replace after the cluster is created with the following steps:
+1. 在全局页面中，选择集群列表页。
+1. 选择您要开启主机自动替换功能的集群, 点击右侧**菜单**选项，并点击**编辑**按钮。
+1. 在**主机池**选项卡中，选择要开启主机自动替换功能的主机池，在**自动替换**列中输入Rancher自动替换主机需要的等待时间。
+1. 点击**保存**。
 
-1. From the Global view, click the Clusters tab.
-1. Go to the cluster where you want to enable node auto-replace, click the vertical ellipsis **(…)**, and click **Edit.**
-1. In the **Node Pools** section, go to the node pool where you want to enable node auto-replace. In the **Recreate Unreachable After** field, enter the number of minutes that Rancher should wait for a node to respond before replacing the node.
-1. Click **Save.**
+**结果:** 主机池开启了主机自动替换功能。
 
-**Result:** Node auto-replace is enabled for the node pool.
+#### 关闭主机自动替换功能
 
-#### Disabling Node Auto-replace
+您可以通过以下步骤在Rancher UI中禁用主机自动替换功能：
 
-You can disable node auto-replace from the Rancher UI with the following steps:
+1. 在全局页面中，选择集群列表页。
+1. 选择您要关闭主机自动替换功能的集群, 点击右侧**菜单**选项，并点击**编辑**按钮。
+1. 在**主机池**选项卡中，选择要关闭主机自动替换功能的主机池，在**自动替换**列中输入0。
+1. 点击**保存**。
 
-1. From the Global view, click the Clusters tab.
-1. Go to the cluster where you want to enable node auto-replace, click the vertical ellipsis **(…)**, and click **Edit.**
-1. In the **Node Pools** section, go to the node pool where you want to enable node auto-replace. In the **Recreate Unreachable After** field, enter 0.
-1. Click **Save.**
+**结果:** 主机池关闭了主机自动替换功能。
 
-**Result:** Node auto-replace is disabled for the node pool.
+## 云凭证
 
-## Cloud Credentials
+_从Rancher v2.2.0开始可用_
 
-_Available as of v2.2.0_
+主机模板可以使用云凭证来存储用于在云提供商中启动主机的凭证，这有做有如下好处：
 
-Node templates can use cloud credentials to store credentials for launching nodes in your cloud provider, which has some benefits:
+- 凭证会在Kubernetes中保存为secret，这不仅更安全，而且还允许您编辑主机模板，而不必每次都输入凭证。
 
-- Credentials are stored as a Kubernetes secret, which is not only more secure, but it also allows you to edit a node template without having to enter your credentials every time.
+- 云凭证创建后, 您可以在创建其他主机模板时重复使用该凭证。
 
-- After the cloud credential is created, it can be re-used to create additional node templates.
+- 多个主机模板可以共享相同的云凭据来创建主机池。 如果您的密钥已被盗用或过期，您可以在一个位置更新云凭证，从而可以立即更新所有使用它的主机模板。
 
-- Multiple node templates can share the same cloud credential to create node pools. If your key is compromised or expired, the cloud credential can be updated in a single place, which allows all node templates that are using it to be updated at once.
+> **注意：** 从v2.2.0开始，默认的`活动`的[主机驱动程序](/docs/admin-settings/drivers/node-drivers/)和其他主机驱动程序中，标记为`密码`的字段都要求使用云凭证。 如果您是升级到v2.2.0版本，已有的主机模板将继续使用以前的帐户访问信息，但是在编辑该主机模板时，您需要创建云凭证并且该主机模板将开始使用它。
 
-> **Note:** As of v2.2.0, the default `active` [node drivers](/docs/admin-settings/drivers/node-drivers/) and any node driver, that has fields marked as `password`, are required to use cloud credentials. If you have upgraded to v2.2.0, existing node templates will continue to work with the previous account access information, but when you edit the node template, you will be required to create a cloud credential and the node template will start using it.
+创建云凭证后，用户可以开始[管理他们创建的云凭证](/docs/user-settings/cloud-credentials/)。
 
-After cloud credentials are created, the user can start [managing the cloud credentials that they created](/docs/user-settings/cloud-credentials/).
+## 主机驱动程序
 
-## Node Drivers
-
-If you don't find the node driver that you want to use, you can see if it is available in Rancher's built-in [node drivers and activate it](/docs/admin-settings/drivers/node-drivers/#activating-deactivating-node-drivers), or you can [add your own custom node driver](/docs/admin-settings/drivers/node-drivers/#adding-custom-node-drivers).
+如果您找不到想要使用的主机驱动程序，您可以在Rancher的[内置主机驱动程序](/docs/admin-settings/drivers/node-drivers/#activating-deactivating-node-drivers)中查看它是否可用并激活它，或者您可以[添加自定义主机驱动程序](/docs/admin-settings/drivers/node-drivers/#adding-custom-node-drivers)。
