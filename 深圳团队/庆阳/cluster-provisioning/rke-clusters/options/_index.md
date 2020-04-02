@@ -1,165 +1,165 @@
 ---
-title: Cluster Configuration Reference
+标题: 集群配置参考
 ---
 
-As you configure a new cluster that's [provisioned using RKE](/docs/cluster-provisioning/rke-clusters/), you can choose custom Kubernetes options.
+当您配置[使用RKE启动](/docs/cluster-provisioning/rke-clusters/)的新集群时，您可以选择自定义Kubernetes选项。
 
-You can configure Kubernetes options one of two ways:
+您可以通过以下两种方式之一配置Kubernetes选项:
 
-- [Rancher UI](#rancher-ui): Use the Rancher UI to select options that are commonly customized when setting up a Kubernetes cluster.
-- [Cluster Config File](#cluster-config-file): Instead of using the Rancher UI to choose Kubernetes options for the cluster, advanced users can create an RKE config file. Using a config file allows you to set any of the options available in an RKE installation, except for system_images configuration, by specifying them in YAML.
+- [Rancher UI](#rancher-ui): 使用Rancher UI来选择在设置Kubernetes集群时通常自定义的选项。
+- [集群配置文件](#cluster-config-file): 高级用户可以创建RKE配置文件，而不是使用Rancher UI为集群选择Kubernetes选项。 通过使用配置文件，您可以通过在YAML中指定它们来设置RKE安装中可用的任何选项，但system_images配置除外。
 
-In Rancher v2.0.0-v2.2.x, the config file is identical to the [cluster config file for the Rancher Kubernetes Engine]({{<baseurl>}}/rke/latest/en/config-options/), which is the tool Rancher uses to provision clusters. In Rancher v2.3.0, the RKE information is still included in the config file, but it is separated from other options, so that the RKE cluster config options are nested under the `rancher_kubernetes_engine_config` directive. For more information, see the section about the [cluster config file.](#cluster-config-file)
+在Rancher v2.0.0-v2.2.x，配置文件与[Rancher Kubernetes引擎的集群配置文件]({{<baseurl>}}/rke/latest/en/config-options/)相同，Rancher用于配置集群的工具。 在Rancher v2.3.0中，rke信息仍然包含在配置文件中，但它与其他选项分开，因此RKE集群配置选项嵌套在`rancher_kubernetes_engine_config`指令下。 有关详细信息，请参阅关于[集群配置文件。](#cluster-config-file)
 
-This section is a cluster configuration reference, covering the following topics:
+本节是集群配置参考，涵盖以下主题:
 
-- [Rancher UI Options](#rancher-ui-options)
-  - [Kubernetes version](#kubernetes-version)
-  - [Network provider](#network-provider)
-  - [Kubernetes cloud providers](#kubernetes-cloud-providers)
-  - [Private registries](#private-registries)
-  - [Authorized cluster endpoint](#authorized-cluster-endpoint)
-- [Advanced Options](#advanced-options)
+- [Rancher UI选项](#rancher-ui-options)
+  - [Kubernetes版本](#kubernetes-version)
+  - [网络驱动](#network-provider)
+  - [Kubernetes云提供商](#kubernetes-cloud-providers)
+  - [私有镜像仓库](#private-registries)
+  - [授权集群访问地址](#authorized-cluster-endpoint)
+- [高级选项](#advanced-options)
   - [NGINX Ingress](#nginx-ingress)
-  - [Node port range](#node-port-range)
-  - [Metrics server monitoring](#metrics-server-monitoring)
-  - [Pod security policy support](#pod-security-policy-support)
-  - [Docker version on nodes](#docker-version-on-nodes)
-  - [Docker root directory](#docker-root-directory)
-  - [Recurring etcd snapshots](#recurring-etcd-snapshots)
-- [Cluster config file](#cluster-config-file)
-  - [Config file structure in Rancher v2.3.0+](#config-file-structure-in-rancher-v2-3-0+)
-  - [Config file structure in Rancher v2.0.0-v2.2.x](#config-file-structure-in-rancher-v2-0-0-v2-2-x)
-  - [Default DNS provider](#default-dns-provider)
-- [Rancher specific parameters](#rancher-specific-parameters)
+  - [Node port范围](#node-port-range)
+  - [监控指标](#metrics-server-monitoring)
+  - [Pod安全策略](#pod-security-policy-support)
+  - [主机Docker版本](#docker-version-on-nodes)
+  - [Docker根目录](#docker-root-directory)
+  - [Etcd备份轮换](#recurring-etcd-snapshots)
+- [集群配置文件](#cluster-config-file)
+  - [Rancher v2.3.0+ 配置文件结构](#config-file-structure-in-rancher-v2-3-0+)
+  - [Rancher v2.0.0-v2.2.x 配置文件结构](#config-file-structure-in-rancher-v2-0-0-v2-2-x)
+  - [默认DNS插件](#default-dns-provider)
+- [Rancher特有参数](#rancher-specific-parameters)
 
-## Rancher UI Options
+## Rancher UI选项
 
-When creating a cluster using one of the options described in [Rancher Launched Kubernetes](/docs/cluster-provisioning/rke-clusters), you can configure basic Kubernetes options using the **Cluster Options** section.
+使用[Rancher Launched Kubernetes](/docs/cluster-provisioning/rke-clusters)中描述的一个选项创建集群时，您可以使用**集群选项**部分配置基本的Kubernetes选项。
 
-#### Kubernetes Version
+#### Kubernetes版本
 
-The version of Kubernetes installed on your cluster nodes. Rancher packages its own version of Kubernetes based on [hyperkube](https://github.com/rancher/hyperkube).
+安装在集群节点上的Kubernetes版本。 Rancher基于[hyperkube](https://github.com/rancher/hyperkube)打包自己的Kubernetes版本。
 
-#### Network Provider
+#### 网络驱动
 
-The [Network Provider](https://kubernetes.io/docs/concepts/cluster-administration/networking/) that the cluster uses. For more details on the different networking providers, please view our [Networking FAQ](/docs/faq/networking/cni-providers/).
+[网络驱动](https://kubernetes.io/docs/concepts/cluster-administration/networking/)集群使用。 有关不同网络提供商的更多详细信息，请查看我们的[网络常见问题解答](/docs/faq/networking/cni-providers/)。
 
-> **Note:** After you launch the cluster, you cannot change your network provider. Therefore, choose which network provider you want to use carefully, as Kubernetes doesn't allow switching between network providers. Once a cluster is created with a network provider, changing network providers would require you tear down the entire cluster and all its applications.
+> **注意:** 启动集群后，您无法更改网络插件。 因此，请谨慎选择要使用的网络插件，因为Kubernetes不允许在网络插件之间切换。 使用网络插件创建集群后，更改网络插件将要求拆除整个集群及其所有应用程序。
 
-Out of the box, Rancher is compatible with the following network providers:
+开箱即用，Rancher与以下网络插件兼容:
 
 - [Canal](https://github.com/projectcalico/canal)
 - [Flannel](https://github.com/coreos/flannel#flannel)
 - [Calico](https://docs.projectcalico.org/v3.11/introduction/)
-- [Weave](https://github.com/weaveworks/weave) (Available as of v2.2.0)
+- [Weave](https://github.com/weaveworks/weave) (v2.2.0可用)
 
-**Notes on Canal:**
+**Canal注意事项:**
 
-In v2.0.0 - v2.0.4 and v2.0.6, this was the default option for these clusters was Canal with network isolation. With the network isolation automatically enabled, it prevented any pod communication between [projects](/docs/k8s-in-rancher/projects-and-namespaces/).
+在v2.0.0-v2.0.4和v2.0.6中，这是这些集群的默认选项是开启网络隔离的Canal。 在自动启用网络隔离后，它阻止了[projects](/docs/k8s-in-rancher/projects-and-namespaces/)之间的任何pod通信。
 
-As of v2.0.7, if you use Canal, you also have the option of using **Project Network Isolation**, which will enable or disable communication between pods in different [projects](/docs/k8s-in-rancher/projects-and-namespaces/).
+从v2.0.7开始，如果您使用Canal，您还可以选择使用**网络隔离**，这将启用或禁用不同[projects](/docs/k8s-in-rancher/projects-and-namespaces/)中的pod之间的通信。
 
-> **Attention Rancher v2.0.0 - v2.0.6 Users**
+> **Rancher v2.0.0 - v2.0.6用户注意**
 >
-> - In previous Rancher releases, Canal isolates project network communications with no option to disable it. If you are using any of these Rancher releases, be aware that using Canal prevents all communication between pods in different projects.
-> - If you have clusters using Canal and are upgrading to v2.0.7, those clusters enable Project Network Isolation by default. If you want to disable Project Network Isolation, edit the cluster and disable the option.
+> - 在以前的Rancher版本中，Canal隔离了项目网络通信，但没有禁用它的选项。 如果您正在使用任何这些Rancher版本，请注意，使用Canal可以防止不同项目中的pad之间的所有通信。
+> - 如果您有使用Canal的集群并且正在升级到v2.0.7，那么这些集群默认情况下会启用Project Network隔离。 如果要禁用项目网络隔离，请编辑集群并禁用该选项。
 
-**Notes on Flannel:**
+**Flannel注意事项:**
 
-In v2.0.5, this was the default option, which did not prevent any network isolation between projects.
+在v2.0.5中，这是默认选项，它不会阻止项目之间的任何网络隔离。
 
-**Notes on Weave:**
+**Weave注意事项:**
 
-When Weave is selected as network provider, Rancher will automatically enable encryption by generating a random password. If you want to specify the password manually, please see how to configure your cluster using a [Config File](/docs/cluster-provisioning/rke-clusters/options/#config-file) and the [Weave Network Plug-in Options]({{< baseurl >}}/rke/latest/en/config-options/add-ons/network-plugins/#weave-network-plug-in-options).
+当Weave被选为网络插件时，Rancher将通过生成随机密码自动启用加密。 如果要手动指定密码，请参阅如何使用[Config文件](/docs/cluster-provisioning/rke-clusters/options/#config-file)和[Weave网络插件选项]({{<baseurl>}}/rke/latest/en/config-options/add-ons/network-plugins/#weave-network-plug-in-options)配置集群。
 
-#### Kubernetes Cloud Providers
+#### Kubernetes云提供商
 
-You can configure a [Kubernetes cloud provider](/docs/cluster-provisioning/rke-clusters/options/cloud-providers). If you want to use [volumes and storage](/docs/k8s-in-rancher/volumes-and-storage/) in Kubernetes, typically you must select the specific cloud provider in order to use it. For example, if you want to use Amazon EBS, you would need to select the `aws` cloud provider.
+您可以配置[Kubernetes云提供商](/docs/cluster-provisioning/rke-clusters/options/cloud-providers). 如果您想要在Kubernetes中使用[卷和存储](/docs/k8s-in-rancher/volumes-and-storage/), 通常，您必须选择特定的云提供商才能使用它。 例如，如果您想使用Amazon EBS，则需要选择`aws`云提供商。
 
-> **Note:** If the cloud provider you want to use is not listed as an option, you will need to use the [config file option](#config-file) to configure the cloud provider. Please reference the [RKE cloud provider documentation]({{< baseurl >}}/rke/latest/en/config-options/cloud-providers/) on how to configure the cloud provider.
+> **注意:** 如果您要使用的云提供商未列为选项，则需要使用[config file选项](#config-file)来配置云提供商。 请参考[RKE云提供商文档]({{<baseurl>}}/rke/latest/en/config-options/cloud-providers/)关于如何配置云提供商。
 
-If you want to see all the configuration options for a cluster, please click **Show advanced options** on the bottom right. The advanced options are described below:
+如果要查看集群的所有配置选项，请单击右下角的**显示高级选项**。 高级选项如下所述:
 
-#### Private registries
+#### 私有镜像仓库
 
-_Available as of v2.2.0_
+_v2.2.0可用_
 
-The cluster-level private registry configuration is only used for provisioning clusters.
+集群级别的私有镜像仓库配置仅用于设置集群。
 
-There are two main ways to set up private registries in Rancher: by setting up the [global default registry](/docs/admin-settings/config-private-registry) through the **Settings** tab in the global view, and by setting up a private registry in the advanced options in the cluster-level settings. The global default registry is intended to be used for air-gapped setups, for registries that do not require credentials. The cluster-level private registry is intended to be used in all setups in which the private registry requires credentials.
+在Rancher中设置私有镜像仓库的主要方法有两种：通过全局视图中的**设置**选项卡设置[全局默认镜像仓库](/docs/admin-settings/config-private-registry)，以及通过集群级别设置中的高级选项设置私有镜像仓库。 全局默认镜像仓库旨在用于不需要凭据的镜像仓库的air-gapped设置。 集群级别的私有镜像仓库旨在用于所有需要凭据设置的私有镜像仓库。
 
-If your private registry requires credentials, you need to pass the credentials to Rancher by editing the cluster options for each cluster that needs to pull images from the registry.
+如果您的私有镜像仓库需要凭据，则需要通过编辑从镜像仓库中提取镜像的每个集群的集群选项将凭据传递给Rancher。
 
-The private registry configuration option tells Rancher where to pull the [system images]({{<baseurl>}}/rke/latest/en/config-options/system-images/) or [addon images]({{<baseurl>}}/rke/latest/en/config-options/add-ons/) that will be used in your cluster.
+私有镜像仓库配置选项告诉Rancher将在集群中使用的[系统镜像]({{<baseurl>}}/rke/latest/en/config-options/system-images/)或[addon镜像]({{<baseurl>}}/rke/latest/en/config-options/add-ons/)的位置。
 
-- **System images** are components needed to maintain the Kubernetes cluster.
-- **Add-ons** are used to deploy several cluster components, including network plug-ins, the ingress controller, the DNS provider, or the metrics server.
+- **系统镜像**是维护Kubernetes集群所需的组件。
+- **Add-ons**用于部署多个集群组件包括网络插件、ingress控制器、DNS插件或指标服务器。
 
-See the [RKE documentation on private registries]({{<baseurl>}}/rke/latest/en/config-options/private-registries/) for more information on the private registry for components applied during the provisioning of the cluster.
+请参阅[RKE有关私有镜像仓库文档]({{<baseurl>}}/rke/latest/en/config-options/private-registries/)了解私有镜像仓库在集群配置过程中组件的更多信息。
 
-#### Authorized Cluster Endpoint
+#### 授权集群访问地址
 
-_Available as of v2.2.0_
+_v2.2.0可用_
 
-Authorized Cluster Endpoint can be used to directly access the Kubernetes API server, without requiring communication through Rancher.
+授权集群端点可用于直接访问Kubernetes API服务器，无需通过Rancher进行通信。
 
-> The authorized cluster endpoint only works on Rancher-launched Kubernetes clusters. In other words, it only works in clusters where Rancher [used RKE](/docs/overview/architecture/#tools-for-provisioning-kubernetes-clusters) to provision the cluster. It is not available for clusters in a hosted Kubernetes provider, such as Amazon's EKS.
+> 授权的集群端点仅适用于Rancher启动的Kubernetes集群。 换句话说，它只适用于rancher[使用RKE](/docs/overview/architecture/#tools-for-provisioning-kubernetes-clusters)来配置集群的集群。 它不适用于托管的Kubernetes提供商中的集群，例如Amazon的EKS。
 
-This is enabled by default in Rancher-launched Kubernetes clusters, using the IP of the node with the `controlplane` role and the default Kubernetes self signed certificates.
+这在Rancher启动的Kubernetes集群中默认启用，使用具有`controlplane`角色的节点的IP和默认的Kubernetes自签名证书。
 
-For more detail on how an authorized cluster endpoint works and why it is used, refer to the [architecture section.](/docs/overview/architecture/#4-authorized-cluster-endpoint)
+有关授权的集群终结点如何工作以及使用它的原因的更多详细信息，请参阅[体系结构部分。](/docs/overview/architecture/#4-authorized-cluster-endpoint)
 
-We recommend using a load balancer with the authorized cluster endpoint. For details, refer to the [recommended architecture section.](/docs/overview/architecture-recommendations/#architecture-for-an-authorized-cluster-endpoint)
+我们建议将负载均衡器与授权的集群终结点一起使用。 有关详细信息，请参阅[推荐架构部分。](/docs/overview/architecture-recommendations/#architecture-for-an-authorized-cluster-endpoint)
 
-## Advanced Options
+## 高级选项
 
-The following options are available when you create clusters in the Rancher UI. They are located under **Advanced Options.**
+在Rancher UI中创建集群时，以下选项可用。 它们位于**高级选项下。**
 
 #### NGINX Ingress
 
-Option to enable or disable the [NGINX ingress controller]({{< baseurl >}}/rke/latest/en/config-options/add-ons/ingress-controllers/).
+启用或禁用[NGINX ingress控制器]({{<baseurl>}}/rke/latest/en/config-options/add-ons/ingress-controller/)的选项。
 
-#### Node Port Range
+#### Node Port范围
 
-Option to change the range of ports that can be used for [NodePort services](https://kubernetes.io/docs/concepts/services-networking/service/#nodeport). Default is `30000-32767`.
+更改可用于[节点端口服务](https://kubernetes.io/docs/concepts/services-networking/service/#nodeport)的端口范围的选项默认值为`30000-32767`。
 
-#### Metrics Server Monitoring
+#### 监控指标
 
-Option to enable or disable [Metrics Server]({{< baseurl >}}/rke/latest/en/config-options/add-ons/metrics-server/).
+启用或禁用[指标服务器]({{<baseurl>}}/rke/latest/en/config-options/add-ons/metrics-server/)的选项。
 
-#### Pod Security Policy Support
+#### Pod安全策略
 
-Option to enable and select a default [Pod Security Policy](/docs/admin-settings/pod-security-policies). You must have an existing Pod Security Policy configured before you can use this option.
+选项启用并选择默认的[Pose安全策略](/docs/admin-settings/pod-security-policies)。 必须先配置现有Pod安全策略，然后才能使用此选项。
 
-#### Docker Version on Nodes
+#### 主机Docker版本
 
-Option to require [a supported Docker version](/docs/installation/requirements/) installed on the cluster nodes that are added to the cluster, or to allow unsupported Docker versions installed on the cluster nodes.
+要求在添加到集群的集群节点上安装[受支持的Docker版本](/docs/installation/requirements/)或允许在集群节点上安装不受支持的Docker版本。
 
-#### Docker Root Directory
+#### Docker根目录
 
-If the nodes you are adding to the cluster have Docker configured with a non-default Docker Root Directory (default is `/var/lib/docker`), please specify the correct Docker Root Directory in this option.
+如果要添加到集群的节点配置了非默认的Docker根目录（默认为`/var/lib/docker`），请在此选项中指定正确的Docker根目录。
 
-#### Recurring etcd Snapshots
+#### Etcd备份轮换
 
-Option to enable or disable [recurring etcd snapshots]({{< baseurl >}}/rke/latest/en/etcd-snapshots/#etcd-recurring-snapshots).
+选项来启用或禁用[Etcd备份轮换]({{<baseurl>}}/rke/latest/en/etcd-snapshots/#etcd-recurring-snapshots)。
 
-## Cluster Config File
+## 集群配置文件
 
-Instead of using the Rancher UI to choose Kubernetes options for the cluster, advanced users can create an RKE config file. Using a config file allows you to set any of the [options available]({{<baseurl>}}/rke/latest/en/config-options/) in an RKE installation, except for `system_images` configuration. The `system_images` option is not supported when creating a cluster with the Rancher UI or API.
+高级用户可以创建RKE配置文件，而不是使用Rancher UI为集群选择Kubernetes选项。 使用配置文件允许您在RKE安装中设置任何[可用选项]({{<baseurl>}}/rke/latest/en/config-options/)，除了`system_images`配置。 使用Rancher UI或API创建集群时不支持`system_images`选项。
 
-> **Note:** In Rancher v2.0.5 and v2.0.6, the names of services in the Config File (YAML) should contain underscores only: `kube_api` and `kube_controller`.
+> **注意:** 在Rancher v2.0.5和v2.0.6中，配置文件（YAML）中的服务名称应该只包含下划线`kube_api`和`kube_controller`。
 
-- To edit an RKE config file directly from the Rancher UI, click **Edit as YAML**.
-- To read from an existing RKE file, click **Read from a file**.
+- 要直接从Rancher UI编辑RKE配置文件，请单击**编辑为YAML**。
+- 要从现有RKE文件读取请单击**从文件读取**。
 
 ![image](/img/rancher/cluster-options-yaml.png)
 
-The structure of the config file is different depending on your version of Rancher. Below are example config files for Rancher v2.0.0-v2.2.x and for Rancher v2.3.0+.
+根据您的Rancher版本，配置文件的结构是不同的。 以下是Rancher v2.0.0-v2.2的示例配置文件。x和牧场主v2.3.0+。
 
-#### Config File Structure in Rancher v2.3.0+
+#### Rancher v2.3.0+ 配置文件结构
 
-RKE (Rancher Kubernetes Engine) is the tool that Rancher uses to provision Kubernetes clusters. Rancher's cluster config files used to have the same structure as [RKE config files,]({{<baseurl>}}/rke/latest/en/example-yamls/) but the structure changed so that in Rancher, RKE cluster config items are separated from non-RKE config items. Therefore, configuration for your cluster needs to be nested under the `rancher_kubernetes_engine_config` directive in the cluster config file. Cluster config files created with earlier versions of Rancher will need to be updated for this format. An example cluster config file is included below.
+RKE（Rancher Kubernetes引擎）是Rancher用来配置Kubernetes集群的工具。 Rancher的集群配置文件过去与[RKE config files,]({{<baseurl>}}/rke/latest/en/example-yamls/)具有相同的结构，但结构发生了变化，因此在Rancher中，RKE集群配置项目与非RKE配置项目分开。 因此，集群的配置需要嵌套在集群配置文件中的'rancher_kubernetes_engine_config'指令下。 使用早期版本的Rancher创建的集群配置文件将需要更新此格式。 下面包含一个示例集群配置文件。
 
  accordion id="v2.3.0-cluster-config-file" label="Example Cluster Config File for Rancher v2.3.0+" 
 
@@ -256,9 +256,9 @@ windows_prefered_cluster: false
 
  /accordion 
 
-#### Config File Structure in Rancher v2.0.0-v2.2.x
+#### Rancher v2.0.0-v2.2.x 配置文件结构
 
-An example cluster config file is included below.
+下面包含一个示例集群配置文件。
 
  accordion id="prior-to-v2.3.0-cluster-config-file" label="Example Cluster Config File for Rancher v2.0.0-v2.2.x" 
 
@@ -341,39 +341,39 @@ ssh_agent_auth: false
 
  /accordion 
 
-#### Default DNS provider
+#### 默认DNS插件
 
-The table below indicates what DNS provider is deployed by default. See [RKE documentation on DNS provider]({{< baseurl >}}/rke/latest/en/config-options/add-ons/dns/) for more information how to configure a different DNS provider. CoreDNS can only be used on Kubernetes v1.12.0 and higher.
+下表显示了默认情况下部署的DNS提供商。 有关如何配置不同的DNS提供程序的详细信息，请参阅[关于DNS提供程序的文档]({{<baseurl>}}/rke/latest/en/config-options/add-ons/dns/)。 Coredn只能在Kubernetes v1.12.0及更高版本上使用。
 
-| Rancher version   | Kubernetes version | Default DNS provider |
+| Rancher版本   | Kubernetes版本 | 默认DNS插件 |
 | ----------------- | ------------------ | -------------------- |
 | v2.2.5 and higher | v1.14.0 and higher | CoreDNS              |
 | v2.2.5 and higher | v1.13.x and lower  | kube-dns             |
 | v2.2.4 and lower  | any                | kube-dns             |
 
-## Rancher specific parameters
+## Rancher特有参数
 
-_Available as of v2.2.0_
+_v2.2.0可用_
 
-Besides the RKE config file options, there are also Rancher specific settings that can be configured in the Config File (YAML):
+除了RKE配置文件选项之外，还有可以在配置文件（YAML）中配置的Rancher特定设置):
 
 #### docker_root_dir
 
-See [Docker Root Directory](#docker-root-directory).
+参阅[Docker根目录](#docker-root-directory).
 
 #### enable_cluster_monitoring
 
-Option to enable or disable [Cluster Monitoring](/docs/cluster-admin/tools/monitoring/).
+启用或禁用[集群监控](/docs/cluster-admin/tools/monitoring/)选项.
 
 #### enable_network_policy
 
-Option to enable or disable Project Network Isolation.
+启用或禁用项目网络隔离选项。
 
 #### local_cluster_auth_endpoint
 
-See [Authorized Cluster Endpoint](#authorized-cluster-endpoint).
+参考[授权集群访问地址](#authorized-cluster-endpoint).
 
-Example:
+例子:
 
 ```yaml
 local_cluster_auth_endpoint:
@@ -382,15 +382,15 @@ local_cluster_auth_endpoint:
   ca_certs: 'BASE64_CACERT'
 ```
 
-#### Custom Network Plug-in
+#### 自定义网络插件
 
-_Available as of v2.2.4_
+_v2.2.4可用_
 
-You can add a custom network plug-in by using the [user-defined add-on functionality]({{<baseurl>}}/rke/latest/en/config-options/add-ons/user-defined-add-ons/) of RKE. You define any add-on that you want deployed after the Kubernetes cluster is deployed.
+您可以使用RKE的[用户定义附加功能]({{<baseurl>}}/rke/latest/en/config-options/add-ons/user-defined-add-ons/)添加自定义网络插件。 您可以在部署Kubernetes集群后定义要部署的任何附加组件。
 
-There are two ways that you can specify an add-on:
+有两种方法可以指定附加组件:
 
-- [In-line Add-ons]({{<baseurl>}}/rke/latest/en/config-options/add-ons/user-defined-add-ons/#in-line-add-ons)
-- [Referencing YAML Files for Add-ons]({{<baseurl>}}/rke/latest/en/config-options/add-ons/user-defined-add-ons/#referencing-yaml-files-for-add-ons)
+- [行内附加组件]({{<baseurl>}}/rke/latest/en/config-options/add-ons/user-defined-add-ons/#in-line-add-ons)
+- [引用加载项的YAML文件]({{<baseurl>}}/rke/latest/en/config-options/add-ons/user-defined-add-ons/#referencing-yaml-files-for-add-ons)
 
-For an example of how to configure a custom network plug-in by editing the `cluster.yml`, refer to the [RKE documentation.]({{<baseurl>}}/rke/latest/en/config-options/add-ons/network-plugins/custom-network-plugin-example)
+有关如何通过编辑配置自定义网络插件的示例`cluster.yml`，请参阅[RKE文档。]({{<baseurl>}}/rke/latest/en/config-options/add-ons/network-plugins/custom-network-plugins-example)
