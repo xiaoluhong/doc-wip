@@ -1,52 +1,53 @@
 ---
-title: Configuring FreeIPA
+标题: 配置 FreeIPA
 ---
 
-_Available as of v2.0.5_
+开始可用版本： v2.0.5  
 
-If your organization uses FreeIPA for user authentication, you can configure Rancher to allow your users to login using their FreeIPA credentials.
+如果您使用FreeIPA进行用户身份验证，则可以将Rancher配置为允许您的用户使用其FreeIPA凭据登录。
 
-> **Prerequisites:**
+
+> **先决条件:**
 >
-> - You must have a [FreeIPA Server](https://www.freeipa.org/) configured.
-> - Create a service account in FreeIPA with `read-only` access. Rancher uses this account to verify group membership when a user makes a request using an API key.
-> - Read [External Authentication Configuration and Principal Users](/docs/admin-settings/authentication/#external-authentication-configuration-and-principal-users).
+> - 您必须配置了 [FreeIPA Server](https://www.freeipa.org/) 服务器。  
+> - 在具有read-only访问权限的FreeIPA中创建一个服务帐户。当用户使用API​​密钥发出请求时，Rancher使用此帐户来验证组成员身份。  
+> - 阅读[外部用户身份配置和主要用户](/docs/admin-settings/authentication/#external-authentication-configuration-and-principal-users).
 
-1.  Sign into Rancher using a local user assigned the `administrator` role (i.e., the _local principal_).
+1.  使用分配了'administrator'角色的本地用户（即本地主体）登录Rancher 。
 
-2.  From the **Global** view, select **Security > Authentication** from the main menu.
+2.  在 **全局** 视图中, 从主菜单中选择 **安全 > 认证**.
 
-3.  Select **FreeIPA**.
+3.  选择 **FreeIPA**.
 
-4.  Complete the **Configure an FreeIPA server** form.
+4.  完成  **配置FreeIPA访问**表单.
 
-    You may need to log in to your domain controller to find the information requested in the form.
+    您可能需要登录到域控制器以查找表单中请求的信息.
 
-    > **Using TLS?**
-    > If the certificate is self-signed or not from a recognized certificate authority, make sure you provide the complete chain. That chain is needed to verify the server's certificate.
+    > **使用 TLS?**
+    > 如果证书是自签名的，或者不是来自公认的证书颁发机构的，请确保提供完整的链。需要该链来验证服务器的证书。
     > <br/>
-    > <br/> >**User Search Base vs. Group Search Base**
+    > <br/> >**用户搜索库与组搜索库**
     >
-    > Search base allows Rancher to search for users and groups that are in your FreeIPA. These fields are only for search bases and not for search filters.
+    > 搜索库使Rancher可以搜索FreeIPA中的用户和组。这些字段仅用于搜索基础，不适用于搜索过滤器.
     >
-    > - If your users and groups are in the same search base, complete only the User Search Base.
-    > - If your groups are in a different search base, you can optionally complete the Group Search Base. This field is dedicated to searching groups, but is not required.
+    > - 如果您的用户和组位于同一搜索库中，则仅填写用户搜索库。 
+    > - 如果您的组位于其他搜索库中，则可以选择完成“组搜索库”。该字段专用于搜索组，但不是必需的。  
 
-5.  If your FreeIPA deviates from the standard AD schema, complete the **Customize Schema** form to match it. Otherwise, skip this step.
+5.  如果您的组位于其他搜索库中，则可以选择完成“组搜索库”。该字段专用于搜索组，但不是必需的。  
 
-    > **Search Attribute** The Search Attribute field defaults with three specific values: `uid|sn|givenName`. After FreeIPA is configured, when a user enters text to add users or groups, Rancher automatically queries the FreeIPA server and attempts to match fields by user id, last name, or first name. Rancher specifically searches for users/groups that begin with the text entered in the search field.
+    > **搜索属性** 搜索属性字段的默认值为三个特定值：`uid|sn|givenName`。配置FreeIPA后，当用户输入文本以添加用户或组时，Rancher会自动查询FreeIPA服务器，并尝试按用户ID，姓氏或名字来匹配字段。Rancher专门搜索以在搜索字段中输入的文本开头的用户/组。
     >
-    > The default field value `uid|sn|givenName`, but you can configure this field to a subset of these fields. The pipe (`|`) between the fields separates these fields.
+    > 默认字段值为 `uid|sn|givenName`, 但是您可以将此字段配置为这些字段的子集。|字段之间的管道（）将这些字段分隔开。
     >
-    > - `uid`: User ID
-    > - `sn`: Last Name
-    > - `givenName`: First Name
+    > - `uid`: 用户身份
+    > - `sn`: 姓
+    > - `givenName`: 名字
     >
-    > With this search attribute, Rancher creates search filters for users and groups, but you _cannot_ add your own search filters in this field.
+    > 使用此搜索属性，Rancher可以为用户和组创建搜索过滤器，但是您不能在此字段中添加自己的搜索过滤器。
 
-6.  Enter your FreeIPA username and password in **Authenticate with FreeIPA** to confirm that Rancher is configured to use FreeIPA authentication.
+6.  输入您的FreeIPA用户名和密码 **通过FreeIPA进行身份验证** 以确认Rancher已配置为使用FreeIPA身份验证。
 
-**Result:**
+**结果:**
 
-- FreeIPA authentication is configured.
-- You are signed into Rancher with your FreeIPA account (i.e., the _external principal_).
+- FreeIPA认证已配置。
+- 您将使用您的FreeIPA帐户（即外部委托人）登录到Rancher 。  
