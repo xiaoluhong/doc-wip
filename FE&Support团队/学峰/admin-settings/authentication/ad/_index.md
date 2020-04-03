@@ -194,3 +194,68 @@ In the same way, we can observe that the value in the **memberOf** attribute in 
 ### Annex: Troubleshooting
 
 If you are experiencing issues while testing the connection to the Active Directory server, first double-check the credentials entered for the service account as well as the search base configuration. You may also inspect the Rancher logs to help pinpointing the problem cause. Debug logs may contain more detailed information about the error. Please refer to [How can I enable debug logging](/docs/faq/technical/#how-can-i-enable-debug-logging) in this documentation.
+
+
+
+---
+
+<h1>中文<h1/>
+  
+
+---
+标题：配置Active Directory（AD）
+---
+
+如果您的组织使用Microsoft Active Directory作为中央用户存储库，则可以配置Rancher与Active Directory服务器通信以对用户进行身份验证。这使Rancher管理员可以基于Active Directory中外部管理的用户和组来控制对群集和项目的访问，同时允许最终用户在登录Rancher UI时使用其AD凭据进行身份验证。
+
+Rancher使用LDAP与Active Directory服务器通信。因此，Active Directory的身份验证流程与[OpenLDAP身份验证]（/ docs / admin-settings / authentication / openldap）集成相同。
+
+> **注意：**
+>
+>在开始之前，请熟悉[外部认证配置和主要用户]（/ docs / admin-settings / authentication /＃external-authentication-configuration-and-principal-users）的概念。
+
+###先决条件
+
+您需要创建一个新的AD用户或从您的AD管理员那里获取一个新的AD用户，以用作Rancher的服务帐户。该用户必须具有足够的权限才能执行LDAP搜索并读取AD域下用户和组的属性。
+
+通常，（非管理员）“域用户”帐户应用于此目的，因为默认情况下，该用户对域分区中的大多数对象具有只读特权。
+
+但是请注意，在某些锁定的Active Directory配置中，此默认行为可能不适用。在这种情况下，您将需要确保服务帐户用户至少具有对基本OU（包含用户和组）或域的全局的“读取”和“列表内容”权限。
+
+> **使用TLS吗？**
+>
+>如果AD服务器使用的证书是自签名的，或者不是来自公认的证书颁发机构的证书，请确保手头有PEM格式的CA证书（与任何中间证书结合在一起）。在配置过程中，您将必须粘贴此证书，以便Rancher能够验证证书链。
+
+###配置步骤
+####打开Active Directory配置
+
+1.使用初始本地“ admin”帐户登录Rancher UI。
+2.从“全局”视图中，导航到“安全性”>“身份验证”
+3.选择“活动目录”。将显示“配置AD服务器”表单。
+
+####配置Active Directory服务器设置
+
+在标题为“ 1。配置Active Directory服务器`，并在字段中填写特定于您的Active Directory服务器的信息。有关每个参数所需值的详细信息，请参阅下表。
+
+> **注意：**
+>
+>如果不确定要在用户/组“搜索库”字段中输入正确的值，请参考[使用ldapsearch识别搜索库和架构]（＃annex-identify-search-base-and-schema-using-ldapsearch） 。
+
+**表1：AD服务器参数**
+
+|参数描述
+|：-|：-|
+|主机名|指定AD服务器的主机名或IP地址。
+|港口指定Active Directory服务器正在侦听连接的端口。未加密的LDAP通常使用标准端口389，而LDAPS使用端口636。
+| TLS |选中此框以启用基于SSL / TLS的LDAP（通常称为LDAPS）。
+|服务器连接超时| Rancher在考虑AD服务器不可达之前等待的持续时间（以秒为单位）。 |
+|服务帐户用户名|输入对您的域分区具有只读访问权限的AD帐户的用户名（请参阅[前提条件]（＃前提条件））。可以以NetBIOS格式（例如“ DOMAIN \ serviceaccount”）或UPN格式（例如“ serviceaccount@domain.com”）输入用户名。 |
+|服务帐号密码|服务帐户的密码。 |
+|默认登录域|当您使用AD域的NetBIOS名称配置此字段时，在没有域的情况下输入的用户名（例如“ jdoe”）将在绑定到AD服务器时自动转换为斜线的NetBIOS登录（例如“ LOGIN_DOMAIN \ jdoe”）。如果您的用户使用UPN（例如“ jdoe@acme.com”）作为用户名进行身份验证，则此字段**必须**为空。 |
+|用户搜索库|目录树中节点的专有名称，从该节点开始搜索用户对象。所有用户都必须是此基本DN的后代。例如：“ ou = people，dc = acme，dc = com”。
+|组搜索库|如果您的网上论坛所在的节点与“用户搜索库”下配置的节点不同，则需要在此处提供专有名称。否则将其留空。例如：“ ou = groups，dc = acme，dc = com”。
+
+---
+
+
+
