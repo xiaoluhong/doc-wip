@@ -27,7 +27,7 @@ Rancher包含Kubernetes中未包含的各种工具，可帮助您进行DevOps操
 
 - 捕获并分析集群的状态
 - 在您的环境中发现趋势
-- 将日志保存到群集之外的安全位置
+- 将日志保存到集群之外的安全位置
 - 随时了解容器崩溃，Pod驱逐或节点死亡等事件
 - 更轻松地调试和排除故障
 
@@ -39,7 +39,7 @@ Rancher可以与Elasticsearch，Splunk，Kafka，Syslog和Fluentd集成。
 
 _Available as of v2.2.0_
 
-在Rancher，您可以通过领先的开源监控解决方案[Prometheus](https://prometheus.io/)监控群集节点，Kubernetes系统组件和软件部署的状态和过程。有关详细信息，请参阅[监控部分](/docs/cluster-admin/tools/monitoring)
+在Rancher，您可以通过领先的开源监控解决方案[Prometheus](https://prometheus.io/)监控集群节点，Kubernetes系统组件和软件部署的状态和过程。有关详细信息，请参阅[监控部分](/docs/cluster-admin/tools/monitoring)
 
 ### Istio
 

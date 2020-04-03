@@ -26,7 +26,7 @@
 
 在Rancher v1.6中，我们使用了_Port Mapping_来公开你和你的用户可以访问服务的IP地址和端口。
 
-在Rancher v2.x中，暴露服务的机制和术语已更改和扩展。 现在，你有两个端口映射选项：_HostPorts_（与v1.6端口映射最相似，允许你将应用程序暴露在单个IP和端口上）和_NodePorts_（允许你在群集_所有_节点上映射端口， 不只是一个）。
+在Rancher v2.x中，暴露服务的机制和术语已更改和扩展。 现在，你有两个端口映射选项：_HostPorts_（与v1.6端口映射最相似，允许你将应用程序暴露在单个IP和端口上）和_NodePorts_（允许你在集群_所有_节点上映射端口， 不只是一个）。
 
 可惜的是，迁移工具CLI无法解析端口映射。 如果要从v1.6迁移到v2.x的服务有端口映射，则必须设置[HostPort]（＃hostport）或[NodePort]（＃nodeport）作为替代。
 
@@ -66,20 +66,20 @@ _NodePort_是向_每一个_集群节点开放的端口。 当NodePort收到针�
 
 NodePorts可帮助你规避IP地址的缺点。 尽管可以通过其IP地址访问Pod，但它们本质上是一次性的。 pod通常会被销毁并重新创建，每次复制都会获得一个新的IP地址。 因此，IP地址不是访问Pod的可靠方法。 NodePorts通过提供始终可以访问它们的静态服务来帮助你解决此问题。 即使你的Pod更改了其IP地址，依赖于它们的外部客户端也可以继续访问它们而不会受到干扰，所有这些都不会导致后端发生Pod的重新创建。
 
-在下图中，用户试图连接到Rancher管理的Kubernetes集群中运行的Nginx实例。 尽管他知道NodePort Nginx正在运行（在这种情况下为30216），但他不知道Pod在其上运行的特定节点的IP地址。 但是，启用NodePort后，他可以使用群集中_任何_节点的IP地址连接到Pod。 Kubeproxy会将请求转发到正确的节点和Pod。
+在下图中，用户试图连接到Rancher管理的Kubernetes集群中运行的Nginx实例。 尽管他知道NodePort Nginx正在运行（在这种情况下为30216），但他不知道Pod在其上运行的特定节点的IP地址。 但是，启用NodePort后，他可以使用集群中_任何_节点的IP地址连接到Pod。 Kubeproxy会将请求转发到正确的节点和Pod。
 
 ![NodePort图解](/img/rancher/nodePort.svg)
 
-NodePort在内部IP的Kubernetes群集中可用。 如果要在群集外部公开Pod，请结合使用NodePort和外部负载均衡器。来自集群外部对 `<NodeIP>:<NodePort>` 的流量请求将定向到工作负载。`<NodeIP>` 可以是Kubernetes集群中任何节点的IP地址。
+NodePort在内部IP的Kubernetes集群中可用。 如果要在集群外部公开Pod，请结合使用NodePort和外部负载均衡器。来自集群外部对 `<NodeIP>:<NodePort>` 的流量请求将定向到工作负载。`<NodeIP>` 可以是Kubernetes集群中任何节点的IP地址。
 
 ##### NodePort 优点
 
-- 创建NodePort服务为你的工作负载容器提供了一个静态的公共端点。 在那里，即使Pod已被破坏，Kubernetes也可以在群集中的任何位置部署工作负载，而无需更改公共端点。
-- pod的规模不受群集中节点数量的限制。 NodePort允许将公共访问与Pod的数量和位置分离。
+- 创建NodePort服务为你的工作负载容器提供了一个静态的公共端点。 在那里，即使Pod已被破坏，Kubernetes也可以在集群中的任何位置部署工作负载，而无需更改公共端点。
+- pod的规模不受集群中节点数量的限制。 NodePort允许将公共访问与Pod的数量和位置分离。
 
 ##### NodePort 缺点
 
-- 使用NodePort时， `<NodeIP>:<NodePort>` 仍在你的Kubernetes群集中所有节点上保留, 即使工作负载从未部署到其他节点。
+- 使用NodePort时， `<NodeIP>:<NodePort>` 仍在你的Kubernetes集群中所有节点上保留, 即使工作负载从未部署到其他节点。
 - 你只能在可配置范围内指定端口 (默认, 是 `30000-32767` 之间).
 - 需要一个额外的Kubernetes对象（类型为NodePort的Kubernetes服务）来暴露你的工作负载。 因此，找到应用程序的暴露方式并不容易。
 

@@ -25,23 +25,23 @@ Kubernetes的Windows节点支持特性汇总如[文档 supported functionality a
   - [网络](#网络)
   - [架构](#架构)
   - [容器](#容器)
-- [教程：如何在Windows支持下创建群集](#教程：如何在Windows支持下创建群集)
+- [教程：如何在Windows支持下创建集群](#教程：如何在Windows支持下创建集群)
 - [Azure中存储类的配置](#Azure中存储类的配置)
 <!-- /TOC -->
 
 ## 先决条件
 
-在配置新群集之前，请确保已在接受入站网络流量的设备上安装了Rancher。 为了使群集节点与Rancher通信，这是必需的。 如果尚未安装Rancher，请在继续本指南之前参考[安装文档](/docs/installation/)。
+在配置新集群之前，请确保已在接受入站网络流量的设备上安装了Rancher。 为了使集群节点与Rancher通信，这是必需的。 如果尚未安装Rancher，请在继续本指南之前参考[安装文档](/docs/installation/)。
 
-> **Cloud Providers注意事项:** 如果您在集群中设置Kubernetes cloud provider，则需要执行一些其他步骤。 如果要利用云提供商的功能（例如，为群集自动配置存储，负载平衡器或其他基础结构），则可能需要设置云提供商。 请参阅[本页](/docs/cluster-provisioning/rke-clusters/options/cloud-providers/)，以获取有关如何配置满足前提条件的节点的云提供商集群的详细信息。
+> **Cloud Providers注意事项:** 如果您在集群中设置Kubernetes cloud provider，则需要执行一些其他步骤。 如果要利用云提供商的功能（例如，为集群自动配置存储，负载平衡器或其他基础结构），则可能需要设置云提供商。 请参阅[本页](/docs/cluster-provisioning/rke-clusters/options/cloud-providers/)，以获取有关如何配置满足前提条件的节点的云提供商集群的详细信息。
 
 ## Windows集群要求
 
-对于自定义群集，网络，操作系统和Docker的一般节点要求与[Rancher安装](/docs/installation/requirements/)的节点要求相同。
+对于自定义集群，网络，操作系统和Docker的一般节点要求与[Rancher安装](/docs/installation/requirements/)的节点要求相同。
 
 #### OS和Docker
 
-为了将Windows工作程序节点添加到群集，该节点必须运行以下Windows Server版本之一和相应版本的Docker Engine-Enterprise Edition（EE）：
+为了将Windows工作程序节点添加到集群，该节点必须运行以下Windows Server版本之一和相应版本的Docker Engine-Enterprise Edition（EE）：
 
 - 具有Windows Server核心版本1809的节点应使用Docker EE-basic 18.09或Docker EE-basic 19.03。
 - 具有Windows Server核心版本1903的节点应使用Docker EE-basic 19.03。
@@ -53,7 +53,7 @@ Kubernetes的Windows节点支持特性汇总如[文档 supported functionality a
 
 #### 节点
 
-群集中的主机至少必须具有：
+集群中的主机至少必须具有：
 
 - 2 core CPUs
 - 5 GB memory
@@ -77,7 +77,7 @@ Kubernetes集群管理节点(`etcd`和`controlplane`)必须在Linux节点上运�
 
 工作负载将部署在其中的`worker`节点通常是Windows节点，但是必须至少有一个在Linux上运行的`worker`节点才能运行Rancher cluster agent，Metrics Server，DNS和与Ingress相关的容器。
 
-我们建议您在下表中列出最低的三节点体系结构，但是您始终可以添加其他Linux和Windows工作者以扩展群集以实现冗余：
+我们建议您在下表中列出最低的三节点体系结构，但是您始终可以添加其他Linux和Windows工作者以扩展集群以实现冗余：
 
 <a id="guide-architecture"></a>
 
@@ -91,13 +91,13 @@ Kubernetes集群管理节点(`etcd`和`controlplane`)必须在Linux节点上运�
 
 Windows要求容器必须建立在与容器相同的Windows Server版本上。 因此，必须在Windows Server核心版本1809或更高版本上构建容器。 如果您已经为早期的Windows Server核心版本构建了现有容器，则必须在Windows Server核心版本1809或更高版本上重新构建它们。
 
-## 教程：如何在Windows支持下创建群集
+## 教程：如何在Windows支持下创建集群
 
-本教程介绍了如何使用[推荐的体系结构](#guide-architecture)中的三个节点创建Rancher配置的群集。
+本教程介绍了如何使用[推荐的体系结构](#guide-architecture)中的三个节点创建Rancher配置的集群。
 
-使用Rancher设置自定义群集时，将通过在每个群集上安装[Rancher agent](/docs/cluster-provisioning/custom-clusters/agent-options/)将节点添加到群集中。 从Rancher UI创建或编辑集群时，您将看到一个**自定义Node启动命令**，您可以在每个服务器上运行该命令以将其添加到自定义集群中。
+使用Rancher设置自定义集群时，将通过在每个集群上安装[Rancher agent](/docs/cluster-provisioning/custom-clusters/agent-options/)将节点添加到集群中。 从Rancher UI创建或编辑集群时，您将看到一个**自定义Node启动命令**，您可以在每个服务器上运行该命令以将其添加到自定义集群中。
 
-要设置支持Windows节点和容器的自定义群集，您需要完成以下任务。
+要设置支持Windows节点和容器的自定义集群，您需要完成以下任务。
 
 <!-- TOC -->
 
@@ -109,12 +109,12 @@ Windows要求容器必须建立在与容器相同的Windows Server版本上。 �
 
 ## 1. 初始化主机
 
-要开始配置具有Windows支持的自定义群集，请准备主机。
+要开始配置具有Windows支持的自定义集群，请准备主机。
 
 您的主机可以是：
 
 - 云托管的虚拟机
-- 虚拟化群集中的VM
+- 虚拟化集群中的VM
 - 裸机服务器
 
 您将置备三个节点：
@@ -133,7 +133,7 @@ Windows要求容器必须建立在与容器相同的Windows Server版本上。 �
 
 ## 2. 创建自定义集群
 
-创建支持Windows节点的自定义群集的说明与一般[创建自定义群集的说明](/docs/cluster-provisioning/rke-clusters/custom-nodes/#2-create-the-custom-cluster)具有一些特定于Windows的要求。
+创建支持Windows节点的自定义集群的说明与一般[创建自定义集群的说明](/docs/cluster-provisioning/rke-clusters/custom-nodes/#2-create-the-custom-cluster)具有一些特定于Windows的要求。
 
 仅当集群使用Kubernetes v1.15 +和Flannel网络提供程序时才启用Windows支持。
 
@@ -141,7 +141,7 @@ Windows要求容器必须建立在与容器相同的Windows Server版本上。 �
 
 1.单击**自定义**。
 
-1.在**群集名称**文本框中输入群集的名称。
+1.在**集群名称**文本框中输入集群的名称。
 
 1.在“**Kubernetes版本**下拉菜单中，选择v1.15或更高版本。
 
@@ -161,7 +161,7 @@ Windows要求容器必须建立在与容器相同的Windows Server版本上。 �
 
 #### 添加Linux Master节点
 
-群集中的第一个节点应该是同时具有 **Control Plane** 和 **etcd** 角色的Linux主机。至少必须为此节点启用这两个角色，并且必须先将此节点添加到群集中，然后才能添加Windows主机。
+集群中的第一个节点应该是同时具有 **Control Plane** 和 **etcd** 角色的Linux主机。至少必须为此节点启用这两个角色，并且必须先将此节点添加到集群中，然后才能添加Windows主机。
 
 在本节中，我们在Rancher UI上填写表格，以获取自定义命令，以在Linux主节点上安装Rancher代理。然后，我们将复制命令并在Linux主节点上运行该命令，以在集群中注册该节点。
 
@@ -203,7 +203,7 @@ Windows要求容器必须建立在与容器相同的Windows Server版本上。 �
 
 > **Note:** Linux节点上的污点(Taint)设置
 >
-> 对于添加到群集中的每个Linux工作程序节点，以下污点将添加到Linux工作程序节点。 通过将此污点添加到Linux Worker节点，添加到Windows群集的所有工作负载都将自动调度到Windows Worker节点。 如果要将工作负载专门安排到Linux工作节点上，则需要为这些工作负载添加容差。
+> 对于添加到集群中的每个Linux工作程序节点，以下污点将添加到Linux工作程序节点。 通过将此污点添加到Linux Worker节点，添加到Windows集群的所有工作负载都将自动调度到Windows Worker节点。 如果要将工作负载专门安排到Linux工作节点上，则需要为这些工作负载添加容差。
 
 > | Taint Key      | Taint Value | Taint Effect |
 > | -------------- | ----------- | ------------ |
@@ -211,7 +211,7 @@ Windows要求容器必须建立在与容器相同的Windows Server版本上。 �
 
 #### 添加Windows节点
 
-您可以通过编辑群集并选择**Windows**选项将Windows主机添加到自定义群集。
+您可以通过编辑集群并选择**Windows**选项将Windows主机添加到自定义集群。
 
 1.在**全局**视图中，单击**集群**。
 
@@ -225,15 +225,15 @@ Windows要求容器必须建立在与容器相同的Windows Server版本上。 �
 
 1.在**Rancher**中，单击**保存**。
 
-1.可选：如果要向群集添加更多Windows节点，请重复这些说明。
+1.可选：如果要向集群添加更多Windows节点，请重复这些说明。
 
-**结果：** Worker **角色已安装在Windows主机上，并且该节点向Rancher注册。该节点可能需要几分钟才能在您的集群中注册。您现在拥有Windows Kubernetes群集。
+**结果：** Worker **角色已安装在Windows主机上，并且该节点向Rancher注册。该节点可能需要几分钟才能在您的集群中注册。您现在拥有Windows Kubernetes集群。
 
 #### 可选的下一步
 
-创建集群后，您可以通过Rancher UI访问它。 作为最佳实践，我们建议设置以下替代方法来访问群集：
+创建集群后，您可以通过Rancher UI访问它。 作为最佳实践，我们建议设置以下替代方法来访问集群：
 
-- **使用kubectl CLI访问您的集群：**请按照[这些步骤](/docs/cluster-admin/cluster-access/kubectl/#accessing-clusters-with-kubectl-on-your-workstation)访问集群 在工作站上使用kubectl。 在这种情况下，您将通过Rancher服务器的身份验证代理进行身份验证，然后Rancher会将您连接到下游群集。 此方法使您可以在没有Rancher UI的情况下管理集群。
+- **使用kubectl CLI访问您的集群：**请按照[这些步骤](/docs/cluster-admin/cluster-access/kubectl/#accessing-clusters-with-kubectl-on-your-workstation)访问集群 在工作站上使用kubectl。 在这种情况下，您将通过Rancher服务器的身份验证代理进行身份验证，然后Rancher会将您连接到下游集群。 此方法使您可以在没有Rancher UI的情况下管理集群。
 - **通过kubectl CLI使用授权的集群端点访问集群：**遵循[这些步骤](/docs/cluster-admin/cluster-access/kubectl/#authenticating-directly-with-a-downstream-cluster)，而无需通过Rancher服务器进行身份验证即可直接使用kubectl访问您的集群。 我们建议设置此替代方法来访问您的集群，以便在无法连接到Rancher的情况下仍然可以访问该集群。
 
 ## Azure中存储类的配置

@@ -19,7 +19,7 @@ RKE将在每个节点上配置一个Ingress控制器pod。 Ingress控制器pod�
 将负载均衡器配置为基本的4层TCP转发器。确切的配置将根据您的环境而有所不同。
 
 > **重要提示：**
-> 安装后，请不要使用这个负载均衡器（即`local`群集Ingress）对Rancher以外的应用程序进行负载均衡。与其他应用程序共享这个Ingress可能会在其他应用的Ingress配置重新加载后导致Rancher出现websocket错误。我们建议将`local`群集专用于Rancher，不要使用其他应用程序。
+> 安装后，请不要使用这个负载均衡器（即`local`集群Ingress）对Rancher以外的应用程序进行负载均衡。与其他应用程序共享这个Ingress可能会在其他应用的Ingress配置重新加载后导致Rancher出现websocket错误。我们建议将`local`集群专用于Rancher，不要使用其他应用程序。
 
 ##### 入门指南
 

@@ -49,12 +49,12 @@ Rancher can be installed on these main architectures:
 Rancher的部署可以有三种架构：
 
 - **高可用Kubernetes安装：**我们建议使用Kubernetes程序包管理器[Helm，](/docs/overview/concepts/#about-helm)在专用的Kubernetes集群上安装Rancher。我们建议在集群中使用三个节点，因为通过在多个节点上运行Rancher可以提高可用性。
-- **单节点Kubernetes安装：**另一个选择是在Kubernetes群集上使用Helm安装Rancher，但仅在群集中使用单个节点。在这种情况下，Rancher服务器不具有高可用性，这对于在生产环境中运行Rancher并不友好。但是，如果您想在短期内通过使用单个节点来节省资源，同时又保留高可用性迁移路径，则此选项很有用。将来，您可以将节点添加到群集中以获得高可用的Rancher server。
+- **单节点Kubernetes安装：**另一个选择是在Kubernetes集群上使用Helm安装Rancher，但仅在集群中使用单个节点。在这种情况下，Rancher服务器不具有高可用性，这对于在生产环境中运行Rancher并不友好。但是，如果您想在短期内通过使用单个节点来节省资源，同时又保留高可用性迁移路径，则此选项很有用。将来，您可以将节点添加到集群中以获得高可用的Rancher server。
 -** Docker安装：**为了进行测试和演示，可以将Rancher与Docker一起安装在单个节点上。此安装是开箱即用的，但是这种在后续会很难迁移到Kubernetes集群上。因此，您可能希望一开始就使用Kubernetes安装。
 
 The single-node Kubernetes install is achieved by describing only one node in the `cluster.yml` when provisioning the Kubernetes cluster with RKE. The single node should have all three roles: `etcd`, `controlplane`, and `worker`. Then Rancher can be installed with Helm on the cluster in the same way that it would be installed on any other cluster.
 
-通过RKE配置Kubernetes集群时，仅在`cluster.yml`中描述一个节点即可实现单节点Kubernetes的安装。 单个节点应具有所有三个角色："etcd"，"controlplane""和"worker"。 然后，可以使用Helm将Rancher安装在群集上，就像在其他任何群集上安装一样。
+通过RKE配置Kubernetes集群时，仅在`cluster.yml`中描述一个节点即可实现单节点Kubernetes的安装。 单个节点应具有所有三个角色："etcd"，"controlplane""和"worker"。 然后，可以使用Helm将Rancher安装在集群上，就像在其他任何集群上安装一样。
 
 There are also separate instructions for installing Rancher in an air gap environment or behind an HTTP proxy:
 
@@ -84,7 +84,7 @@ Before installing Rancher, make sure that your nodes fulfill all of the [install
 
 For the best performance and greater security, we recommend a separate, dedicated Kubernetes cluster for the Rancher management server. Running user workloads on this cluster is not advised. After deploying Rancher, you can [create or import clusters](/docs/cluster-provisioning/#cluster-creation-in-rancher) for running your workloads.
 
-为了获得最佳性能和更高的安全性，我们建议为Rancher管理服务器使用单独的专用Kubernetes集群。 不建议在此群集上运行用户工作负载。 部署Rancher后，您可以[创建或导入群集](/docs/cluster-provisioning/#cluster-creation-in-rancher)运行您的工作负载。
+为了获得最佳性能和更高的安全性，我们建议为Rancher管理服务器使用单独的专用Kubernetes集群。 不建议在此集群上运行用户工作负载。 部署Rancher后，您可以[创建或导入集群](/docs/cluster-provisioning/#cluster-creation-in-rancher)运行您的工作负载。
 
 For more architecture recommendations, refer to [this page.](/docs/overview/architecture-recommendations)
 

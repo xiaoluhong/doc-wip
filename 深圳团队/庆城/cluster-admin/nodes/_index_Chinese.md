@@ -29,7 +29,7 @@
 | [驱逐](#draining-a-node)                                     | ✓                               | ✓                 | ✓               |                 | 将节点标记为不可调度的， _并_ 将所有pod驱逐出去。 |
 | [编辑](#editing-a-node)                                      | ✓                               | ✓                 | ✓               |                 | 输入节点的自定义名称、描述、标签或污点。          |
 | [查看 API](#viewing-a-node-api)                              | ✓                               | ✓                 | ✓               |                 | 查看API数据。                                     |
-| [删除](#deleting-a-node)                                     | ✓                               | ✓                 |                 |                 | 从群集中删除有缺陷的节点。                        |
+| [删除](#deleting-a-node)                                     | ✓                               | ✓                 |                 |                 | 从集群中删除有缺陷的节点。                        |
 | [下载Keys](#ssh-into-a-node-hosted-by-an-infrastructure-provider) | ✓                               |                   |                 |                 | 下载SSH密钥以便SSH到节点。                        |
 | [节点扩展](#scaling-nodes)                                   | ✓                               |                   |                 |                 | 增加或减少节点池中的节点数。                      |
 

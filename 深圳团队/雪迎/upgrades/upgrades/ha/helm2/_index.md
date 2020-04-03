@@ -8,7 +8,7 @@ title: 使用Helm 2升级Kubernetes上安装的Rancher
 >
 > 本节提供了使用Helm 2升级Rancher的较旧说明的副本，适用于无法升级到Helm 3的情况。
 
-以下说明将指导您使用Helm升级Kubernetes群集上安装的Rancher服务器。
+以下说明将指导您使用Helm升级Kubernetes集群上安装的Rancher服务器。
 
 要升级Kubernetes集群中的组件，或升级[Kubernetes服务] [Kubernetes services]({{<baseurl>}}/rke/latest/en/config-options/services/) 或 [add-ons]({{< baseurl >}}/rke/latest/en/config-options/add-ons/)，请参阅[RKE的升级文档]({{<baseurl>}}/rke/latest/en/upgrades/)， Rancher Kubernetes引擎。
 
@@ -41,7 +41,7 @@ title: 使用Helm 2升级Kubernetes上安装的Rancher
 
 1. 更新本地的 helm 仓库
 
-   ```
+   ```bash
    helm repo update
    ```
 
@@ -51,7 +51,7 @@ title: 使用Helm 2升级Kubernetes上安装的Rancher
 
    {{< release-channel >}}
 
-   ```
+   ```bash
    helm repo list
 
    NAME          	       URL
@@ -74,13 +74,12 @@ title: 使用Helm 2升级Kubernetes上安装的Rancher
 
 本节介绍如何使用Helm升级Rancher的常规（连接Internet） 或离线安装。
 
- tabs 
- tab "Kubernetes Upgrade" 
+ tabs
+ tab "Kubernetes Upgrade"
 
 从已安装的当前Rancher Helm chart中获取通过`--set`传递的值。
 
-
-```
+```bash
 helm get values rancher
 
 hostname: rancher.my.org
@@ -90,51 +89,46 @@ hostname: rancher.my.org
 
 如果您也将cert-manager从0.11.0之前的版本升级到最新版本，请遵循 `选项B：重新安装Rancher`。否则，请遵循`选项A：升级Rancher`。
 
- accordion label="Option A: Upgrading Rancher" 
+ accordion label="Option A: Upgrading Rancher"
 
 使用所有设置将Rancher升级到最新版本。
 
 取上一步中的所有值，然后使用`--set key=value`将它们附加到命令中。> 注意: 上一步中将有更多选项需要附加。
 
-
-```
+```bash
 helm upgrade rancher-<CHART_REPO>/rancher \
   --name rancher \
   --namespace cattle-system \
   --set hostname=rancher.my.org
 ```
 
- /accordion 
+ /accordion
 
- accordion label="Option B: Reinstalling Rancher chart" 
+ accordion label="Option B: Reinstalling Rancher chart"
 
 如果您当前正在运行版本低于v0.11的cert-manger，并且想将Rancher和cert-manager都升级到新版本，则由于API中的更改，您需要重新安装Rancher和cert-manger。 cert-manger v0.11。
-
-
 
 请参阅[升级证书管理器](/docs/installation/options/upgrading-cert-manager) 页面以获取更多信息。
 1. 卸载Rancher
 
-   ```
+   ```bash
    helm delete rancher -n cattle-system
    ```
 
 2. 使用所有设置将Rancher重新安装到最新版本。获取上一步中的所有值，然后使用`--set key=value`. 将它们附加到命令中。注意：上一步中将有更多选项需要附加。
 
-
-
-   ```
+   ```bash
    helm install rancher-<CHART_REPO>/rancher \
    --name rancher \
    --namespace cattle-system \
    --set hostname=rancher.my.org
    ```
 
- /accordion 
+ /accordion
 
- /tab 
+ /tab
 
- tab "Kubernetes Air Gap Upgrade" 
+ tab "Kubernetes Air Gap Upgrade"
 
 1. 使用安装Rancher时使用的相同选择选项渲染Rancher模板。使用下面的参考表替换每个占位符。为了配置任何由Rancher启动的Kubernetes集群或Rancher工具，需要将Rancher配置为使用私有仓库。
 
@@ -159,7 +153,7 @@ helm template ./rancher-<VERSION>.tgz --output-dir . \
 --set useBundledSystemChart=true # Available as of v2.3.0, use the packaged Rancher system charts
 ```
 
- /accordion 
+ /accordion
  accordion id="secret" label="Option B: Certificates From Files using Kubernetes Secrets" 
 
 > **注意:** 如果您使用的是由私有CA签名的证书，请在 `--set ingress.tls.source=secret` 之后添加 `--set privateCA=true`。
@@ -175,7 +169,7 @@ helm template ./rancher-<VERSION>.tgz --output-dir . \
 --set useBundledSystemChart=true # Available as of v2.3.0, use the packaged Rancher system charts
 ```
 
- /accordion 
+ /accordion
 
 2. 将渲染的清单目录复制到可以访问Rancher服务器集群的系统，然后应用渲染的模板。
 

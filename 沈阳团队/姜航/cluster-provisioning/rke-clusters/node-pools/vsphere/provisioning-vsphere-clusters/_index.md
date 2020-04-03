@@ -248,7 +248,7 @@ _注意，通过ISO创建VM时不支持使用cloud-init选项_
 
 要在vSphere主机上安装Kubernetes，您需要通过修改集群YAML文件来启用vSphere cloud provider。 此项既适用于预先创建的[自定义节点](/docs/cluster-provisioning/rke-clusters/custom-nodes/)，也适用于使用vSphere主机驱动程序在Rancher中创建的主机。
 
-要创建群集并为群集启用vSphere提供程序，请执行以下步骤：To create the cluster and enable the vSphere provider for cluster, follow these steps:
+要创建集群并为集群启用vSphere提供程序，请执行以下步骤：To create the cluster and enable the vSphere provider for cluster, follow these steps:
 
 - [A. 设置集群名称和成员角色](#a-设置集群名称和成员角色)
 - [B. 配置Kubernetes选项](#b-配置Kubernetes选项)

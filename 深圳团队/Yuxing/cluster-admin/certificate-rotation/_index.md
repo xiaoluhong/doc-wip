@@ -2,7 +2,7 @@
 title: 证书轮换
 ---
 
-> **Warning:** 轮换Kubernetes证书可能会导致群集在重新启动组件时暂时不可用。 对于生产环境，建议在维护时段内执行此操作。
+> **Warning:** 轮换Kubernetes证书可能会导致集群在重新启动组件时暂时不可用。 对于生产环境，建议在维护时段内执行此操作。
 
 默认情况下，Kubernetes集群需要证书，并且Rancher启动的Kubernetes集群会自动为Kubernetes组件生成证书。 在证书过期之前以及证书被泄露之前，轮换这些证书非常重要。 轮换证书后，Kubernetes组件将自动重新启动。
 
@@ -32,7 +32,7 @@ Rancher启动的Kubernetes集群能够通过UI轮换自动生成的证书。
 
 **结果：**所选证书将被轮换，相关服务将重新启动以开始使用新证书。
 
-> **Note:** 即使RKE CLI可以为Kubernetes群集组件使用自定义证书，Rancher当前不允许在Rancher Launched Kubernetes群集中上传这些证书。
+> **Note:** 即使RKE CLI可以为Kubernetes集群组件使用自定义证书，Rancher当前不允许在Rancher Launched Kubernetes集群中上传这些证书。
 
 #### Rancher v2.1.x和v2.0.x中的证书轮换
 
@@ -54,7 +54,7 @@ Rancher启动的Kubernetes集群能够通过API轮换自动生成的证书。
 
 #### 升级较旧的Rancher版本后轮换过期的证书
 
-如果要从Rancher v2.0.13或更早版本或v2.1.8或更早版本升级，并且您的群集已过期证书，则需要一些手动步骤来完成证书轮换。
+如果要从Rancher v2.0.13或更早版本或v2.1.8或更早版本升级，并且您的集群已过期证书，则需要一些手动步骤来完成证书轮换。
 
 1. 对于 `controlplane` 和 `etcd` 节点，登录到每个对应的主机，并检查证书 `kube-apiserver-requestheader-ca.pem` 是否在以下目录中：
 

@@ -1,162 +1,164 @@
 ---
-title: Tips for Scaling, Security and Reliability
+title: 关于可伸缩性、安全性和可靠性的提示
 ---
 
-Rancher allows you to set up numerous combinations of configurations. Some configurations are more appropriate for development and testing, while there are other best practices for production environments for maximum availability and fault tolerance. The following best practices should be followed for production.
+Rancher允许您设置许多配置组合。有些配置更适合于开发和测试，而对于生产环境，还有其他一些最佳实践可以获得最大的可用性和容错能力。生产应该遵循以下最佳实践。
 
-## Tips for Preventing and Handling Problems
+## 预防和处理问题的提示
 
-These tips can help you solve problems before they happen.
+这些建议可以帮助你在问题发生之前解决它们。
 
-#### Run Rancher on a Supported OS and Supported Docker Version
+### 在支持的OS和Docker版本上运行Rancher
 
-Rancher is container-based and can potentially run on any Linux-based operating system. However, only operating systems listed in the [requirements documentation](/docs/installation/requirements/) should be used for running Rancher, along with a supported version of Docker. These versions have been most thoroughly tested and can be properly supported by the Rancher Support team.
+Rancher是基于容器的，可以在任何基于linux的操作系统上运行。然后，只有在[需求文档](/docs/installation/requirements/)中列出的操作系统以及支持的Docker版本才能用于运行Rancher。这些版本经过了最彻底的测试，可以得到Rancher支持团队的适当支持。
 
-#### Upgrade Your Kubernetes Version
+### 升级Kubernetes版本
 
-Keep your Kubernetes cluster up to date with a recent and supported version. Typically the Kubernetes community will support the current version and previous three minor releases (for example, 1.14.x, 1.13.x, 1.12.x, and 1.11.x). After a new version is released, the third-oldest supported version reaches EOL (End of Life) status. Running on an EOL release can be a risk if a security issues are found and patches are not available. The community typically makes minor releases every quarter (every three months).
+保持您的Kubernetes集群与最新的和受支持的版本保持同步。通常Kubernetes社区将支持当前版本和之前的三个小版本(例如: 1.14.x, 1.13.x, 1.12.x和1.11.x)。新版本发布后，之前的第四个支持版本达到EOL(生命结束)状态，如果发现了安全问题并且没有可用的补丁，那么在EOL版本上运行可能会有风险。社区通常每个季度(每三个月)发布一些小版本。
 
-Rancher’s SLAs are not community dependent, but as Kubernetes is a community-driven software, the quality of experience will degrade as you get farther away from the community's supported target.
+Rancher的sla不依赖于社区，但由于Kubernetes是一个社区驱动的软件，当您离社区支持的目标越来越远时，体验的质量就会下降。
 
-#### Kill Pods Randomly During Testing
+### 在测试中随机杀死Pod
 
-Run chaoskube or a similar mechanism to randomly kill pods in your test environment. This will test the resiliency of your infrastructure and the ability of Kubernetes to self-heal. It's not recommended to run this in your production environment.
+运行chaoskube或类似的机制，在测试环境中随机杀死Pod。这将测试您的基础设施的弹性和Kubernetes的自愈能力，但不建议在您的生产环境中运行它。
 
-#### Deploy Complicated Clusters with Terraform
+### 使用Terraform部署复杂的集群
 
-Rancher's "Add Cluster" UI is preferable for getting started with Kubernetes cluster orchestration or for simple use cases. However, for more complex or demanding use cases, it is recommended to use a CLI/API driven approach. [Terraform](https://www.terraform.io/) is recommended as the tooling to implement this. When you use Terraform with version control and a CI/CD environment, you can have high assurances of consistency and reliability when deploying Kubernetes clusters. This approach also gives you the most customization options.
+Rancher UI的`添加集群`更适合于开始使用Kubernetes集群或简单的用例。但是，对于更复杂或要求更高的用例，建议使用CLI/API驱动的方法。[Terraform](https://www.terraform.io/) 建议作为实现此功能的工具。当您使用带有版本控制和CI/CD环境的Terraform时，您可以在部署Kubernetes集群时获得高度的一致性和可靠性保证。 这种方法还提供了最多的定制选项。
 
-Rancher [maintains a Terraform provider](https://rancher.com/blog/2019/rancher-2-terraform-provider/) for working with Rancher 2.0 Kubernetes. It is called the [Rancher2 Provider.](https://www.terraform.io/docs/providers/rancher2/index.html)
+Rancher维护的[Terraform provider](https://rancher.com/blog/2019/rancher-2-terraform-provider/)用于与Rancher 2.0 Kubernetes一起工作，它被称为[Rancher2 Provider](https://www.terraform.io/docs/providers/rancher2/index.html)。
 
-#### Upgrade Rancher in a Staging Environment
+### 预生产环境中升级Rancher
 
-All upgrades, both patch and feature upgrades, should be first tested on a staging environment before production is upgraded. The more closely the staging environment mirrors production, the higher chance your production upgrade will be successful.
+所有的升级，包括补丁和功能升级，都应该在升级产品之前先在预生产环境中进行测试。预生产环境越接近生产环境，您的生产升级成功的机会就越大。
 
-#### Renew Certificates Before they Expire
+### 更新集群证书
 
-Multiple people in your organization should set up calendar reminders for certificate renewal. Consider renewing the certificate two weeks to one month in advance. If you have multiple certificates to track, consider using [monitoring and alerting mechanisms](/docs/cluster-admin/tools/) to track certificate expiration.
+默认情况下，Kubernetes集群使用ssl证书来加密通信，Rancher自动为集群生成证书。在`Rancher v2.0.14、v2.1.9`之前的版本，Rancher创建的集群ssl证书默认有效期为1年(CA证书默认10年)，在`Rancher v2.0.14、v2.1.9`以及更高的版本中，Rancher创建的集群ssl证书默认为10年(CA证书默认10年)。
 
-Rancher-provisioned Kubernetes clusters will use certificates that expire in one year. Clusters provisioned by other means may have a longer or shorter expiration.
+对于`Rancher v2.0.14、v2.1.9`之前的版本，管理人员应该为证书更新设置日历提醒，因为这些版本创建的集群ssl证书默认有效期为1年(CA证书默认10年)，而rancher ui并不会提示证书有效期。
 
-Certificates can be renewed for Rancher-provisioned clusters [through the Rancher user interface](/docs/cluster-admin/certificate-rotation/).
+所以如果正在使用`Rancher v2.0.14、v2.1.9`之前的版本，建议升级到`Rancher v2.0.14、v2.1.9`之后的版本，然后通过Rancher去更新集群ssl证书，可以考虑提前两周到一个月更新证书。如果您有多个证书需要跟踪，可以考虑使用监视和警报机制来跟踪证书过期。
 
-#### Enable Recurring Snapshots for Backing up and Restoring the Cluster
+对于通过Rancher创建的Kubernetes集群，证书可以通过Rancher[用户界面](/docs/cluster-admin/certificate-rotation/)进行更新。
 
-Make sure etcd recurring snapshots are enabled. Extend the snapshot retention to a period of time that meets your business needs. In the event of a catastrophic failure or deletion of data, this may be your only recourse for recovery. For details about configuring snapshots, refer to the [RKE documentation]({{<baseurl>}}/rke/latest/en/etcd-snapshots/) or the [Rancher documentation on backups](/docs/backups/).
+### 集群启用循环快照
 
-#### Provision Clusters with Rancher
+确保启用etcd循环快照， 将快照保持时间延长到满足业务需求的一段时间。在发生灾难性故障或数据删除时，这可能是您进行恢复的惟一途径。有关配置快照的详细信息，请参阅[RKE 文档]({{<baseurl>}}/rke/latest/en/etcd-snapshots/)或者[Rancher 备份](/docs/backups/).
 
-When possible, use Rancher to provision your Kubernetes cluster rather than importing a cluster. This will ensure the best compatibility and supportability.
+### Rancher部署Kubernetes集群
 
-#### Use Stable and Supported Rancher Versions for Production
+如果可能，使用Rancher来部署您的Kubernetes集群，而不是导入集群。这将确保最佳的兼容性和可支持性。
 
-Do not upgrade production environments to alpha, beta, release candidate (rc), or "latest" versions. These early releases are often not stable and may not have a future upgrade path.
+### 使用稳定的和受支持的Rancher版本进行生产部署
 
-When installing or upgrading a non-production environment to an early release, anticipate problems such as features not working, data loss, outages, and inability to upgrade without a reinstall.
+不要将生产环境升级到alpha、beta、rc或`latest`版本，这些版本通常不稳定，可能没有未来的升级路径。
 
-Make sure the feature version you are upgrading to is considered "stable" as determined by Rancher. Use the beta, release candidate, and "latest" versions in a testing, development, or demo environment to try out new features. Feature version upgrades, for example 2.1.x to 2.2.x, should be considered as and when they are released. Some bug fixes and most features are not back ported into older versions.
+在将非生产环境安装或升级到早期版本时，要预料到一些问题，如功能无法工作、数据丢失、宕机以及无法在不重新安装的情况下升级。
 
-Keep in mind that Rancher does End of Life support for old versions, so you will eventually want to upgrade if you want to continue to receive patches.
+确保您在生产环境中使用`stable`版本，可以在测试、开发或演示环境中使用beta、发布候选版本和`latest`版本来尝试新功能特性。一些bug修复和大多数功能都没有移植到旧版本中，所以在大版本发布时，例如2.1.x到2.2 x，应该考虑进行升级。
 
-For more detail on what happens during the Rancher product lifecycle, refer to the [Support Maintenance Terms](https://rancher.com/support-maintenance-terms/).
+Rancher终止了对旧版本的生命支持，所以您需要通过升级来更新补丁或者功能。
 
-## Network Topology
+有关Rancher产品生命周期的更多细节，请参考[Support Maintenance Terms](https://rancher.com/support-maintenance-terms/).
 
-These tips can help Rancher work more smoothly with your network.
+## 网络拓扑结构
 
-#### Use Low-latency Networks for Communication Within Clusters
+这些提示可以帮助Rancher更顺利的在你的网络中运行。
 
-Kubernetes clusters are best served by low-latency networks. This is especially true for the control plane components and etcd, where lots of coordination and leader election traffic occurs. Networking between Rancher server and the Kubernetes clusters it manages are more tolerant of latency.
+### 在集群中使用低延迟网络进行通信
 
-#### Allow Rancher to Communicate Directly with Clusters
+Kubernetes集群最好使用低延迟网络。对于控制平面组件和etcd尤其如此，在etcd中会出现大量的协调和领袖选举流量。Rancher Server和它管理的Kubernetes集群之间的网络对延迟的容忍度更高。
 
-Limit the use of proxies or load balancers between Rancher server and Kubernetes clusters. As Rancher is maintaining a long-lived web sockets connection, these intermediaries can interfere with the connection lifecycle as they often weren't configured with this use case in mind.
+### 允许Rancher直接与Kubernetes集群通信
 
-## Tips for Scaling and Reliability
+避免RancherServer和Kubernetes集群之间使用代理或负载均衡器。由于Rancher维持的是长生命周期的web sockets连接，这些中间件可能会干扰连接的生命周期，因为它们通常没有考虑到这个用例。
 
-These tips can help you scale your cluster more easily.
+## 关于可伸缩性和可靠性的提示
 
-#### Use One Kubernetes Role Per Host
+这些技巧可以帮助您更轻松地扩展集群。
 
-Separate the etcd, control plane, and worker roles onto different hosts. Don't assign multiple roles to the same host, such as a worker and control plane. This will give you maximum scalability.
+### 每个主机使用一个Kubernetes角色
 
-#### Run the Control Plane and etcd on Virtual Machines
+将etcd、control plane和worker角色分离到不同的主机上。不要将多个角色分配给同一台主机，如control plane和worker角色在一起，这将为您提供最大的可伸缩性。
 
-Run your etcd and control plane nodes on virtual machines where you can scale vCPU and memory easily if needed in the future.
+### 在虚拟机上运行control plane和etcd
 
-#### Use at Least Three etcd Nodes
+在虚拟机上运行etcd和control plane节点，如果将来需要，您可以轻松地扩展vCPU和内存。
 
-Provision 3 or 5 etcd nodes. Etcd requires a quorum to determine a leader by the majority of nodes, therefore it is not recommended to have clusters of even numbers. Three etcd nodes is generally sufficient for smaller clusters and five etcd nodes for large clusters.
+### 至少使用三个etcd节点
 
-#### Use at Least Two Control Plane Nodes
+规定3或5个etcd节点。Etcd需要一个quorum来通过大多数节点来确定leader，因此不建议使用偶数集群。对于较小的集群，三个etcd节点就足够了，对于大型集群，五个etcd节点就足够了。
 
-Provision two or more control plane nodes. Some control plane components, such as the `kube-apiserver`, run in [active-active](https://www.jscape.com/blog/active-active-vs-active-passive-high-availability-cluster) mode and will give you more scalability. Other components such as kube-scheduler and kube-controller run in active-passive mode (leader elect) and give you more fault tolerance.
+### 使用至少两个控制平面节点
 
-#### Monitor Your Cluster
+提供两个或多个控制平面节点。一些控制平面组件，比如：`kube-apiserver`，运行在 [active-active](https://www.jscape.com/blog/active-active-vs-active-passive-high-availability-cluster) 模式下，将为您提供更多的可伸缩性。其他组件，如`kube-scheduler和kube-controller`运行在`active-passive` 模式下，提供更多的容错。
 
-Closely monitor and scale your nodes as needed. You should [enable cluster monitoring](/docs/cluster-admin/tools/monitoring/) and use the Prometheus metrics and Grafana visualization options as a starting point.
+### 监控集群
 
-## Tips for Security
+根据需要密切监视和扩展节点。您应该启用 [集群监控](/docs/cluster-admin/tools/monitoring/)并使用Prometheus指标和Grafana可视化选项。
 
-Below are some basic tips for increasing security in Rancher. For more detailed information about securing your cluster, you can refer to these resources:
+## 安全提示
+
+下面是一些提高Rancher安全的基本技巧。有关保护集群的更详细信息，请参考以下参考资料:
 
 - Rancher's [security documentation and Kubernetes cluster hardening guide](/docs/security/)
 - [101 More Security Best Practices for Kubernetes](https://rancher.com/blog/2019/2019-01-17-101-more-kubernetes-security-best-practices/)
 
-#### Update Rancher with Security Patches
+### 更新Rancher安全补丁
 
-Keep your Rancher installation up to date with the latest patches. Patch updates have important software fixes and sometimes have security fixes. When patches with security fixes are released, customers with Rancher licenses are notified by e-mail. These updates are also posted on Rancher's [forum](https://forums.rancher.com/).
+让您的Rancher安装最新的补丁。补丁更新包含重要的软件补丁，有时还包含安全补丁。当带有安全补丁的补丁发布时，持有Rancher许可证的客户将收到电子邮件通知。这些更新也公布在Rancher的[论坛](https://forums.rancher.com/).
 
-#### Report Security Issues Directly to Rancher
+### 直接向Rancher报告安全问题
 
-If you believe you have uncovered a security-related problem in Rancher, please communicate this immediately and discretely to the Rancher team (security@rancher.com). Posting security issues on public forums such as Twitter, Rancher Slack, GitHub, etc. can potentially compromise security for all Rancher customers. Reporting security issues discretely allows Rancher to assess and mitigate the problem. Security patches are typically given high priority and released as quickly as possible.
+如果您认为您已经发现了Rancher的安全相关问题，请立即与牧场主团队进行沟通(security@rancher.com)。在Twitter、Rancher Slack、GitHub等公共论坛上发布安全问题可能会危及所有Rancher客户的安全。安全补丁通常具有较高的优先级，并尽可能快地发布。
 
-#### Only Upgrade One Component at a Time
+### 一次只升级一个组件
 
-In addition to Rancher software updates, closely monitor security fixes for related software, such as Docker, Linux, and any libraries used by your workloads. For production environments, try to avoid upgrading too many entities during a single maintenance window. Upgrading multiple components can make it difficult to root cause an issue in the event of a failure. As business requirements allow, upgrade one component at a time.
+除了Rancher软件更新之外，还要密切监视相关软件(如Docker、Linux和工作负载使用的任何库)的安全修复。对于生产环境，请尝试避免在单个维护窗口期间升级太多实体。升级多个组件在发生故障时很难从根本上解决问题。在业务需求允许的情况下，一次升级一个组件。
 
-## Tips for Multi-Tenant Clusters
+## 关于多租户集群的提示
 
-#### Namespaces
+### 命名空间
 
-Each tenant should have their own unique namespaces within the cluster. This avoids naming conflicts and allows resources to be only visible to their owner through use of RBAC policy
+每个租户在集群中都应该有自己独特的名称空间。这避免了命名冲突，并允许通过使用RBAC策略只对资源的所有者可见。
 
-#### Project Isolation
+### 项目隔离
 
-Use Rancher's Project Isolation to automatically generate Network Policy between Projects (sets of Namespaces). This further protects workloads from interference
+使用Rancher的项目隔离在项目之间自动生成网络策略(命名空间集)，这进一步保护了工作负载免受干扰。
 
-#### Resource Limits
+### 资源限制
 
-Enforce use of sane resource limit definitions for every deployment in your cluster. This not only protects the owners of the deployment, but the neighboring resources from other tenants as well. Remember, namespaces do not isolate at the node level, so over-consumption of resources on a node affects other namespace deployments. Admission controllers can be written to require resource limit definitions
+为集群中的每个应用部署强制使用资源限制定义。这不仅保护了部署的所有者，还保护了邻近的资源不受其他租户的影响。请记住，名称空间不会在节点级别隔离，因此节点上资源的过度消耗会影响其他名称空间部署。可以编写允许控制器来要求定义资源限制。
 
-#### Resource Requirements
+### 资源需求
 
-Enforce use of resource requirement definitions for each deployment in your cluster. This enables the scheduler to appropriately schedule workloads. Otherwise you will eventually end up with over-provisioned nodes.
+为集群中的每个应用部署强制使用资源需求定义，这使调度器能够适当地调度工作负载。否则，某些节点会调度很多Pod导致节点资源耗尽。
 
-## Class of Service and Kubernetes Clusters
+## 服务类和Kubernetes集群
 
-A class of service describes the expectations around cluster uptime, durability, and duration of maintenance windows. Typically organizations group these characteristics into labels such as "dev" or "prod"
+一类服务描述了围绕集群正常运行时间、持久性和维护窗口持续时间的期望。通常，组织将这些特征分组到标签中，如`dev`或`prod`。
 
-#### Consider fault domains
+### 考虑故障域
 
-Kubernetes clusters can span multiple classes of service, however it is important to consider the ability for one workload to affect another. Without proper deployment practices such as resource limits, requirements, etc, a deployment that is not behaving well has the potential to impact the health of the cluster. In a "dev" environment it is common for end-users to exercise less caution with deployments, thus increasing the chance of such behavior. Sharing this behavior with your production workload increases risk.
+Kubernetes集群可以运行多种服务的工作负载，所以需要考虑一种工作负载对另一种工作负载的影响，比如：没有适当的部署实践(如资源限制、需求等)，运行不佳的工作负载可能会影响集群的健康状况。
 
-#### Upgrade risks
+### 升级风险
 
-Upgrades of Kubernetes are not without risk, the best way to predict the outcome of an upgrade is try it on a cluster of similar load and use case as your production cluster. This is where having non-prod class of service clusters can be advantageous.
+Kubernetes的升级并非没有风险，预测升级结果的最佳方法是在与生产集群负载和用例类似的集群上进行尝试。这就是拥有非prod类服务集群的优势所在。
 
-#### Resource Efficiency
+### 资源效率
 
-Clusters can be built with varying degrees of redundancy. In a class of service with low expectations for uptime, resources and cost can be conserved by building clusters without redundant Kubernetes control components. This approach may also free up more budget/resources to increase the redundancy at the production level
+可以使用不同程度的冗余来构建集群。在对正常运行时间期望较低的一类服务中，可以通过构建没有冗余Kubernetes控制组件的集群来节约资源和成本。这种方法还可以释放更多的预算/资源来增加生产级别的冗余。
 
-## Network Security
+## 网络安全
 
-In general, you can use network security best practices in your Rancher and Kubernetes clusters. Consider the following:
+通常，您可以在Rancher和Kubernetes集群中使用网络安全最佳实践。
 
-#### Use a Firewall Between your Hosts and the Internet
+### 在你的主机和互联网之间使用防火墙
 
-Firewalls should be used between your hosts and the Internet (or corporate Intranet). This could be enterprise firewall appliances in a datacenter or SDN constructs in the cloud, such as VPCs, security groups, ingress, and egress rules. Try to limit inbound access only to ports and IP addresses that require it. Outbound access can be shut off (air gap) if environment sensitive information that requires this restriction. If available, use firewalls with intrusion detection and DDoS prevention.
+应该在主机和Internet(或公司内部网)之间使用防火墙。这可以是数据中心的企业防火墙设备，也可以是云中的SDN结构，比如vpc、安全组、入口和出口规则。尝试将入站访问限制为只访问需要它的端口和IP地址。如果环境敏感信息需要此限制，则可以关闭出站访问(离线环境)。如果可能，使用带有入侵检测和DDoS预防的防火墙。
 
-#### Run Periodic Security Scans
+### 定期安全扫描
 
-Run security and penetration scans on your environment periodically. Even with well design infrastructure, a poorly designed microservice could compromise the entire environment.
+定期对您的环境运行安全性和渗透扫描，即使拥有良好的基础设施，糟糕的微服务也可能危及整个环境。

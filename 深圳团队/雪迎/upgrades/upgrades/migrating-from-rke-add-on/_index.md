@@ -18,13 +18,13 @@ title: 从带有RKE add-on组件的Kubernetes安装迁移
 
 确保`kubectl`使用的是正确的kubeconfig YAML文件。将环境变量`KUBECONFIG`设置为指向`kube_config_rancher-cluster.yml`:
 
-```
+```bash
 export KUBECONFIG=$(pwd)/kube_config_rancher-cluster.yml
 ```
 
 设置环境变量 `KUBECONFIG` 之后，请验证其是否包含正确的 `server` 参数。它应直接指向端口 `6443`上的集群节点之一。
 
-```
+```bash
 kubectl config view -o=jsonpath='{.clusters[*].cluster.server}'
 https://NODE:6443
 ```
@@ -37,14 +37,14 @@ https://NODE:6443
 
 使用`kubectl`来获取密码，解码值并将输出定向到文件。
 
-```
+```bash
 kubectl -n cattle-system get secret cattle-keys-ingress -o jsonpath --template='{ .data.tls\.crt }' | base64 -d > tls.crt
 kubectl -n cattle-system get secret cattle-keys-ingress -o jsonpath --template='{ .data.tls\.key }' | base64 -d > tls.key
 ```
 
 如果您指定了私有CA根证书
 
-```
+```bash
 kubectl -n cattle-system get secret cattle-keys-server -o jsonpath --template='{ .data.cacerts\.pem }' | base64 -d > cacerts.pem
 ```
 
@@ -54,7 +54,7 @@ kubectl -n cattle-system get secret cattle-keys-server -o jsonpath --template='{
 
 > **注意:** 删除这些Kubernetes组件不会影响Rancher的配置或数据库，但是在进行任何维护后，最好事先创建数据备份。有关详细信息，请参见[创建Backup-Kubernetes安装](/docs/backups/backups/ha-backups)。
 
-```
+```bash
 kubectl -n cattle-system delete ingress cattle-ingress-http
 kubectl -n cattle-system delete service cattle-service
 kubectl -n cattle-system delete deployment cattle
@@ -69,7 +69,7 @@ kubectl -n cattle-system delete serviceaccount cattle-admin
 
 > **重要:** 确保仅从集群配置文件中删除addons部分。
 
-```
+```yaml
 nodes:
   - address: <IP> # hostname or IP to access nodes
     user: <USER> # root user (usually 'root')

@@ -123,7 +123,7 @@ Rancher v2.x Ingress功能支持HTTPS协议，但如果要使用它，则需要�
 
 ##### 四层负载均衡器
 
-对于TCP协议，Rancher v2.x支持使用其中部署了Kubernetes集群的云提供商配置第4层负载均衡器。 一旦为群集配置了此负载均衡器设备，当你在工作负载部署期间选择`Layer-4 Load Balancer`选项进行端口映射时，Rancher会自动创建相应的负载均衡器服务。 该服务将呼叫相应的云提供商，配置负载平衡器设备以将请求路由到适当的pod。 有关如何为你的云提供商配置LoadBalancer服务的信息，查看 [云提供商](/docs/cluster-provisioning/rke-clusters/options/cloud-providers/)
+对于TCP协议，Rancher v2.x支持使用其中部署了Kubernetes集群的云提供商配置第4层负载均衡器。 一旦为集群配置了此负载均衡器设备，当你在工作负载部署期间选择`Layer-4 Load Balancer`选项进行端口映射时，Rancher会自动创建相应的负载均衡器服务。 该服务将呼叫相应的云提供商，配置负载平衡器设备以将请求路由到适当的pod。 有关如何为你的云提供商配置LoadBalancer服务的信息，查看 [云提供商](/docs/cluster-provisioning/rke-clusters/options/cloud-providers/)
 
 例如，如果我们创建名为`myapp`的部署并在**端口映射**部分中指定第4层负载均衡器，则Rancher会自动将一个条目添加到名为`myapp-loadbalancer`的**负载均衡器**选项卡中。
 
@@ -150,7 +150,7 @@ ConfigMap条目中的密钥应该是要公开访问的TCP端口：`<namespace/se
 Cattle提供了功能丰富的负载均衡器支持，即 [well documented]({{< baseurl >}}/rancher/v1.6/en/cattle/adding-load-balancers/#load-balancers). 其中一些功能在Rancher v2.x中没有等效功能。 以下是这些功能的列表：
 
 - 当前的NGINX Ingress Controller不支持SNI。
-- TCP负载均衡需要群集中的云提供商启用的负载均衡器设备。 Kubernetes上没有对TCP的Ingress支持。
+- TCP负载均衡需要集群中的云提供商启用的负载均衡器设备。 Kubernetes上没有对TCP的Ingress支持。
 - 只能将端口80和443配置为通过Ingress进行HTTP/HTTPS路由。Ingress Controller也作为守护程序全局部署，而不作为可伸缩服务启动。 此外，用户不能分配随机的外部端口用于均衡。 因此，用户需要确保配置唯一的主机名/路径组合，以避免使用相同的两个端口而路由冲突。
 - 无法指定端口规则优先级和顺序。
 - Rancher v1.6添加了对耗尽后端连接和指定耗尽超时的支持。 Rancher v2.x不支持此功能。

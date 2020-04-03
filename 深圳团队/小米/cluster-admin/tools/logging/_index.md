@@ -6,7 +6,7 @@ title: Rancher与日志收集目标服务的集成
 
 - 捕获并分析集群的状态
 - 在您的环境中发现趋势
-- 将日志保存到群集之外的安全位置
+- 将日志保存到集群之外的安全位置
 - 随时了解容器崩溃，Pod驱逐或节点死亡等事件
 - 更轻松地调试和排除故障
 
@@ -33,11 +33,11 @@ Rancher使用Fluentd收集日志，并与外部日志服务集成。
 
 Fluentd收集保存在节点上 `/var/log/containers` 目录下的容器日志，其中包含了容器的标准输出日志和错误日志并发送到外部日志服务，您可以进入接收日志的外部日志服务查看日志。
 
-> **注意:** 您只能为每个群集或每个项目配置一个外部日志服务。
+> **注意:** 您只能为每个集群或每个项目配置一个外部日志服务。
 
 ## 前提
 
-群集中每个节点上的Docker守护程序应配置 [configured](https://docs.docker.com/config/containers/logging/configure/) （默认）日志驱动为: `json-file`. 您可以通过运行以下命令来检查日志驱动配置：
+集群中每个节点上的Docker守护程序应配置 [configured](https://docs.docker.com/config/containers/logging/configure/) （默认）日志驱动为: `json-file`. 您可以通过运行以下命令来检查日志驱动配置：
 
 ```
 $ docker info | grep 'Logging Driver'
@@ -60,7 +60,7 @@ Logging Driver: json-file
 
 作为[管理员](/docs/admin-settings/rbac/global-permissions/) 或者 [集群所有者](/docs/admin-settings/rbac/cluster-project-roles/#cluster-roles)，您可以进行配置Rancher将Kubernetes集群日志发送到日志服务。
 
-1. 从**全局**视图中，进入要收集日志的群集。
+1. 从**全局**视图中，进入要收集日志的集群。
 
 1. 在导航栏中选择**工具>日志**。
 

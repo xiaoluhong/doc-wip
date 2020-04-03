@@ -46,9 +46,9 @@ _从v2.2.0_开始可用_
    | VPC                    | 选择您在腾讯云控制台中创建的VPC名称.                                                                                                   |
    | 容器 CIDR 网络 | 输入 Kubernetes 集群的CIDR范围, 您可以在腾讯云控制台的VPC服务中查看CIDR的可用范围。默认172.16.0.0/16. |
 
-   **注意:** 如果要在`cluster.yml`而不是Rancher UI中编辑群集,请注意,从Rancher v2.3.0开始,群集配置指令必须嵌套在`cluster.yml`中的`Rancher_kubernetes_engine_config`指令下. 有关更多信息,请参阅[Rancher v2.3.0+中的配置文件结构](/docs/cluster-provisioning/rke-clusters/options/#config-file-structure-in-rancher-v2-3-0)一节
+   **注意:** 如果要在`cluster.yml`而不是Rancher UI中编辑集群,请注意,从Rancher v2.3.0开始,集群配置指令必须嵌套在`cluster.yml`中的`Rancher_kubernetes_engine_config`指令下. 有关更多信息,请参阅[Rancher v2.3.0+中的配置文件结构](/docs/cluster-provisioning/rke-clusters/options/#config-file-structure-in-rancher-v2-3-0)一节
 
-7. 单击 `下一步: 选择实例类型` 选择将用于 TKE 群集的实例类型.
+7. 单击 `下一步: 选择实例类型` 选择将用于 TKE 集群的实例类型.
 
    | 选项            | 描述                                                                                                                           |
    | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------- |

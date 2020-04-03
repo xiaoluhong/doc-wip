@@ -9,7 +9,7 @@ title: 创建 AKS 集群
 > **注意**
 > 部署到 AKS 将会产生费用.
 
-要与 Azure API 交互, AKS 群集需要 Azure 活动目录 （AD） 服务主体. 需要服务主体来动态创建和管理其他 Azure 资源, 它为您的集群提供了与AKS通信的凭证. 有关服务主体的详细信息, 请参阅 [AKS 文档](https：//docs.microsoft.com/en-us/azure/aks/kubernetes-服务主体).
+要与 Azure API 交互, AKS 集群需要 Azure 活动目录 （AD） 服务主体. 需要服务主体来动态创建和管理其他 Azure 资源, 它为您的集群提供了与AKS通信的凭证. 有关服务主体的详细信息, 请参阅 [AKS 文档](https：//docs.microsoft.com/en-us/azure/aks/kubernetes-服务主体).
 
 在创建服务主体之前, 您需要从[Microsoft Azure网站](https://portal.azure.com)获取以下信息:
 
@@ -80,7 +80,7 @@ az ad sp create-for-rbac \
 
 1. 您现在应该看到服务主体的名称 **Azure Active Directory > 应用注册.**
 
-1. 单击服务主体的名称. 请注意租户 ID 和应用程序 ID（也称为应用 ID 或客户端 ID）, 以便在配置 AKS 群集时使用它. 然后单击 **证书 & 密钥.**
+1. 单击服务主体的名称. 请注意租户 ID 和应用程序 ID（也称为应用 ID 或客户端 ID）, 以便在配置 AKS 集群时使用它. 然后单击 **证书 & 密钥.**
 
 1. 单击 **New client secret.**
 
@@ -92,7 +92,7 @@ az ad sp create-for-rbac \
 
 1. 点击左边导航栏中的 **All Services** . 然后点击 **订阅**.
 
-1. 单击要与 Kubernetes 群集关联的订阅的名称。记下订阅 ID，以便在预配 AKS 群集时使用它。
+1. 单击要与 Kubernetes 集群关联的订阅的名称。记下订阅 ID，以便在预配 AKS 集群时使用它。
 
 1. 单击 **访问控制 (IAM).**
 
@@ -118,7 +118,7 @@ az ad sp create-for-rbac \
 
 1. {{< step_create-cluster_member-roles >}}
 
-1. 使用订阅 ID、租户 ID、应用 ID 和客户端密钥授予群集对 AKS 的访问权限. 如果您没有所有这些信息，则可以使用以下说明检索这些信息：
+1. 使用订阅 ID、租户 ID、应用 ID 和客户端密钥授予集群对 AKS 的访问权限. 如果您没有所有这些信息，则可以使用以下说明检索这些信息：
 
 - **应用 ID and ID、租户 ID:** 要获取应用 ID 和租户 ID, 可以转到 Azure 网站, 然后单击**Azure Active Directory**, 然后单击 click **应用注册,** 然后单击服务主体的名称. 应用 ID 和租户 ID 都位于应用注册详细信息页上.
 - **客户端密钥:** 如果在创建服务主体时未复制客户端密钥, 在应用注册详细信息页面, 则可以获取新密钥, 然后单击**证书 & 机密**，然后单击**新客户端密钥.**。

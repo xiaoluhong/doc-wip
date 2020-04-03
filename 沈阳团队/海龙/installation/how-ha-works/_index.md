@@ -6,9 +6,9 @@ title: 关于高可用安装
 
 在标准安装中，首先将Kubernetes安装在基础设施提供商（例如Amazon的EC2或Google Compute Engine）中托管的三个节点上。
 
-然后使用Helm在Kubernetes集群上安装Rancher。 Helm使用Rancher的Helm chart在Kubernetes集群的三个节点中的每个节点上安装Rancher的副本。我们建议使用负载均衡器将流量定向到群集中Rancher的每个副本，以提高Rancher的可用性。
+然后使用Helm在Kubernetes集群上安装Rancher。 Helm使用Rancher的Helm chart在Kubernetes集群的三个节点中的每个节点上安装Rancher的副本。我们建议使用负载均衡器将流量定向到集群中Rancher的每个副本，以提高Rancher的可用性。
 
-Rancher server数据存储在etcd中。etcd数据库可以在所有三个节点上运行，并且需要奇数个节点，这样它就可以选举出拥有etcd集群大多数节点的leader。如果etcd数据库不能选出leader，则etcd可能会失败，从而需要从备份中还原群集。
+Rancher server数据存储在etcd中。etcd数据库可以在所有三个节点上运行，并且需要奇数个节点，这样它就可以选举出拥有etcd集群大多数节点的leader。如果etcd数据库不能选出leader，则etcd可能会失败，从而需要从备份中还原集群。
 
 有关Rancher如何工作的说明（与安装方法无关），请参阅[架构部分。](/docs/overview/architecture)
 

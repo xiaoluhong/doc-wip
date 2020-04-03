@@ -16,7 +16,7 @@ title: 生产就绪集群的检查列表
 
 #### 备份 etcd
 
-- 启用 etcd 快照. 验证是否正在创建快照, 并运行灾难恢复场景来验证快照是否有效. etcd是存储集群状态的位置, 丢失 etcd 数据意味着丢失集群. 请确保为你的群集配置 [etcd循环快照](/docs/backups/backups/ha-backups/#option-a-recurring-snapshots), 并确保快照也存储在外部(节点之外).
+- 启用 etcd 快照. 验证是否正在创建快照, 并运行灾难恢复场景来验证快照是否有效. etcd是存储集群状态的位置, 丢失 etcd 数据意味着丢失集群. 请确保为你的集群配置 [etcd循环快照](/docs/backups/backups/ha-backups/#option-a-recurring-snapshots), 并确保快照也存储在外部(节点之外).
 
 #### 集群架构
 
@@ -36,7 +36,7 @@ title: 生产就绪集群的检查列表
 #### 日志记录和监控
 
 - 为 Kubernetes 组件配置告警/通知程序(系统服务).
-- 配置日志记录以进行群集分析和事后分析.
+- 配置日志记录以进行集群分析和事后分析.
 
 #### 可靠性
 

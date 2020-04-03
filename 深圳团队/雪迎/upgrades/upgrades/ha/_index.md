@@ -38,7 +38,7 @@ title: 升级Kubernetes上安装的Rancher
 
 1. 更新本地的 helm 仓库
 
-   ```
+   ```bash
    helm repo update
    ```
 
@@ -48,7 +48,7 @@ title: 升级Kubernetes上安装的Rancher
 
    {{< release-channel >}}
 
-   ```
+   ```bash
    helm repo list
 
    NAME          	       URL
@@ -93,7 +93,7 @@ hostname: rancher.my.org
 
 取上一步中的所有值，然后使用`--set key=value`将它们附加到命令中：
 
-```
+```bash
 helm upgrade rancher rancher-<CHART_REPO>/rancher \
   --namespace cattle-system \
   --set hostname=rancher.my.org
@@ -114,15 +114,13 @@ helm upgrade rancher rancher-<CHART_REPO>/rancher \
 
 1. 卸载Rancher
 
-   ```
+   ```bash
    helm delete rancher -n cattle-system
    ```
 
 2. 使用所有设置将Rancher重新安装到最新版本。获取上一步中的所有值，然后使用`--set key=value`. 将它们附加到命令中。注意：上一步中将有更多选项需要附加。
 
-
-
-   ```
+   ```bash
    helm install rancher rancher-<CHART_REPO>/rancher \
    --namespace cattle-system \
    --set hostname=rancher.my.org

@@ -18,9 +18,9 @@ kubectl create clusterrolebinding cluster-admin-binding \
   --user [USER_ACCOUNT]
 ```
 
-在运行`kubectl`命令以导入群集之前.
+在运行`kubectl`命令以导入集群之前.
 
-默认情况下，GKE 用户不会获得此权限，因此您需要在导入 GKE 群集之前运行该命令。要了解有关 GKE 基于角色的访问控制的详细信息，请单击 [此处](https://cloud.google.com/kubernetes-engine/docs/how-to/role-based-access-control).
+默认情况下，GKE 用户不会获得此权限，因此您需要在导入 GKE 集群之前运行该命令。要了解有关 GKE 基于角色的访问控制的详细信息，请单击 [此处](https://cloud.google.com/kubernetes-engine/docs/how-to/role-based-access-control).
 
 #### 导入一个集群
 
@@ -36,4 +36,4 @@ kubectl create clusterrolebinding cluster-admin-binding \
    {{< result_import-cluster >}}
 
 > **注意:**
-> 你不能重新导入当前在 Rancher 设置中处于活动状态的群集.
+> 你不能重新导入当前在 Rancher 设置中处于活动状态的集群.
