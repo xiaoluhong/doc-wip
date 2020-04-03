@@ -343,7 +343,7 @@ ssh_agent_auth: false
 
 #### 默认DNS插件
 
-下表显示了默认情况下部署的DNS提供商。 有关如何配置不同的DNS提供程序的详细信息，请参阅[关于DNS提供程序的文档]({{<baseurl>}}/rke/latest/en/config-options/add-ons/dns/)。 Coredn只能在Kubernetes v1.12.0及更高版本上使用。
+下表显示了默认情况下部署的DNS插件。 有关如何配置不同的DNS提供程序的详细信息，请参阅[关于DNS提供程序的文档]({{<baseurl>}}/rke/latest/en/config-options/add-ons/dns/)。 Coredn只能在Kubernetes v1.12.0及更高版本上使用。
 
 | Rancher版本   | Kubernetes版本 | 默认DNS插件 |
 | ----------------- | ------------------ | -------------------- |
@@ -390,7 +390,7 @@ _v2.2.4可用_
 
 有两种方法可以指定附加组件:
 
-- [行内附加组件]({{<baseurl>}}/rke/latest/en/config-options/add-ons/user-defined-add-ons/#in-line-add-ons)
+- [行内Add-ons]({{<baseurl>}}/rke/latest/en/config-options/add-ons/user-defined-add-ons/#in-line-add-ons)
 - [引用加载项的YAML文件]({{<baseurl>}}/rke/latest/en/config-options/add-ons/user-defined-add-ons/#referencing-yaml-files-for-add-ons)
 
 有关如何通过编辑配置自定义网络插件的示例`cluster.yml`，请参阅[RKE文档。]({{<baseurl>}}/rke/latest/en/config-options/add-ons/network-plugins/custom-network-plugins-example)

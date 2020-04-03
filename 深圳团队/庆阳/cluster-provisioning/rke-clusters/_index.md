@@ -1,8 +1,8 @@
 ---
-title: 使用Rancher启动Kubernetes
+标题: 使用Rancher启动Kubernetes
 ---
 
-您可以让Rancher使用您想要的任何节点启动Kubernetes集群。 当Rancher将Kubernetes部署到这些节点时，它使用[Rancher Kubernetes Engine]({{<baseurl>}}/rke/latest/en/)(RKE)，这是Rancher自己的轻量级Kubernetes安装程序。 它可以在任何计算机上启动Kubernetes，包括:
+您可以让Rancher使用任何节点启动Kubernetes集群。 当Rancher将Kubernetes部署到这些节点时，它使用[Rancher Kubernetes Engine]({{<baseurl>}}/rke/latest/en/)(RKE)，这是Rancher自己的轻量级Kubernetes安装程序。 它可以在任何计算机上启动Kubernetes，包括:
 
 - 裸金属服务器
 - 本地虚拟机
@@ -14,13 +14,13 @@ RKE集群包括Rancher在Windows节点或其他现有自定义节点上启动的
 
 #### 要求
 
-如果您使用RAKE设置集群，您的节点必须满足下游用户集群中节点的[要求](/docs/cluster-provisioning/node-requirements)。
+如果您使用RKE启动集群，您的节点必须满足下游用户集群中节点的[要求](/docs/cluster-provisioning/node-requirements)。
 
 #### 在云服务商的新节点上启动Kubernetes
 
-使用Rancher，您可以基于[节点模板](/docs/cluster-provisioning/rke-clusters/node-pools/#node-templates)创建节点池。 此节点模板定义要用于在云提供商中启动节点的参数。
+使用Rancher，您可以基于[节点模板](/docs/cluster-provisioning/rke-clusters/node-pools/#node-templates)创建节点池。 此节点模板定义的参数将用于在云提供商中启动节点。
 
-在云提供商托管的节点池上安装Kubernetes的一个好处是，如果节点与集群失去连接，Rancher可以自动创建另一个节点加入集群，以确保节点池的计数符合预期。
+在云提供商托管的节点池上安装Kubernetes的一个好处是，如果节点与集群失去连接，Rancher可以自动创建另一个节点加入集群，以确保节点池的个数符合预期。
 
 有关更多信息，请参阅[在新节点上启动Kubernetes。](/docs/cluster-provisioning/rke-clusters/node-pools/)
 
