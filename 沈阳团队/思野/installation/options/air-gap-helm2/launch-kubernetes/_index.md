@@ -1,22 +1,22 @@
 ---
-title: '3. Install Kubernetes with RKE (Kubernetes Installs Only)'
+title: '3. 使用RKE安装Kubernetes (只安装 Kubernetes)'
 ---
 
-This section is about how to prepare to launch a Kubernetes cluster which is used to deploy Rancher server for your air gapped environment.
+本节介绍如何创建Kubernetes集群，该集群用于离线环境下部署 Rancher sever。
 
-Since a Kubernetes Installation requires a Kubernetes cluster, we will create a Kubernetes cluster using [Rancher Kubernetes Engine]({{<baseurl>}}/rke/latest/en/) (RKE). Before being able to start your Kubernetes cluster, you'll need to [install RKE]({{<baseurl>}}/rke/latest/en/installation/) and create a RKE config file.
+由于 Kubernetes 安装需要 Kubernetes 集群， 因此我们将使用 [Rancher Kubernetes Engine]({{<baseurl>}}/rke/latest/en/) (RKE) 创建Kubernetes集群。 在启动Kubernetes集群之前，您需要 [install RKE]({{<baseurl>}}/rke/latest/en/installation/) 并创建一个RKE配置文件。
 
-- [A. Create an RKE Config File](#a-create-an-rke-config-file)
-- [B. Run RKE](#b-run-rke)
-- [C. Save Your Files](#c-save-your-files)
+- [A. 创建一个 RKE 配置文件](#a-create-an-rke-config-file)
+- [B. 运行 RKE](#b-run-rke)
+- [C. 保存文件](#c-save-your-files)
 
-#### A. Create an RKE Config File
+#### A. 创建一个 RKE 配置文件
 
-From a system that can access ports 22/tcp and 6443/tcp on your host nodes, use the sample below to create a new file named `rancher-cluster.yml`. This file is a Rancher Kubernetes Engine configuration file (RKE config file), which is a configuration for the cluster you're deploying Rancher to.
+确保主机节点端口22 /tcp和端口6443 /tcp未被占用,使用下面的示例创建一个名为的 `rancher-cluster.yml` 新文件. 该文件是Rancher Kubernetes Engine配置文件（RKE配置文件），它是Kubernetes 集群的配置,您的 Rancher server 将要部署在该集群上。
 
-Replace values in the code sample below with help of the _RKE Options_ table. Use the IP address or DNS names of the [3 nodes](/docs/installation/air-gap-high-availability/provision-hosts) you created.
+根据 _RKE Options_ table 替换下面的代码示例中的值。使用您创建的 [3 nodes](/docs/installation/air-gap-high-availability/provision-hosts) 的IP地址或DNS名称。
 
-> **Tip:** For more details on the options available, see the RKE [Config Options]({{<baseurl>}}/rke/latest/en/config-options/).
+> **提示:** 有关可用选项的更多详细信息，请参阅RKE [Config Options]({{<baseurl>}}/rke/latest/en/config-options/).
 
 <figcaption>RKE Options</figcaption>
 
@@ -55,23 +55,23 @@ private_registries:
     is_default: true
 ```
 
-#### B. Run RKE
+#### B. 运行 RKE
 
-After configuring `rancher-cluster.yml`, bring up your Kubernetes cluster:
+配置 `rancher-cluster.yml` 完之后，启动您的Kubernetes集群：
 
 ```
 rke up --config ./rancher-cluster.yml
 ```
 
-#### C. Save Your Files
+#### C. 保存文件
 
-> **Important**
-> The files mentioned below are needed to maintain, troubleshoot and upgrade your cluster.
+> **重要说明**
+> 以下文件需要维护，故障排除和升级群集。
 
-Save a copy of the following files in a secure location:
+将以下文件的副本保存在安全的位置：
 
-- `rancher-cluster.yml`: The RKE cluster configuration file.
-- `kube_config_rancher-cluster.yml`: The [Kubeconfig file]({{<baseurl>}}/rke/latest/en/kubeconfig/) for the cluster, this file contains credentials for full access to the cluster.
-- `rancher-cluster.rkestate`: The [Kubernetes Cluster State file]({{<baseurl>}}/rke/latest/en/installation/#kubernetes-cluster-state), this file contains credentials for full access to the cluster.<br/><br/>_The Kubernetes Cluster State file is only created when using RKE v0.2.0 or higher._
+- `rancher-cluster.yml`: RKE 集群配置文件。
+- `kube_config_rancher-cluster.yml`:集群的 [Kubeconfig file]({{<baseurl>}}/rke/latest/en/kubeconfig/) , 此文件包含用于访问集群的凭据。
+- `rancher-cluster.rkestate`: [Kubernetes Cluster State file]({{<baseurl>}}/rke/latest/en/installation/#kubernetes-cluster-state)。<br/><br/>此文件包含用于访问群集的凭据。仅在使用RKE v0.2.0或更高版本时创建 Kubernetes 群集状态文件。
 
 #### [Next: Install Rancher](/docs/installation/other-installation-methods/air-gap/install-rancher)

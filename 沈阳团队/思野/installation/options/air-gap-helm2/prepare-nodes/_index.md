@@ -1,99 +1,99 @@
 ---
-title: '1. Prepare your Node(s)'
+title: '1. 准备您的节点'
 ---
 
-This section is about how to prepare your node(s) to install Rancher for your air gapped environment. An air gapped environment could be where Rancher server will be installed offline, behind a firewall, or behind a proxy. There are _tabs_ for either a high availability (recommended) or a Docker installation.
+本节介绍如何为离线安装Rancher准备您的节点。Rancher服务器可能会离线安装在防火墙或代理之后的封闭环境。这里有一些选项卡，用于高可用性（推荐）或Docker安装。
 
-## Prerequisites
+## 先决条件
 
  tabs 
- tab "Kubernetes Install (Recommended)" 
+ tab "Kubernetes 安装（推荐）" 
 
 #### OS, Docker, Hardware, and Networking
 
-Make sure that your node(s) fulfill the general [installation requirements.](/docs/installation/requirements/)
+确保您的节点满足常规[安装要求](/docs/installation/requirements/)。
 
-#### Private Registry
+#### 私有镜像仓库
 
-Rancher supports air gap installs using a private registry. You must have your own private registry or other means of distributing Docker images to your machines.
+Rancher 支持使用私有镜像仓库离线安装。您必须有自己的私有镜像仓库或其他可以可以在计算机上拉取 Docker 镜像的方法。
 
-If you need help with creating a private registry, please refer to the [Docker documentation](https://docs.docker.com/registry/).
+如果您需要有关创建私有镜像仓库的帮助，请参阅 [Docker documentation](https://docs.docker.com/registry/)。
 
 #### CLI Tools
 
-The following CLI tools are required for the Kubernetes Install. Make sure these tools are installed on your workstation and available in your `$PATH`.
+Kubernetes 安装需要如下 CLI 工具。确保这些工具已安装在您的工作站上，并且在您的计算机中可用 `$PATH`。
 
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-kubectl) - Kubernetes command-line tool.
 - [rke]({{<baseurl>}}/rke/latest/en/installation/) - Rancher Kubernetes Engine, cli for building Kubernetes clusters.
 - [helm](https://docs.helm.sh/using_helm/#installing-helm) - Package management for Kubernetes. Refer to the [Helm version requirements](/docs/installation/options/helm-version) to choose a version of Helm to install Rancher.
 
  /tab 
- tab "Docker Install" 
+ tab "Docker安装" 
 
 #### OS, Docker, Hardware, and Networking
 
-Make sure that your node(s) fulfill the general [installation requirements.](/docs/installation/requirements/)
+确保您的节点满足常规[安装要求](/docs/installation/requirements/)。
 
-#### Private Registry
+#### 私有镜像仓库
 
-Rancher supports air gap installs using a private registry. You must have your own private registry or other means of distributing Docker images to your machines.
+Rancher 支持使用私有镜像仓库离线安装。您必须有自己的私有镜像仓库或其他可以在计算机上拉取 Docker 镜像的方法。
 
-If you need help with creating a private registry, please refer to the [Docker documentation](https://docs.docker.com/registry/).
+如果您需要有关创建私有镜像仓库的帮助，请参阅[Docker documentation](https://docs.docker.com/registry/)。
  /tab 
  /tabs 
 
-## Set up Infrastructure
+## 设置基础架构
 
  tabs 
- tab "Kubernetes Install (Recommended)" 
+ tab "Kubernetes安装（推荐）" 
 
-Rancher recommends installing Rancher on a Kubernetes cluster. A highly available Kubernetes install is comprised of three nodes running the Rancher server components on a Kubernetes cluster. The persistence layer (etcd) is also replicated on these three nodes, providing redundancy and data duplication in case one of the nodes fails.
+Rancher 建议在 Kubernetes 集群上安装 Rancher server。Rancher server运行在由三个节点组成的高可用性的 Kubernetes 集群上。持久层(etcd)也安装在这三个节点上，以保证在其中一个节点出现错误时提供重复数据删除和数据备份。
 
-#### Recommended Architecture
+#### 推荐架构
 
-- DNS for Rancher should resolve to a layer 4 load balancer
-- The Load Balancer should forward port TCP/80 and TCP/443 to all 3 nodes in the Kubernetes cluster.
-- The Ingress controller will redirect HTTP to HTTPS and terminate SSL/TLS on port TCP/443.
-- The Ingress controller will forward traffic to port TCP/80 on the pod in the Rancher deployment.
+- Rancher 的 DNS 应该解析为4层负载均衡器。
+- 负载均衡器应将端口 TCP/80 和 TCP/443 转发到 Kubernetes 集群中的所有3个节点。
+- Ingress控制器会将HTTP重定向到 HTTPS,并在端口 TCP/443 上终止 SSL/TLS。
+- Ingress控制器会将流量转发到 Rancher deployment 中 Pod 上的端口TCP/80。
 
-<figcaption>Rancher installed on a Kubernetes cluster with layer 4 load balancer, depicting SSL termination at ingress controllers</figcaption>
+<figcaption>Kubernetes Rancher安装了4层负载均衡器，描述了ingress控制器的SSL终止</figcaption>
 
 ![Rancher HA](/img/rancher/ha/rancher2ha.svg)
 
-#### A. Provision three air gapped Linux hosts according to our requirements
+#### A. 根据我们的要求配置三台离线的 linux 主机
 
-These hosts will be disconnected from the internet, but require being able to connect with your private registry.
+这些主机将与Internet断开连接，但是必须可以连接到私有镜像仓库。
 
-View hardware and software requirements for each of your cluster nodes in [Requirements](/docs/installation/requirements).
+在[需求](/docs/installation/requirements)中查看每个集群节点的硬件和软件需求。
 
-#### B. Set up your Load Balancer
+#### B. 设置 Load Balancer
 
-When setting up the Kubernetes cluster that will run the Rancher server components, an Ingress controller pod will be deployed on each of your nodes. The Ingress controller pods are bound to ports TCP/80 and TCP/443 on the host network and are the entry point for HTTPS traffic to the Rancher server.
+设置将运行 Rancher 服务器组件的 Kubernetes 集群时, 将在每个节点上部署一个 Ingress 控制器容器。Ingress 控制器 Pod 绑定到主机网络上的端口TCP/ 80和TCP/ 443, 并且是Rancher server https的入口。
 
-You will need to configure a load balancer as a basic Layer 4 TCP forwarder to direct traffic to these ingress controller pods. The exact configuration will vary depending on your environment.
+您将需要配置一个负载均衡器作为一个基本的4层 TCP 转发器，以将流量定向到这些入口控制器Pod。 更加准确的配置将根据您的环境而有所不同。
 
-> **Important:**
-> Only use this load balancer (i.e, the `local` cluster Ingress) to load balance the Rancher server. Sharing this Ingress with other applications may result in websocket errors to Rancher following Ingress configuration reloads for other apps.
+> **重要:**
+> 仅使用此load balancer（即local群集Ingress）对 Rancher server进行负载平衡。与其他应用程序共享此 Ingress 可能会在其他应用的 Ingress 配置重新加载后导致 Rancher 出现 websocket 错误。
 
-**Load Balancer Configuration Samples:**
+**负载均衡配置示例:**
 
-- For an example showing how to set up an NGINX load balancer, refer to [this page.](/docs/installation/k8s-install/create-nodes-lb/nginx)
-- For an example showing how to set up an Amazon NLB load balancer, refer to [this page.](/docs/installation/k8s-install/create-nodes-lb/nlb)
+- 有关如何设置 NGINX load balancer的示例，请参阅[this page](/docs/installation/k8s-install/create-nodes-lb/nginx)。
+- 有关如何设置 Amazon NLB load balancer的示例，请参阅[this page](/docs/installation/k8s-install/create-nodes-lb/nlb)。
 
  /tab 
- tab "Docker Install" 
+ tab "Docker 安装" 
 
-The Docker installation is for Rancher users that are wanting to test out Rancher. Instead of running on a Kubernetes cluster, you install the Rancher server component on a single node using a `docker run` command. Since there is only one node and a single Docker container, if the node goes down, there is no copy of the etcd data available on other nodes and you will lose all the data of your Rancher server.
+Docker 安装是为想要测试 Rancher 的 Rancher 用户准备的。 您不需要在 Kubernetes 集群上运行，而是使用 docker run 命令在单个节点上安装 Rancher server 组件。 由于只有一个节点和一个 Docker 容器，如果该节点宕机，其他节点上就没有可用的 etcd 数据副本，您将丢失 Rancher 服务器的所有数据。与运行单节点安装不同，您可以选择遵循 Kubernetes 安装指南，但只使用一个节点来安装 Rancher。 然后，您可以扩展您的 Kubernetes 集群中的 etcd 节点，使其成为 Kubernetes 安装。
 
-> **Important:** If you install Rancher following the Docker installation guide, there is no upgrade path to transition your Docker installation to a Kubernetes Installation.
+> **重要提示:** 如果您按照 Docker 安装指南安装 Rancher，则没有升级路径将 Docker 安装方式转换为 Kubernetes 安装方式。
 
-Instead of running the Docker installation, you have the option to follow the Kubernetes Install guide, but only use one node to install Rancher. Afterwards, you can scale up the etcd nodes in your Kubernetes cluster to make it a Kubernetes Installation.
+您可以选择使用 Kubernetes 安装指南，而不必用 Docker 安装，如果仅使用一个节点来安装 Rancher 之后，您也可以扩展 Kubernetes 集群中的etcd节点，使其成为 Kubernetes 安装。
 
-#### A. Provision a single, air gapped Linux host according to our Requirements
+#### A. 根据我们的要求配置一个单节点离线 Linux 主机
 
-These hosts will be disconnected from the internet, but require being able to connect with your private registry.
+这些主机将与Internet断开连接， 但是必须可以连接到私有镜像仓库。
 
-View hardware and software requirements for each of your cluster nodes in [Requirements](/docs/installation/requirements).
+在[需求](/docs/installation/requirements)中查看每个集群节点的硬件和软件需求。
 
  /tab 
  /tabs 

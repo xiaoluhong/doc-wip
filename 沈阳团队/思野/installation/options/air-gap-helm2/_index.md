@@ -1,38 +1,36 @@
 ---
-title: Installing Rancher in an Air Gapped Environment with Helm 2
+title: 使用Helm 2 在离线环境下安装 Rancher
 ---
 
-> After Helm 3 was released, the Rancher installation instructions were updated to use Helm 3.
+> 在发布Helm 3之后，Rancher安装说明已更新为使用Helm 3。
 >
-> If you are using Helm 2, we recommend [migrating to Helm 3](https://helm.sh/blog/migrate-from-helm-v2-to-helm-v3/) because it is simpler to use and more secure than Helm 2.
+> 如果您使用的是Helm 2，建议您[迁移到Helm 3](https://helm.sh/blog/migrate-from-helm-v2-to-helm-v3/)，因为它比Helm 2更易于使用且更安全。
 >
-> This section provides a copy of the older instructions for installing Rancher on a Kubernetes cluster using Helm 2 in an air air gap environment, and it is intended to be used if upgrading to Helm 3 is not feasible.
+> 本节提供了使用Helm 2 在离线环境下安装 Rancher 比较旧的说明版本，适用于无法升级到Helm 3的情况。
 
-This section is about installations of Rancher server in an air gapped environment. An air gapped environment could be where Rancher server will be installed offline, behind a firewall, or behind a proxy.
+本节介绍如何为离线安装Rancher准备您的节点。Rancher服务器可能会离线安装在防火墙或代理之后的封闭环境。这里有两个选项卡，用于高可用性（推荐）或Docker安装。
 
-Throughout the installations instructions, there will be _tabs_ for either a high availability Kubernetes installation or a single-node Docker installation.
+#### 离线安装 Kubernetes
 
-#### Air Gapped Kubernetes Installations
+本节介绍如何在离线环境中的 Kubernetes 集群上安装 Rancher。
 
-This section covers how to install Rancher on a Kubernetes cluster in an air gapped environment.
+Rancher server运行在由三个节点组成的高可用性的 Kubernetes 集群上。持久层(etcd)也安装在这三个节点上，以保证在其中一个节点出现错误时提供重复数据删除和数据备份。
 
-A Kubernetes installation is comprised of three nodes running the Rancher server components on a Kubernetes cluster. The persistence layer (etcd) is also replicated on these three nodes, providing redundancy and data duplication in case one of the nodes fails.
+#### 离线安装 Docker
 
-#### Air Gapped Docker Installations
+本机还介绍了如何在离线环境中的单个节点上安装 Rancher。
 
-These instructions also cover how to install Rancher on a single node in an air gapped environment.
+Docker 安装是为想要测试 Rancher 的 Rancher 用户准备的。 您不需要在 Kubernetes 集群上运行，而是使用 docker run 命令在单个节点上安装 Rancher server 组件。 由于只有一个节点和一个 Docker 容器，如果该节点宕机，其他节点上就没有可用的 etcd 数据副本，您将丢失 Rancher 服务器的所有数据。与运行单节点安装不同，您可以选择遵循 Kubernetes 安装指南，但只使用一个节点来安装 Rancher。 然后，您可以扩展您的 Kubernetes 集群中的 etcd 节点，使其成为 Kubernetes 安装。
 
-The Docker installation is for Rancher users that are wanting to test out Rancher. Instead of running on a Kubernetes cluster, you install the Rancher server component on a single node using a `docker run` command. Since there is only one node and a single Docker container, if the node goes down, there is no copy of the etcd data available on other nodes and you will lose all the data of your Rancher server.
+> **重要提示:** 如果您按照 Docker 安装指南安装 Rancher，则没有升级路径将 Docker 安装方式转换为 Kubernetes 安装方式。
 
-> **Important:** If you install Rancher following the Docker installation guide, there is no upgrade path to transition your Docker Installation to a Kubernetes Installation.
+您可以选择使用 Kubernetes 安装指南，而不必用 Docker 安装， 如果仅使用一个节点来安装Rancher。之后，您也可以扩展 Kubernetes 集群中的etcd节点，使其成为 Kubernetes 安装。
 
-Instead of running the Docker installation, you have the option to follow the Kubernetes Install guide, but only use one node to install Rancher. Afterwards, you can scale up the etcd nodes in your Kubernetes cluster to make it a Kubernetes Installation.
+## 安装概要
 
-## Installation Outline
-
-- [1. Prepare your Node(s)](/docs/installation/other-installation-methods/air-gap/prepare-nodes/)
-- [2. Collect and Publish Images to your Private Registry](/docs/installation/other-installation-methods/air-gap/populate-private-registry/)
-- [3. Launch a Kubernetes Cluster with RKE](/docs/installation/other-installation-methods/air-gap/launch-kubernetes/)
-- [4. Install Rancher](/docs/installation/other-installation-methods/air-gap/install-rancher/)
+- [1. 准备您的节点](/docs/installation/other-installation-methods/air-gap/prepare-nodes/)
+- [2. 搜集并且推送镜像到私有镜像仓库](/docs/installation/other-installation-methods/air-gap/populate-private-registry/)
+- [3. 使用 RKE 启动 Kubernetes 集群](/docs/installation/other-installation-methods/air-gap/launch-kubernetes/)
+- [4. 安装 Rancher](/docs/installation/other-installation-methods/air-gap/install-rancher/)
 
 #### [Next: Prepare your Node(s)](/docs/installation/other-installation-methods/air-gap/prepare-nodes/)
