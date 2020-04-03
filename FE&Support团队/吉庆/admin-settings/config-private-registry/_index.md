@@ -1,42 +1,42 @@
 ---
-title: Configuring a Global Default Private Registry
+标题：配置全局默认专用镜像仓库
 ---
 
-You might want to use a private Docker registry to share your custom base images within your organization. With a private registry, you can keep a private, consistent, and centralized source of truth for the Docker images that are used in your clusters.
+您可能想要使用私有Docker镜像仓库在组织内共享您的自定义基础映像。借助私有镜像仓库，您可以为集群中使用的Docker映像保留私有，一致且集中的真实来源。
 
-There are two main ways to set up private registries in Rancher: by setting up the global default registry through the **Settings** tab in the global view, and by setting up a private registry in the advanced options in the cluster-level settings. The global default registry is intended to be used for air-gapped setups, for registries that do not require credentials. The cluster-level private registry is intended to be used in all setups in which the private registry requires credentials.
+在Rancher中设置私有镜像仓库的主要方法有两种：通过全局视图中的`设置`选项卡设置全局默认镜像仓库，以及在群集级别设置的高级选项中设置私有镜像仓库。全局默认镜像仓库旨在用于离线环境设置，不需要证书的镜像仓库。群集级专用镜像仓库旨在用于所有需要专用凭据的设置。
 
-This section is about configuring the global default private registry, and focuses on how to configure the registry from the Rancher UI after Rancher is installed.
+本部分是关于配置全局默认私有镜像仓库的，并且重点介绍在安装Rancher之后如何从Rancher UI配置镜像仓库。
 
-For instructions on setting up a private registry with command line options during the installation of Rancher, refer to the [air gapped Docker installation](/docs/installation/air-gap-single-node) or [air gapped Kubernetes installation](/docs/installation/air-gap-high-availability) instructions.
+有关在Rancher的安装过程中使用命令行选项设置私有镜像仓库的说明，请参阅[离线Docker安装](/docs/installation/air-gap-single-node)或[离线Kubernetes安装](/docs/installation/air-gap-high-availability)说明。
 
-If your private registry requires credentials, it cannot be used as the default registry. There is no global way to set up a private registry with authorization for every Rancher-provisioned cluster. Therefore, if you want a Rancher-provisioned cluster to pull images from a private registry with credentials, you will have to [pass in the registry credentials through the advanced cluster options](#provisioning-clusters-with-private-registries-that-require-credentials) every time you create a new cluster.
+如果您的私人镜像仓库需要凭据，则不能将其用作默认镜像仓库。没有全局的方法来为每个Rancher所配置的群集设置具有授权的私有镜像仓库。因此，如果您希望由Rancher配置的群集从具有凭据的私有镜像仓库中提取图像，则必须[通过高级群集选项传递镜像仓库凭据](＃provisioning-clusters-with-private-registries-that-每次创建新集群时都需要(require-credentials)。
 
-## Setting a Private Registry with No Credentials as the Default Registry
+## 将没有凭据的专用镜像仓库设置为默认镜像仓库
 
-1. Log into Rancher and configure the default administrator password.
+1. 登录到Rancher并配置默认的管理员密码。
 
-1. Go into the **Settings** view.
+2. 进入`设置`视图。
 
-   ![Settings](/img/rancher/airgap/settings.png")
+   ！[设置](/img/rancher/airgap/settings.png`)
 
-1. Look for the setting called `system-default-registry` and choose **Edit**.
+3. 查找名为`system-default-registry`的设置，然后选择`编辑`。
 
-   ![Edit](/img/rancher/airgap/edit-system-default-registry.png")
+   ！[编辑](/img/rancher/airgap/edit-system-default-registry.png`)
 
-1. Change the value to your registry (e.g. `registry.yourdomain.com:port`). Do not prefix the registry with `http://` or `https://`.
+4. 将该值更改为您的镜像仓库(例如`registry.yourdomain.com：port`)。不要在镜像仓库前面加上`http://`或`https://`。
 
-   ![Save](/img/rancher/airgap/enter-system-default-registry.png")
+   ！[保存](/img/rancher/airgap/enter-system-default-registry.png`)
 
-**Result:** Rancher will use your private registry to pull system images.
+**结果：** Rancher将使用您的私有镜像仓库提取系统映像。
 
-## Setting a Private Registry with Credentials when Deploying a Cluster
+## 在部署群集时使用凭据设置私有镜像仓库
 
-You can follow these steps to configure a private registry when you provision a cluster with Rancher:
+使用Rancher设置群集时，可以按照以下步骤配置私有镜像仓库：
 
-1. When you create a cluster through the Rancher UI, go to the **Cluster Options** section and click **Show Advanced Options.**
-1. In the <b>Enable Private Registries</b> section, click **Enabled.**
-1. Enter the registry URL and credentials.
-1. Click **Save.**
+1. 通过Rancher UI创建集群时，请转到`集群选项`部分，然后单击`显示高级选项`。
+2. 在<b>启用专用注册中心</b>部分中，单击 **启用。**
+3. 输入镜像仓库URL和凭据。
+4. 点击 **保存。**
 
-**Result:** The new cluster will be able to pull images from the private registry.
+**结果：** 新群集将能够从专用镜像仓库中提取图像。
