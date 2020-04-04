@@ -10,13 +10,13 @@ _从v2.0.3开始提供_
 
 > **先决条件:** 已配置Azure AD实例。
 
-> **注意:** 此过程的大部分是从[Microsoft Azure门户网站](https://Portal.Azure.com/)执行的。
+> **注意:** 此过程的大部分是从[Microsoft Azure门户网站](https://portal.azure.com/)执行的。
 
 ### Azure活动目录配置大纲
 
 将Rancher配置为允许用户使用其Azure AD帐户进行身份验证涉及多个过程。开始之前，请查看下面的大纲。
 
-<a id=“提示”></a>
+<a id=“tip”></a>
 
 > **提示:** 在开始之前，我们建议您创建一个空文本文件。您可以使用此文件从Azure复制值，稍后将其粘贴到Rancher中。
 
@@ -35,7 +35,7 @@ _从v2.0.3开始提供_
 
 在Rancher中启用Azure AD之前，必须向Azure注册Rancher。
 
-1. 以管理用户身份登录到[Microsoft Azure](https://portal.Azure.com/)。以后步骤中的配置需要管理访问权限。
+1. 以管理用户身份登录到[Microsoft Azure](https://portal.azure.com/)。以后步骤中的配置需要管理访问权限。
 
 1. 使用“搜索”打开**应用程序注册**服务。
 
@@ -159,7 +159,7 @@ _从v2.0.3开始提供_
 
       ![Click Endpoints](/img/rancher/click-endpoints.png)
 
-   2. 将下列终结点复制到剪贴板并粘贴到[文本文件](#提示)(这些值将是您的Rancher终结点值)。
+   2. 将下列终结点复制到剪贴板并粘贴到[文本文件](#tip)(这些值将是您的Rancher终结点值)。
 
       - **Microsoft Graph API端点**(图形端点)
       - **OAuth 2.0令牌终结点(v1)**(令牌终结点)
@@ -171,7 +171,7 @@ _从v2.0.3开始提供_
 
 从Rancher UI中，输入有关托管在Azure中的广告实例的信息以完成配置。
 
-输入复制到[文本文件]的值(提示)。
+输入复制到[文本文件](#tip)的值。
 
 1. 登录到Rancher。在**全局**视图中，选择**安全性>身份验证**。
 
@@ -181,7 +181,7 @@ _从v2.0.3开始提供_
 
    > **重要提示:** 输入图形终结点时，从URL中删除租户ID，如下所示。
    >
-   > <code> http<span> s://g</span> raph.windows.net/<del> abb5adde-bee8-4821-8b03-e63efdc7701c</del> </code>
+   > <code>http<span>s://g</span>raph.windows.net/<del>abb5adde-bee8-4821-8b03-e63efdc7701c</del></code>
    
    下表将您在Azure门户中复制的值映射到Rancher中的字段。
    

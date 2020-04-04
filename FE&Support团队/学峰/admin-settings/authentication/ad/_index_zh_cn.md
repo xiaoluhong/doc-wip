@@ -4,17 +4,17 @@
 
 如果您的组织使用Microsoft活动目录作为中心用户存储库，则可以将Rancher配置为与活动目录服务器通信以对用户进行身份验证。这允许Rancher管理员基于在Active Directory中外部管理的用户和组控制对集群和项目的访问，同时允许最终用户在登录Rancher UI时使用其广告凭据进行身份验证。
 
-Rancher使用LDAP与Active Directory服务器通信。因此，Active Directory的身份验证流与[OpenLDAP authentication](/docs/admin settings/authentication/OpenLDAP)集成的身份验证流相同。
+Rancher使用LDAP与Active Directory服务器通信。因此，Active Directory的身份验证流与[OpenLDAP authentication](/docs/admin-settings/authentication/openldap)集成的身份验证流相同。
 
 > **注:**
 >
-> 在开始之前，请熟悉[外部身份验证配置和主体用户](/docs/admin-settings/authentication/#外部身份验证配置和主体用户)的概念。
+> 在开始之前，请熟悉[外部身份验证配置和主体用户](/docs/admin-settings/authentication/#external-authentication-configuration-and-principal-users)的概念。
 
 ### 先决条件
 
 您需要创建或从您的广告管理员处获取一个新的广告用户，以用作Rancher的服务帐户。此用户必须具有足够的权限，才能执行LDAP搜索并读取您的AD域下的用户和组的属性。
 
-通常(非管理员)**域用户**帐户应用于此目的，因为默认情况下，该用户对域分区中的大多数对象具有只读权限。
+通常(非管理员) **域用户** 帐户应用于此目的，因为默认情况下，该用户对域分区中的大多数对象具有只读权限。
 
 但是，请注意，在某些锁定的活动目录配置中，此默认行为可能不适用。在这种情况下，您需要确保服务帐户用户在基本OU(包含用户和组)上或全局范围内至少拥有**读取**和**列表内容**权限。
 
@@ -26,16 +26,16 @@ Rancher使用LDAP与Active Directory服务器通信。因此，Active Directory�
 #### 打开活动目录配置
 
 1. 使用初始本地`admin`帐户登录到Rancher UI。
-2. 在**全局**视图中，导航到**安全** > **身份验证**
-3. 选择**活动目录**。将显示**配置AD服务器**表单。
+2. 在 **全局** 视图中，导航到 **安全** > **身份验证**
+3. 选择 **活动目录** 。将显示 **配置AD服务器** 表单。
 
 #### 配置活动目录服务器设置
 
-在标题为`1`的部分中。配置一个Active Directory服务器，用特定于您的activedirectory服务器的信息填写字段。有关每个参数所需值的详细信息，请参阅下表。
+在标题为`1. 配置一个Active Directory服务器`的部分中，用特定于您的Active Directory服务器的信息填写字段。有关每个参数所需值的详细信息，请参阅下表。
 
 > **注:**
 >
-> 如果您不确定要在“用户/组搜索库”字段中输入的正确值，请参阅[使用ldapsearch标识搜索库和架构](#附件使用ldapsearch标识搜索库和架构)。
+> 如果您不确定要在“用户/组搜索库”字段中输入的正确值，请参阅[使用ldapsearch标识搜索库和架构](#annex-identify-search-base-and-schema-using-ldapsearch)。
 
 **表1:AD服务器参数**
 
@@ -45,7 +45,7 @@ Rancher使用LDAP与Active Directory服务器通信。因此，Active Directory�
 | 端口 | 指定活动目录服务器侦听连接的端口。未加密的LDAP通常使用389的标准端口，而LDAPS使用636端口 |
 | TLS  | 选中此框可启用SSL/TLS上的LDAP(通常称为LDAPS) |
 | 服务器连接超时 |  Rancher在认为无法访问AD服务器之前等待的持续时间(秒)。 |
-| 服务帐户用户名 | 输入对域分区具有只读访问权限的AD帐户的用户名(请参阅[先决条件](#先决条件))。用户名可以用NetBIOS格式(例如“域\服务帐户”)或UPN格式(例如“服务帐户@DOMAIN.com”)输入。 |
+| 服务帐户用户名 | 输入对域分区具有只读访问权限的AD帐户的用户名(请参阅[先决条件](#prerequisites)。用户名可以用NetBIOS格式(例如“域\服务帐户”)或UPN格式(例如“服务帐户@DOMAIN.com”)输入。 |
 | 服务帐户密码 | 服务帐户的密码。 |
 | 默认登录域 | 当您使用AD域的NetBIOS名称配置此字段时，当绑定到AD服务器时，在没有域的情况下输入的用户名(例如“jdoe”)将自动转换为斜杠的NetBIOS登录(例如“Login | Domain\jdoe”)。如果您的用户以UPN(例如“jdoe@acme.com”)作为用户名进行身份验证，则此字段**必须保留为空。 |
 | 用户搜索库 | 目录树中开始搜索用户对象的节点的可分辨名称。所有用户都必须是此基本DN的后代。例如:“ou=people，dc=acme，dc=com” |
@@ -55,12 +55,13 @@ Rancher使用LDAP与Active Directory服务器通信。因此，Active Directory�
 
 #### 配置用户/组架构
 
-在标题为`2`的部分中。自定义架构必须为Rancher提供与目录中使用的架构对应的用户和组属性的正确映射。
+在标题为`2. 自定义架构`的部分中，必须为Rancher提供与目录中使用的架构对应的用户和组属性的正确映射。
 
 Rancher使用LDAP查询来搜索和检索关于Active Directory中的用户和组的信息。本节中配置的属性映射用于构造搜索筛选器和解析组成员身份。因此，最重要的是所提供的设置反映您的广告领域的现实。
+
 > **注:**
 >
-> 如果您不熟悉活动目录域中使用的架构，请参阅[使用ldapsearch标识搜索库和架构](#附件使用ldapsearch标识搜索库和架构)以确定正确的配置值。
+> 如果您不熟悉活动目录域中使用的架构，请参阅[使用ldapsearch标识搜索库和架构](#annex-identify-search-base-and-schema-using-ldapsearch)以确定正确的配置值。
 
 ##### 用户架构
 
@@ -91,7 +92,7 @@ Rancher使用LDAP查询来搜索和检索关于Active Directory中的用户和�
 |:--|:--|
 | 对象类 | 用于在域中对对象进行分组的对象类的名称。如果已定义，请仅指定对象类的名称-*不要*将其包含在LDAP包装中，如&(objectClass=xxxx) |
 | 名称属性 | 其值适合显示名称的组属性。 |
-| 组成员用户属性 | **用户属性**的名称，其格式与`组成员映射属性`中的组成员匹配。 |
+| 组成员用户属性 | **用户属性** 的名称，其格式与`组成员映射属性`中的组成员匹配。 |
 | 组成员映射属性 | 包含组成员的组属性的名称。 |
 | 搜索属性 | 用于在将组添加到群集或项目时构造搜索筛选器的属性。请参见用户架构`Search Attribute`的说明。 |
 | 搜索筛选器 | 当Rancher尝试将组添加到站点访问列表或尝试将组添加到群集或项目时，此筛选器将应用于搜索的组列表。例如，组搜索筛选器可以是<code>(&#124；(cn=group1)(cn=group2))</code>。注意:如果搜索筛选器未使用[有效的AD搜索语法](https://docs.microsoft.com/en-us/windows/win32/adsi/search-filter-syntax)，则组列表将为空。 |
@@ -154,10 +155,10 @@ $ ldapsearch -x -D "acme\jdoe" -w "secret" -p 389 \
 
 上述`ldapsearch`查询的输出还允许确定在用户架构配置中使用的正确值:
 
-- `对象类`:**个人**[1]
-- `用户名属性`:**名称**[2]
-- `登录属性`:**sAMAccountName**[3]
-- `用户成员属性`:**成员**[4]
+- `对象类`: **个人**[1]
+- `用户名属性`: **名称**[2]
+- `登录属性`: **sAMAccountName**[3]
+- `用户成员属性`: **成员**[4]
 
 > **注:**
 >
