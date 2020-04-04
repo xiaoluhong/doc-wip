@@ -1,33 +1,33 @@
 ---
-title: Launching Kubernetes with Rancher
+标题: 使用Rancher启动Kubernetes
 ---
 
-You can have Rancher launch a Kubernetes cluster using any nodes you want. When Rancher deploys Kubernetes onto these nodes, it uses [Rancher Kubernetes Engine]({{<baseurl>}}/rke/latest/en/) (RKE), which is Rancher's own lightweight Kubernetes installer. It can launch Kubernetes on any computers, including:
+您可以让Rancher使用任何节点启动Kubernetes集群。 当Rancher将Kubernetes部署到这些节点时，它使用[Rancher Kubernetes Engine]({{<baseurl>}}/rke/latest/en/)(RKE)，这是Rancher自己的轻量级Kubernetes安装程序。 它可以在任何计算机上启动Kubernetes，包括:
 
-- Bare-metal servers
-- On-premise virtual machines
-- Virtual machines hosted by an infrastructure provider
+- 裸金属服务器
+- 本地虚拟机
+- 由云服务商托管的虚拟机
 
-Rancher can install Kubernetes on existing nodes, or it can dynamically provision nodes in an infrastructure provider and install Kubernetes on them.
+Rancher可以在现有节点上安装Kubernetes，也可以在云服务商中动态配置节点并在其上安装Kubernetes。
 
-RKE clusters include clusters that Rancher launched on Windows nodes or other existing custom nodes, as well as clusters that Rancher launched with new nodes on Azure, Digital Ocean, EC2, or vSphere.
+RKE集群包括Rancher在Windows节点或其他现有自定义节点上启动的集群，以及Rancher在Azure、Digital Ocean、EC2或vSphere上使用新节点启动的集群。
 
-#### Requirements
+#### 要求
 
-If you use RKE to set up a cluster, your nodes must meet the [requirements](/docs/cluster-provisioning/node-requirements) for nodes in downstream user clusters.
+如果您使用RKE启动集群，您的节点必须满足下游用户集群中节点的[要求](/docs/cluster-provisioning/node-requirements)。
 
-#### Launching Kubernetes on New Nodes in an Infrastructure Provider
+#### 在云服务商的新节点上启动Kubernetes
 
-Using Rancher, you can create pools of nodes based on a [node template](/docs/cluster-provisioning/rke-clusters/node-pools/#node-templates). This node template defines the parameters you want to use to launch nodes in your cloud providers.
+使用Rancher，您可以基于[节点模板](/docs/cluster-provisioning/rke-clusters/node-pools/#node-templates)创建节点池。 此节点模板定义的参数将用于在云提供商中启动节点。
 
-One benefit of installing Kubernetes on node pools hosted by an infrastructure provider is that if a node loses connectivity with the cluster, Rancher can automatically create another node to join the cluster to ensure that the count of the node pool is as expected.
+在云提供商托管的节点池上安装Kubernetes的一个好处是，如果节点与集群失去连接，Rancher可以自动创建另一个节点加入集群，以确保节点池的个数符合预期。
 
-For more information, refer to the section on [launching Kubernetes on new nodes.](/docs/cluster-provisioning/rke-clusters/node-pools/)
+有关更多信息，请参阅[在新节点上启动Kubernetes。](/docs/cluster-provisioning/rke-clusters/node-pools/)
 
-#### Launching Kubernetes on Existing Custom Nodes
+#### 在现有的自定义节点上启动Kubernetes
 
-In this scenario, you want to install Kubernetes on bare-metal servers, on-premise virtual machines, or virtual machines that already exist in a cloud provider. With this option, you will run a Rancher agent Docker container on the machine.
+在这种情况下，您希望在裸金属服务器、内部部署虚拟机或云提供商中已存在的虚拟机上安装Kubernetes。 使用此选项，您将在计算机上运行Rancher agent Docker容器。
 
-If you want to reuse a node from a previous custom cluster, [clean the node](/docs/admin-settings/removing-rancher/rancher-cluster-nodes/) before using it in a cluster again. If you reuse a node that hasn't been cleaned, cluster provisioning may fail.
+如果要重复使用以前的自定义集群中的节点，请在再次在集群中使用之前[清理节点](/docs/admin-settings/removing-rancher/rancher-cluster-nodes/)。 如果重复使用尚未清理的节点，则集群设置可能会失败。
 
-For more information, refer to the section on [custom nodes.](/docs/cluster-provisioning/rke-clusters/custom-nodes/)
+有关更多信息，请参阅[自定义节点。](/docs/cluster-provisioning/rke-clusters/custom-nodes/)
