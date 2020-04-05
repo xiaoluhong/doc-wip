@@ -1,14 +1,14 @@
 ---
-title: Overriding Template Settings
+标题：覆盖模板设置
 ---
 
-When a user creates an RKE template, each setting in the template has a switch in the Rancher UI that indicates if users can override the setting. This switch marks those settings as **Allow User Override.**
+用户创建RKE模板时，模板中的每个设置在Rancher UI中都有一个开关，指示用户是否可以覆盖该设置。此开关将这些设置标记为**允许用户替代**。
 
-After a cluster is created with a template, end users can't update any of the settings defined in the template unless the template owner marked them as **Allow User Override.** However, if the template is [updated to a new revision](/docs/admin-settings/rke-templates/creating-and-revising) that changes the settings or allows end users to change them, the cluster can be upgraded to a new revision of the template and the changes in the new revision will be applied to the cluster.
+使用模板创建集群后，最终用户将无法更新模板中定义的任何设置，除非模板所有者将其标记为**允许用户替代**。但是，如果模板[已更新至新修订版](/docs/admin-settings/rke-templates/creating-and-revising)更改设置或允许最终用户更改设置，群集可以升级到模板的新修订版以及新修订版中的更改将应用于集群。
 
-When any parameter is set as **Allow User Override** on the RKE template, it means that end users have to fill out those fields during cluster creation and they can edit those settings afterward at any time.
+当在RKE模板上将任何参数设置为**允许用户覆盖**时，这意味着最终用户必须在集群创建过程中填写这些字段，并且他们之后可以随时编辑这些设置。
 
-The **Allow User Override** model of the RKE template is useful for situations such as:
+RKE模板的**允许用户覆盖**模型在以下情况下非常有用：
 
-- Administrators know that some settings will need the flexibility to be frequently updated over time
-- End users will need to enter their own access keys or secret keys, for example, cloud credentials or credentials for backup snapshots
+- 管理员知道某些设置需要灵活性，以便随着时间的推移经常更新
+- 最终用户将需要输入自己的访问密钥或秘密密钥，例如，云凭据或备份快照的凭据

@@ -1,42 +1,42 @@
 ---
-title: Cluster Drivers
+标题：群集驱动程序
 ---
 
-_Available as of v2.2.0_
+_自v2.2.0起可用_
 
-Cluster drivers are used to create clusters in a [hosted Kubernetes provider](/docs/cluster-provisioning/hosted-kubernetes-clusters/), such as Google GKE. The availability of which cluster driver to display when creating clusters is defined by the cluster driver's status. Only `active` cluster drivers will be displayed as an option for creating clusters. By default, Rancher is packaged with several existing cloud provider cluster drivers, but you can also add custom cluster drivers to Rancher.
+群集驱动程序用于在[托管的Kubernetes提供程序](/docs/cluster-provisioning/hosted-kubernetes-clusters/)(例如Google GKE)中创建群集。创建群集时要显示哪个群集驱动程序的可用性由群集驱动程序的状态定义。将仅显示`活动`集群驱动程序作为创建集群的选项。默认情况下，Rancher与几个现有的云提供程序群集驱动程序打包在一起，但是您也可以将自定义群集驱动程序添加到Rancher。
 
-If there are specific cluster drivers that you do not want to show your users, you may deactivate those cluster drivers within Rancher and they will not appear as an option for cluster creation.
+如果不想让特定的群集驱动程序显示给用户，则可以在Rancher中停用这些群集驱动程序，它们不会作为创建群集的选项出现。
 
-#### Managing Cluster Drivers
+#### 管理群集驱动程序
 
-> **Prerequisites:** To create, edit, or delete cluster drivers, you need _one_ of the following permissions:
+> **先决条件：** 要创建，编辑或删除群集驱动程序，您需要具有以下权限之一：
 >
-> - [Administrator Global Permissions](/docs/admin-settings/rbac/global-permissions/)
-> - [Custom Global Permissions](/docs/admin-settings/rbac/global-permissions/#custom-global-permissions) with the [Manage Cluster Drivers](/docs/admin-settings/rbac/global-permissions/#global-permissions-reference) role assigned.
+> - [管理员全局权限](/docs/admin-settings/rbac/global-permissions/)
+> - [自定义全局权限](/docs/admin-settings/rbac/global-permissions/＃custom-global-permissions)与[管理群集驱动程序](/docs/admin-settings/rbac/global-permissions/＃全局权限参考)角色分配。
 
-### Activating/Deactivating Cluster Drivers
+### 激活/停用集群驱动程序
 
-By default, Rancher only activates drivers for the most popular cloud providers, Google GKE, Amazon EKS and Azure AKS. If you want to show or hide any node driver, you can change its status.
+默认情况下，Rancher仅激活最受欢迎的云提供商，Google GKE，Amazon EKS和Azure AKS的驱动程序。如果要显示或隐藏任何节点驱动程序，则可以更改其状态。
 
-1.  From the **Global** view, choose **Tools > Drivers** in the navigation bar.
+1. 从`全局`视图中，在导航栏中选择`工具>驱动程序`。
 
-2.  From the **Drivers** page, select the **Cluster Drivers** tab.
+2. 在`驱动程序`页面上，选择`集群驱动程序`选项卡。
 
-3.  Select the driver that you wish to **Activate** or **Deactivate** and select the appropriate icon.
+3. 选择要`激活`或`禁用`的驱动程序，然后选择适当的图标。
 
-### Adding Custom Cluster Drivers
+### 添加自定义群集驱动程序
 
-If you want to use a cluster driver that Rancher doesn't support out-of-the-box, you can add the provider's driver in order to start using them to create _hosted_ kubernetes clusters.
+如果要使用Rancher不支持即用型的群集驱动程序，则可以添加提供程序的驱动程序，以便开始使用它们来创建_hosted_ kubernetes群集。
 
-1.  From the **Global** view, choose **Tools > Drivers** in the navigation bar.
+1. 从`全局`视图中，在导航栏中选择`工具>驱动程序`。
 
-2.  From the **Drivers** page select the **Cluster Drivers** tab.
+2. 从`驱动程序`页面中，选择`集群驱动程序`选项卡。
 
-3.  Click **Add Cluster Driver**.
+3. 单击`添加群集驱动程序`。
 
-4.  Complete the **Add Cluster Driver** form. Then click **Create**.
+4. 完成`添加群集驱动程序`表格。然后点击`创建`。
 
-#### Developing your own Cluster Driver
+#### 开发自己的集群驱动程序
 
-In order to develop cluster driver to add to Rancher, please refer to our [example](https://github.com/rancher-plugins/kontainer-engine-driver-example).
+为了开发群集驱动程序以添加到Rancher，请参阅我们的[example](https://github.com/rancher-plugins/kontainer-engine-driver-example)。

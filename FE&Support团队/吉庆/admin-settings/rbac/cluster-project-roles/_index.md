@@ -1,182 +1,181 @@
 ---
-title: Cluster and Project Roles
+标题：集群和项目角色
 ---
 
-Cluster and project roles define user authorization inside a cluster or project. You can manage these roles from the **Global > Security > Roles** page.
+集群和项目角色定义集群或项目内部的用户授权。您可以从`全局>安全>角色`页面管理这些角色。
 
-#### Membership and Role Assignment
+#### 成员资格和角色分配
 
-The projects and clusters accessible to non-administrative users is determined by _membership_. Membership is a list of users who have access to a specific cluster or project based on the roles they were assigned in that cluster or project. Each cluster and project includes a tab that a user with the appropriate permissions can use to manage membership.
+非管理用户可访问的项目和群集由_membership_确定。成员资格是根据他们在该群集或项目中分配的角色而有权访问特定群集或项目的用户列表。每个群集和项目都包含一个选项卡，具有适当权限的用户可以使用该选项卡来管理成员资格。
 
-When you create a cluster or project, Rancher automatically assigns you as the `Owner` for it. Users assigned the `Owner` role can assign other users roles in the cluster or project.
+创建集群或项目时，Rancher会自动将其分配为`所有者`。分配了`所有者`角色的用户可以在集群或项目中分配其他用户角色。
 
-> **Note:** Non-administrative users cannot access any existing projects/clusters by default. A user with appropriate permissions (typically the owner) must explicitly assign the project and cluster membership.
+> **注意：** 默认情况下，非管理用户无法访问任何现有项目/群集。具有适当权限的用户(通常是所有者)必须显式分配项目和集群成员资格。
 
-#### Cluster Roles
+#### 群集角色
 
-_Cluster roles_ are roles that you can assign to users, granting them access to a cluster. There are two primary cluster roles: `Owner` and `Member`.
+_集群角色_是您可以分配给用户的角色，以授予他们对集群的访问权限。集群有两个主要角色：`所有者`和`成员`。
 
-- **Cluster Owner:**
+- **丛集拥有者：**
 
-  These users have full control over the cluster and all resources in it.
+  这些用户可以完全控制群集及其中的所有资源。
 
-- **Cluster Member:**
+- **团体会员：**
 
-  These users can view most cluster level resources and create new projects.
+  这些用户可以查看大多数群集级别的资源并创建新项目。
 
-##### Custom Cluster Roles
+##### 自定义群集角色
 
-Rancher lets you assign _custom cluster roles_ to a standard user instead of the typical `Owner` or `Member` roles. These roles can be either a built-in custom cluster role or one defined by a Rancher administrator. They are convenient for defining narrow or specialized access for a standard user within a cluster. See the table below for a list of built-in custom cluster roles.
+使用Rancher，您可以将_custom群集角色_分配给标准用户，而不是典型的`所有者`或`成员`角色。这些角色可以是内置的自定义群集角色，也可以是Rancher管理员定义的角色。它们对于为集群中的标准用户定义狭窄或专门的访问非常方便。有关内置的​​自定义群集角色的列表，请参见下表。
 
-##### Cluster Role Reference
+##### 群集角色参考
 
-The following table lists each built-in custom cluster role available and whether that level of access is included in the default cluster-level permissions, `Cluster Owner` and `Cluster Member`.
+下表列出了每个可用的内置自定义群集角色，以及默认群集级别权限`群集所有者`和`群集成员`中是否包括该访问级别。
 
-| Built-in Cluster Role              | Owner | Member <a id="clus-roles"></a> |
+|内置群集角色|业主|成员<a id="clus-roles"> </a> |
 | ---------------------------------- | ----- | ------------------------------ |
-| Create Projects                    | ✓     | ✓                              |
-| Manage Cluster Backups             | ✓     |                                |
-| Manage Cluster Catalogs            | ✓     |                                |
-| Manage Cluster Members             | ✓     |                                |
-| Manage Nodes                       | ✓     |                                |
-| Manage Storage                     | ✓     |                                |
-| View All Projects                  | ✓     |                                |
-| View Cluster Catalogs              | ✓     | ✓                              |
-| View Cluster Members               | ✓     | ✓                              |
-| View Nodes                         | ✓     | ✓                              |
+|创建项目| ✓| ✓|
+|管理群集备份✓| |
+|管理群集目录| ✓| |
+|管理集群成员| ✓| |
+|管理节点| ✓| |
+|管理存储| ✓| |
+|查看所有项目| ✓| |
+|查看群集目录| ✓| ✓|
+|查看集群成员| ✓| ✓|
+|查看节点| ✓| ✓|
 
-For details on how each cluster role can access Kubernetes resources, you can go to the **Global** view in the Rancher UI. Then click **Security > Roles** and go to the **Clusters** tab. If you click an individual role, you can refer to the **Grant Resources** table to see all of the operations and resources that are permitted by the role.
+有关每个群集角色如何访问Kubernetes资源的详细信息，可以转到Rancher UI中的** Global **视图。然后单击`安全性>角色`，然后转到`集群`标签。如果单击单个角色，则可以参考`授权资源`表以查看该角色允许的所有操作和资源。
 
-> **Note:**
-> When viewing the resources associated with default roles created by Rancher, if there are multiple Kubernetes API resources on one line item, the resource will have `(Custom)` appended to it. These are not custom resources but just an indication that there are multiple Kubernetes API resources as one resource.
+> **注意：**
+> 查看与Rancher创建的默认角色相关的资源时，如果一个订单项上有多个Kubernetes API资源，则该资源将附加`(Custom)`。这些不是自定义资源，仅表示有多个Kubernetes API资源作为一种资源。
 
-#### Giving a Custom Cluster Role to a Cluster Member
+#### 给集群成员一个自定义集群角色
 
-After an administrator [sets up a custom cluster role,](/docs/admin-settings/rbac/default-custom-roles/#adding-a-custom-role) cluster owners and admins can then assign those roles to cluster members.
+管理员[设置自定义群集角色后，](/docs/admin-settings/rbac/default-custom-roles/＃adding-a-custom-role)群集所有者和管理员可以将这些角色分配给群集成员。
 
-To assign a custom role to a new cluster member, you can use the Rancher UI. To modify the permissions of an existing member, you will need to use the Rancher API view.
+要将自定义角色分配给新的集群成员，可以使用Rancher UI。要修改现有成员的权限，您将需要使用Rancher API视图。
 
-To assign the role to a new cluster member,
+要将角色分配给新的集群成员，
 
-1. Go to the **Cluster** view, then go to the **Members** tab.
-1. Click **Add Member.** Then in the **Cluster Permissions** section, choose the custom cluster role that should be assigned to the member.
-1. Click **Create.**
+1. 转到`群集`视图，然后转到`成员`选项卡。
+2. 单击`添加成员`。然后在`集群权限`部分中，选择应分配给成员的自定义集群角色。
+3. 点击**创建。**
 
-**Result:** The member has the assigned role.
+**结果：** 成员已分配角色。
 
-To assign any custom role to an existing cluster member,
+要将任何自定义角色分配给现有集群成员，
 
-1. Go to the member you want to give the role to. Click the **Ellipsis (...) > View in API.**
-1. In the **roleTemplateId** field, go to the drop-down menu and choose the role you want to assign to the member. Click **Show Request** and **Send Request.**
+1. 转到您要授予角色的成员。点击* *省略号(...)>在API中查看。**
+2. 在** roleTemplateId **字段中，转到下拉菜单，然后选择要分配给成员的角色。点击 **显示请求** 和 **发送请求** 。
 
-**Result:** The member has the assigned role.
+**结果：** 成员已分配角色。
 
-#### Project Roles
+#### 项目角色
 
-_Project roles_ are roles that can be used to grant users access to a project. There are three primary project roles: `Owner`, `Member`, and `Read Only`.
+_项目角色_是可用于授予用户访问项目权限的角色。项目主要有三个角色：`所有者`，`成员`和`只读`。
 
-- **Project Owner:**
+- **项目拥有者：**
 
-  These users have full control over the project and all resources in it.
+  这些用户对项目及其中的所有资源拥有完全控制权。
 
-- **Project Member:**
+- **项目成员：**
 
-  These users can manage project-scoped resources like namespaces and workloads, but cannot manage other project members.
+  这些用户可以管理项目范围的资源，例如名称空间和工作负载，但不能管理其他项目成员。
 
-- **Read Only:**
+- **只读：**
 
-  These users can view everything in the project but cannot create, update, or delete anything.
+  这些用户可以查看项目中的所有内容，但不能创建，更新或删除任何内容。
 
-  > **Caveat:**
-  >
-  > Users assigned the `Owner` or `Member` role for a project automatically inherit the `namespace creation` role. However, this role is a [Kubernetes ClusterRole](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#role-and-clusterrole), meaning its scope extends to all projects in the cluster. Therefore, users explicitly assigned the `owner` or `member` role for a project can create namespaces in other projects they're assigned to, even with only the `Read Only` role assigned.
+  > **注意事项：**
+  > 为项目分配了`所有者`或`成员`角色的用户会自动继承`命名空间创建`角色。但是，此角色是[Kubernetes ClusterRole](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#role-and-clusterrole)，这意味着它的作用域扩展到了群集中的所有项目。因此，为项目明确分配了`所有者`或`成员`角色的用户可以在分配给他们的其他项目中创建名称空间，即使仅分配了`只读`角色也是如此。
 
-##### Custom Project Roles
+##### 自定义项目角色
 
-Rancher lets you assign _custom project roles_ to a standard user instead of the typical `Owner`, `Member`, or `Read Only` roles. These roles can be either a built-in custom project role or one defined by a Rancher administrator. They are convenient for defining narrow or specialized access for a standard user within a project. See the table below for a list of built-in custom project roles.
+使用Rancher，您可以将_custom项目角色_分配给标准用户，而不是典型的`所有者`，`成员`或`只读`角色。这些角色可以是内置的自定义项目角色，也可以是Rancher管理员定义的角色。它们很方便为项目中的标准用户定义狭窄或专门的访问权限。有关内置的​​自定义项目角色的列表，请参见下表。
 
-##### Project Role Reference
+##### 项目角色参考
 
-The following table lists each built-in custom project role available in Rancher and whether it is also granted by the `Owner`, `Member`, or `Read Only` role.
+下表列出了Rancher中可用的每个内置自定义项目角色，以及是否也由`所有者`，`成员`或`只读`角色授予的。
 
-| Built-in Project Role   | Owner | Member<a id="proj-roles"></a> | Read Only |
-| ----------------------- | ----- | ----------------------------- | --------- |
-| Manage Project Members  | ✓     |                               |           |
-| Create Namespaces       | ✓     | ✓                             |           |
-| Manage Config Maps      | ✓     | ✓                             |           |
-| Manage Ingress          | ✓     | ✓                             |           |
-| Manage Project Catalogs | ✓     |                               |           |
-| Manage Secrets          | ✓     | ✓                             |           |
-| Manage Service Accounts | ✓     | ✓                             |           |
-| Manage Services         | ✓     | ✓                             |           |
-| Manage Volumes          | ✓     | ✓                             |           |
-| Manage Workloads        | ✓     | ✓                             |           |
-| View Config Maps        | ✓     | ✓                             | ✓         |
-| View Ingress            | ✓     | ✓                             | ✓         |
-| View Project Members    | ✓     | ✓                             | ✓         |
-| View Project Catalogs   | ✓     | ✓                             | ✓         |
-| View Secrets            | ✓     | ✓                             | ✓         |
-| View Service Accounts   | ✓     | ✓                             | ✓         |
-| View Services           | ✓     | ✓                             | ✓         |
-| View Volumes            | ✓     | ✓                             | ✓         |
-| View Workloads          | ✓     | ✓                             | ✓         |
+|内置项目角色|业主|成员<a id="proj-roles"> </a> |只读|
+| ----------------------- | ----- | ----------------------------- | | --------- |
+|管理项目成员| ✓| | |
+|创建命名空间| ✓| ✓| |
+|管理配置映射| ✓| ✓| |
+|管理入口| ✓| ✓| |
+|管理项目目录| ✓| | |
+|管理秘密| ✓| ✓| |
+|管理服务帐户| ✓| ✓| |
+|管理服务| ✓| ✓| |
+|管理卷| ✓| ✓| |
+|管理工作量| ✓| ✓| |
+|查看配置图| ✓| ✓| ✓|
+|查看入口| ✓| ✓| ✓|
+|查看项目成员| ✓| ✓| ✓|
+|查看项目目录| ✓| ✓| ✓|
+|查看秘密| ✓| ✓| ✓|
+|查看服务帐户| ✓| ✓| ✓|
+|查看服务| ✓| ✓| ✓|
+|查看卷| ✓| ✓| ✓|
+|查看工作量| ✓| ✓| ✓|
 
-> **Notes:**
+> **注意：**
 >
-> - Each project role listed above, including `Owner`, `Member`, and `Read Only`, is comprised of multiple rules granting access to various resources. You can view the roles and their rules on the Global > Security > Roles page.
-> - When viewing the resources associated with default roles created by Rancher, if there are multiple Kubernetes API resources on one line item, the resource will have `(Custom)` appended to it. These are not custom resources but just an indication that there are multiple Kubernetes API resources as one resource.
-> - The `Manage Project Members` role allows the project owner to manage any members of the project **and** grant them any project scoped role regardless of their access to the project resources. Be cautious when assigning this role out individually.
+> - 上面列出的每个项目角色，包括`所有者`，`成员`和`只读`，都由多个规则组成，这些规则授予对各种资源的访问权限。您可以在`全局`>`安全性`>`角色`页面上查看角色及其规则。
+> - 查看与Rancher创建的默认角色相关联的资源时，如果一个订单项上有多个Kubernetes API资源，则该资源将附加`(自定义)`。这些不是自定义资源，仅表示有多个Kubernetes API资源作为一种资源。
+> - 使用`管理项目成员`角色，项目所有者可以管理项目的任何成员 **，并** 授予他们任何项目范围的角色，而不管他们是否有权访问项目资源。单独分配此角色时要小心。
 
-#### Defining Custom Roles
+#### 定义自定义角色
 
-As previously mentioned, custom roles can be defined for use at the cluster or project level. The context field defines whether the role will appear on the cluster member page, project member page, or both.
+如前所述，可以定义自定义角色以在集群或项目级别使用。上下文字段定义角色是否将显示在群集成员页面，项目成员页面或两者上。
 
-When defining a custom role, you can grant access to specific resources or specify roles from which the custom role should inherit. A custom role can be made up of a combination of specific grants and inherited roles. All grants are additive. This means that defining a narrower grant for a specific resource **will not** override a broader grant defined in a role that the custom role is inheriting from.
+定义自定义角色时，您可以授予对特定资源的访问权限，或指定自定义角色应继承的角色。定制角色可以由特定授予和继承角色的组合组成。所有赠款都是加性的。这意味着为特定资源定义更窄的授权`不会`覆盖自定义角色继承自的角色中定义的更广泛的授权。
 
-#### Default Cluster and Project Roles
+#### 默认群集和项目角色
 
-By default, when a standard user creates a new cluster or project, they are automatically assigned an ownership role: either [cluster owner](#cluster-roles) or [project owner](#project-roles). However, in some organizations, these roles may overextend administrative access. In this use case, you can change the default role to something more restrictive, such as a set of individual roles or a custom role.
+默认情况下，当标准用户创建新集群或项目时，会自动为他们分配所有权角色：[集群所有者](＃cluster-roles)或[项目所有者](＃project-roles)。但是，在某些组织中，这些角色可能会过度扩展管理访问权限。在这种情况下，您可以将默认角色更改为更具限制性的内容，例如一组单独的角色或一个自定义角色。
 
-There are two methods for changing default cluster/project roles:
+有两种更改默认群集/项目角色的方法：
 
-- **Assign Custom Roles**: Create a [custom role](/docs/admin-settings/rbac/default-custom-roles) for either your [cluster](#custom-cluster-roles) or [project](#custom-project-roles), and then set the custom role as default.
+-**分配自定义角色**：为您的[cluster](＃custom-cluster-roles)或[project]创建一个[custom role](/docs/admin-settings/rbac/default-custom-roles)( ＃custom-project-roles)，然后将自定义角色设置为默认角色。
 
-- **Assign Individual Roles**: Configure multiple [cluster](#cluster-role-reference)/[project](#project-role-reference) roles as default for assignment to the creating user.
+-**分配个人角色**：将多个[cluster](＃cluster-role-reference)/[project](＃project-role-reference)角色配置为默认角色，以分配给创建用户。
 
-  For example, instead of assigning a role that inherits other roles (such as `cluster owner`), you can choose a mix of individual roles (such as `manage nodes` and `manage storage`).
+  例如，您可以选择混合使用各个角色(例如`管理节点`和`管理存储`)，而不是分配继承其他角色的角色(例如`集群所有者`)。
 
-> **Note:**
+> **注意：**
 >
-> - Although you can [lock](/docs/admin-settings/rbac/locked-roles/) a default role, the system still assigns the role to users who create a cluster/project.
-> - Only users that create clusters/projects inherit their roles. Users added to the cluster/project membership afterward must be explicitly assigned their roles.
+> - 尽管您可以[锁定](/docs/admin-settings/rbac/locked-roles/)默认角色，但系统仍会将该角色分配给创建集群/项目的用户。
+> - 只有创建集群/项目的用户才能继承其角色。此后添加到集群/项目成员资格的用户必须明确分配其角色。
 
-#### Configuring Default Roles for Cluster and Project Creators
+#### 为群集和项目创建者配置默认角色
 
-You can change the cluster or project role(s) that are automatically assigned to the creating user.
+您可以更改自动分配给创建用户的集群或项目角色。
 
-1. From the **Global** view, select **Security > Roles** from the main menu. Select either the **Cluster** or **Project** tab.
+1. 在`全局`视图中，从主菜单中选择`安全性>角色`。选择`集群`或`项目`选项卡。
 
-1. Find the custom or individual role that you want to use as default. Then edit the role by selecting **Ellipsis > Edit**.
+2. 查找要用作默认角色的自定义角色或单个角色。然后通过选择`省略号>编辑`来编辑角色。
 
-1. Enable the role as default.
-    accordion id="cluster" label="For Clusters" 
-1. From **Cluster Creator Default**, choose **Yes: Default role for new cluster creation**.
-1. Click **Save**.
-    /accordion 
-    accordion id="project" label="For Projects" 
-1. From **Project Creator Default**, choose **Yes: Default role for new project creation**.
-1. Click **Save**.
-    /accordion 
+3. 启用默认角色。
+    accordionid =` cluster` label =`对于群集`
+4. 在` Cluster Creator Default`中，选择`是：用于创建新群集的默认角色`。
+5. 单击**保存**。
+    /accordion
+    accordionid =` project` label =`用于项目`
+6. 在`项目创建者默认值`中，选择`是：新项目创建的默认角色`。
+7. 单击**保存**。
+    /accordion
 
-1. If you want to remove a default role, edit the permission and select **No** from the default roles option.
+8. 如果要删除默认角色，请编辑权限，然后从默认角色选项中选择`否`。
 
-**Result:** The default roles are configured based on your changes. Roles assigned to cluster/project creators display a check in the **Cluster/Project Creator Default** column.
+**结果：** 根据您的更改配置默认角色。分配给集群/项目创建者的角色在`集群/项目创建者默认值`列中显示一个检查。
 
-#### Cluster Membership Revocation Behavior
+#### 群集成员吊销行为
 
-When you revoke the cluster membership for a standard user that's explicitly assigned membership to both the cluster _and_ a project within the cluster, that standard user [loses their cluster roles](#clus-roles) but [retains their project roles](#proj-roles). In other words, although you have revoked the user's permissions to access the cluster and its nodes, the standard user can still:
+当您撤消已为群集和群集中的项目明确分配了成员资格的标准用户的群集成员身份时，该标准用户[失去其群集角色](＃clus-roles)但[保留其项目角色](＃proj -角色)。换句话说，尽管您已经撤消了用户访问集群及其节点的权限，但是标准用户仍然可以：
 
-- Access the projects they hold membership in.
-- Exercise any [individual project roles](#project-role-reference) they are assigned.
+- 访问其拥有成员资格的项目。
+- 行使分配给他们的任何[个人项目角色](＃project-role-reference)。
 
-If you want to completely revoke a user's access within a cluster, revoke both their cluster and project memberships.
+如果要完全撤消集群中用户的访问权限，请撤消其集群成员和项目成员身份。
