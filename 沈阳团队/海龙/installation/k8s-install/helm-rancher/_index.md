@@ -198,7 +198,7 @@ Rancher chart有许多自定义安装选项以适应特定的环境。以下是�
 
 有关选项的完整列表，请参见[Chart选项](/docs/installation/options/chart-options/).
 
-#### 保存你的选项
+#### 保存您的选项
 
 确保保存了使用的`--set`选项。使用Helm升级Rancher到新版本时，将需要使用相同的选项。
 

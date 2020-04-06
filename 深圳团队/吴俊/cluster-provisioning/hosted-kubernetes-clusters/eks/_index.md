@@ -13,7 +13,7 @@ Amazon EKS 为 Kubernetes 集群提供了一个托管控制平面. Amazon EKS �
 
 #### Amazon VPC
 
-你需要建立一个Amazon VPC来启动EKS集群. VPC使您能够将AWS资源启动到您定义的虚拟网络中. 了解更多信息, 参考 [教程: 为Amazon EKS集群创建一个包含公共和私有子网的VPC](https://docs.aws.amazon.com/eks/latest/userguide/create-public-private-vpc.html).
+您需要建立一个Amazon VPC来启动EKS集群. VPC使您能够将AWS资源启动到您定义的虚拟网络中. 了解更多信息, 参考 [教程: 为Amazon EKS集群创建一个包含公共和私有子网的VPC](https://docs.aws.amazon.com/eks/latest/userguide/create-public-private-vpc.html).
 
 #### IAM 策略
 
@@ -125,7 +125,7 @@ Rancher需要访问您的AWS帐户, 以便在Amazon EKS中提供和管理您的K
    | 选项              | 描述                                                                                                                                                                                                                                                                                                                 |
    | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
    | 实例类型       | 为正在配置的实例选择[硬件规格](https://aws.amazon.com/ec2/instance-types/).                                                                                                                                                                                                               |
-   | Custom AMI Override | 如果你想使用自定义的 [Amazon Machine Image](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AMIs.html#creating-an-ami) (AMI), 请在这里指定它, Rancher 将会为您选择的 EKS 版本使用 [EKS-optimized AMI](https://docs.aws.amazon.com/eks/latest/userguide/eks-optimized-ami.html). |
+   | Custom AMI Override | 如果您想使用自定义的 [Amazon Machine Image](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AMIs.html#creating-an-ami) (AMI), 请在这里指定它, Rancher 将会为您选择的 EKS 版本使用 [EKS-optimized AMI](https://docs.aws.amazon.com/eks/latest/userguide/eks-optimized-ami.html). |
    | Minimum ASG Size    | 通过[Amazon Auto Scaling](https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html)控制,在低流量期间集群将扩展到的最小的实例数.                                                                                                     |
    | Maximum ASG Size    | 通过[Amazon Auto Scaling](https://docs.aws.amazon.com/autoscaling/ec2/userguide/what-is-amazon-ec2-auto-scaling.html)控制,在低流量期间集群将扩展到的最大的实例数.                                                                                                    |
    | 用户数据           | 可以传递自定义命令来执行自动配置任务 **警告：修改此命令可能会导致节点无法加入集群** _注意: 从v2.2.0起提供_                                                                                                                                 |

@@ -2,14 +2,12 @@
 title: Rancher 部署策略
 ---
 
-有两种推荐的部署策略，每种方法都有其优缺点。哪种方法最适合你的场景，请阅读更多信息:
+有两种推荐的部署策略，每种方法都有其优缺点。哪种方法最适合您的场景，请阅读更多信息:
 
 - [Hub and Spoke](#hub-and-spoke)
 - [Regional](#regional)
 
 ## Hub & Spoke Strategy
-
----
 
 在这个部署场景中，有一个Rancher控制平面来管理遍布全球的Kubernetes集群。控制平面将在一个高可用性的Kubernetes集群上运行，由于延迟将会产生影响。
 
@@ -27,8 +25,6 @@ title: Rancher 部署策略
 - 如果控制平面失效，新服务的全局供应在恢复之前不可用。但是，每个Kubernetes集群可以继续单独管理。
 
 ## Regional Strategy
-
----
 
 在区域部署模型中，控制平面被部署在靠近计算节点的地方。
 

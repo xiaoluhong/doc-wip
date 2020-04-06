@@ -36,7 +36,7 @@ Rancher建议启用 [设置etcd重复快照的能力](/docs/cluster-admin/backin
 
 ### 在没有快照的情况下恢复etcd
 
-如果etcd节点组失去quorum, Kubernetes集群将报告失败，因为在Kubernetes集群中不能执行任何操作，例如部署工作负载。请查看Kubernetes集群中的 [etcd节点数量](/docs/cluster-provisioning/production/#count-of-etcd-nodes) 的最佳实践。如果你想恢复你的etcd节点集，请遵循以下说明:
+如果etcd节点组失去quorum, Kubernetes集群将报告失败，因为在Kubernetes集群中不能执行任何操作，例如部署工作负载。请查看Kubernetes集群中的 [etcd节点数量](/docs/cluster-provisioning/production/#count-of-etcd-nodes) 的最佳实践。如果您想恢复您的etcd节点集，请遵循以下说明:
 
 1. 通过删除所有其他etcd节点，在集群中只保留一个etcd节点。
 

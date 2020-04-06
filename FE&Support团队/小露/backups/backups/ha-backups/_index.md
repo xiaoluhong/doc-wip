@@ -42,11 +42,11 @@ title: HA安装备份
 
 ## 备份大纲
 
-1. [Take Snapshots of the `etcd` Database](#1-take-snapshots-of-the-etcd-database)
+1. [ETCD数据备份](#1-take-snapshots-of-the-etcd-database)
 
     使用RKE对当前的`etcd`数据库备份。
 
-1. [Store Snapshot(s) Externally](#2-backup-snapshots-to-a-safe-location)
+1. [将本地快照备份到安全位置](#2-backup-snapshots-to-a-safe-location)
 
     在备份完成之后，将它们导出备份到一个安全的位置，如果集群遇到问题，这个位置不会受到影响。
 
@@ -115,7 +115,7 @@ title: HA安装备份
    rke up --config rancher-cluster.yml
    ```
 
-**Result:** **结果:** RKE会在每个etcd节点上定时获取快照，并将快照将保存到每个etcd节点的:`/opt/rke/etcd-snapshots/`目录下。如果配置了S3存储配置，快照备份也会上传到S3兼容的存储后端。 
+**Result:** **结果:** RKE会在每个etcd节点上定时获取快照，并将快照将保存到每个etcd节点的:`/opt/rke/etcd-snapshots/`目录下。如果配置了S3存储配置，快照备份也会上传到S3兼容的存储后端。
 
 ### Option B: One-Time Snapshots
 

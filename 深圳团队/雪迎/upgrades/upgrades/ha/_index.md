@@ -17,7 +17,7 @@ title: 升级Kubernetes上安装的Rancher
 ## 先决条件
 
 - **查看Rancher文档中的[已知升级问题](/docs/upgrades/upgrades/#known-upgrade-issues) 和 [警告](/docs/upgrades/upgrades/#caveats)** 升级Rancher时要考虑的问题。可以在[GitHub](https://github.com/rancher/rancher/releases) 和 [Rancher forums](https://forums.rancher.com/c/announcements/12)的发行说明中找到每个Rancher版本的已知问题的更完整列表。
-- **对于 [仅用于离线安装](/docs/installation/other-installation-methods/air-gap) 收集并推送新的Rancher server版本镜像。** 请按照指南将你想要升级到Rancher版本的镜像 [推送到私有仓库](/docs/installation/other-installation-methods/air-gap/populate-private-registry/)。
+- **对于 [仅用于离线安装](/docs/installation/other-installation-methods/air-gap) 收集并推送新的Rancher server版本镜像。** 请按照指南将您想要升级到Rancher版本的镜像 [推送到私有仓库](/docs/installation/other-installation-methods/air-gap/populate-private-registry/)。
 
 ## 升级大纲
 

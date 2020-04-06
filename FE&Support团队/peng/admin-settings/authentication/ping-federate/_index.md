@@ -36,7 +36,7 @@ _v2.0.7版本可用_
       openssl req -x509 -newkey rsa:2048 -keyout myservice.key -out myservice.cert -days 365 -nodes -subj "/CN=myservice.example.com"
       ```
 
-   1. **IDP-metadata**: [从你的IdP服务器导出](https://documentation.pingidentity.com/pingfederate/pf83/index.shtml#concept_exportingMetadata.html)的`metadata.xml`文件。
+   1. **IDP-metadata**: [从您的IdP服务器导出](https://documentation.pingidentity.com/pingfederate/pf83/index.shtml#concept_exportingMetadata.html)的`metadata.xml`文件。
 
 
 1) 完成**配置Ping帐号**表单后，点击页面底部的**启用Ping认证**。

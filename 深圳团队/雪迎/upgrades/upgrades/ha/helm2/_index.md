@@ -24,7 +24,7 @@ title: 使用Helm 2升级Kubernetes上安装的Rancher
 
 - **从Rancher文档中 [已知的升级问题](/docs/upgrades/upgrades/#known-upgrade-issues) 和 [警告](/docs/upgrades/upgrades/#caveats)** 参照升级Rancher中最值得注意的问题。关于每个Rancher版本的已知问题的更完整的清单可以在[GitHub](https://github.com/rancher/rancher/releases) 和[Rancher forums](https://forums.rancher.com/c/announcements/12)找到。
 
-- **对于 [仅用于离线安装](/docs/installation/other-installation-methods/air-gap) 收集并推送新的Rancher server版本镜像。** 请按照指南将你想要升级到Rancher版本的镜像 [推送到私有仓库](/docs/installation/other-installation-methods/air-gap/populate-private-registry/)。
+- **对于 [仅用于离线安装](/docs/installation/other-installation-methods/air-gap) 收集并推送新的Rancher server版本镜像。** 请按照指南将您想要升级到Rancher版本的镜像 [推送到私有仓库](/docs/installation/other-installation-methods/air-gap/populate-private-registry/)。
 ## 升级大纲
 
 请按照以下步骤升级Rancher服务器：

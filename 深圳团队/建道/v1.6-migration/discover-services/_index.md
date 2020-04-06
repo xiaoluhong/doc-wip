@@ -2,9 +2,9 @@
 标题: '6. 服务发现'
 ---
 
-服务发现是任何基于容器环境的核心功能之一。 一旦打包并启动应用程序后，下一步就是使你的环境或外部环境中的其他容器可以发现它。本文档将描述如何使用Rancher v2.x提供的服务发现支持，让你可以用名称找到它们。
+服务发现是任何基于容器环境的核心功能之一。 一旦打包并启动应用程序后，下一步就是使您的环境或外部环境中的其他容器可以发现它。本文档将描述如何使用Rancher v2.x提供的服务发现支持，让您可以用名称找到它们。
 
-本文档还将向你展示当迁移到Rancher v2.x时如何链接工作负载和服务。 使用迁移工具CLI从v1.6解析服务时，它将为每个服务输出两个文件：一个部署清单和一个服务清单。 你必须将这两个文件链接在一起，这样部署才能在v2.x中正常运行。
+本文档还将向您展示当迁移到Rancher v2.x时如何链接工作负载和服务。 使用迁移工具CLI从v1.6解析服务时，它将为每个服务输出两个文件：一个部署清单和一个服务清单。 您必须将这两个文件链接在一起，这样部署才能在v2.x中正常运行。
 
 
 <figcaption>Resolve the <code>output.txt</code> Link Directive</figcaption>
@@ -57,7 +57,7 @@ Kubernetes在集群中调度DNS容器和服务，这类似于 [Rancher v1.6 DNS 
 
 #### 链接迁移的工作负载和服务
 
-当将v1.6服务迁移到v2.x时，Rancher不会自动为每个迁移的deployment创建Kubernetes服务记录。相反，你必须使用下面列出的一些方法将deployment和service手动链接在一起。
+当将v1.6服务迁移到v2.x时，Rancher不会自动为每个迁移的deployment创建Kubernetes服务记录。相反，您必须使用下面列出的一些方法将deployment和service手动链接在一起。
 
 在下图中,  `web-deployment.yml` 和 `web-service.yml` 文件 [解析后创建](/docs/v1.6-migration/run-migration-tool/#migration-example-file-output) 我们的[迁移示例服务](/docs/v1.6-migration/#migration-example-files) 链接在一起。
 
@@ -67,7 +67,7 @@ Kubernetes在集群中调度DNS容器和服务，这类似于 [Rancher v1.6 DNS 
 
 #### 服务别名创建
 
-正如你可以为Rancher v1.6服务创建别名一样，你也可以为Rancher v2.x工作负载执行相同的操作。 同样，你也可以使用主机名或IP地址创建指向外部运行的服务的DNS记录。 这些DNS记录是Kubernetes服务对象。
+正如您可以为Rancher v1.6服务创建别名一样，您也可以为Rancher v2.x工作负载执行相同的操作。 同样，您也可以使用主机名或IP地址创建指向外部运行的服务的DNS记录。 这些DNS记录是Kubernetes服务对象。
 
 使用v2.x UI，用上下文菜单导航至 `Project` 视图. 然后单击 **资源 > 工作负载 > 服务发现.** (在v2.3.0之前的版本中, 单击 **工作负载 > 服务发现** 选项卡.) 为工作负载创建的所有现有DNS记录均列在每个命名空间下。
 

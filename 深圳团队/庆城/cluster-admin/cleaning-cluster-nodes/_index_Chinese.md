@@ -118,7 +118,7 @@ popd
 
 #### Docker容器、镜像和卷
 
-根据您分配给节点的角色，容器中有Kubernetes组件， 属于覆盖网络的容器、DNS、ingress控制器和Rancher代理。 (还有你创建的Pods也被调度到这个节点)
+根据您分配给节点的角色，容器中有Kubernetes组件， 属于覆盖网络的容器、DNS、ingress控制器和Rancher代理。 (还有您创建的Pods也被调度到这个节点)
 
 **清理所有Docker容器、镜像和卷:**
 

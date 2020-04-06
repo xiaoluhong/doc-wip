@@ -7,4 +7,4 @@ title: 备份
 - [Docker单容器安装备份](./single-node-backups/)
 - [HA安装备份](./ha-backups/)
 
-如果你想备份你的[Rancher自定义Kubernetes集群](/docs/cluster-provisioning/rke-clusters/), 请参考[文档](/docs/cluster-admin/backing-up-etcd/).
+如果您想备份您的[Rancher自定义Kubernetes集群](/docs/rancher/v2.x/en/cluster-provisioning/rke-clusters/), 请参考[自定义集群备份](/docs/rancher/v2.x/en/cluster-admin/backing-up-etcd/)。

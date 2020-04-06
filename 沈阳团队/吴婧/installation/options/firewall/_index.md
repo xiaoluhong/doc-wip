@@ -4,7 +4,7 @@ title: 使用防火墙打开端口
 
 Linux的一些发行版[源自RHEL](https://en.wikipedia.org/wiki/Red_Hat_Enterprise_Linux#Rebuilds)，包括Oracle Linux，可能有默认的防火墙规则来阻止与Helm的通信。
 
-例如，AWS中的一个Oracle Linux映像具有REJECT规则，可阻止Helm与Tiller通信：
+例如，AWS中的一个Oracle Linux镜像具有REJECT规则，可阻止Helm与Tiller通信：
 
 ```
 Chain INPUT (policy ACCEPT)

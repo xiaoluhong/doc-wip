@@ -2,7 +2,7 @@
 title: 使用Helm 2升级Cert-Manager
 ---
 
-Rancher使用cert-manager为Rancher的HA部署自动生成和更新TLS证书。截至2019秋季，cert-manager将发生三个重要的变化，如果你有一个Rancher的HA部署，您需要采取以下措施：
+Rancher使用cert-manager为Rancher的HA部署自动生成和更新TLS证书。截至2019秋季，cert-manager将发生三个重要的变化，如果您有一个Rancher的HA部署，您需要采取以下措施：
 
 1. [从2019年11月1日开始，Let's Encrypt将阻止版本低于0.8.0的cert-manager实例。](https://community.letsencrypt.org/t/blocking-old-cert-manager-versions/98753)
 1. [Cert-manager正在弃用并替换certificate.spec.acme.solvers字段。](https://docs.cert-manager.io/en/latest/tasks/upgrading/upgrading-0.7-0.8.html#upgrading-from-v0-7-to-v0-8)此更改没有确切的截止日期。
@@ -27,7 +27,7 @@ Rancher使用cert-manager为Rancher的HA部署自动生成和更新TLS证书。�
 ### 仅升级Cert-Manager
 
 > **注意：**
-> 如果你没有升级Rancher的计划，这些说明是适用的。
+> 如果您没有升级Rancher的计划，这些说明是适用的。
 
 这些说明中使用的命名空间取决于当前安装了cert-manager的命名空间。如果它在kube-system中，请在以下说明中使用。您可以通过运行`kubectl get pods --all-namespaces`来验证，并检查cert-manager-\* pods列在哪个名称空间中。请勿更改正在运行cert-manager的名称空间，否则可能会导致问题。
 

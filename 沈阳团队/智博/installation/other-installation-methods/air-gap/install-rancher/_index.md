@@ -74,7 +74,7 @@ From a system that has access to the internet, fetch the latest Helm chart and c
 helm fetch rancher-<CHART_REPO>/rancher
 ```
 
-3. 获取最新的Rancher chart，你会看到对应的tgz文件下载到本地
+3. 获取最新的Rancher chart，您会看到对应的tgz文件下载到本地
 
 ```plain
 helm fetch rancher-<CHART_REPO>/rancher

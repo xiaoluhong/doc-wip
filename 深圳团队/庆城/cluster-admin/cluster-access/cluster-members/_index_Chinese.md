@@ -30,7 +30,7 @@
 
     - Rancher在您键入时从 [外部身份验证](/docs/admin-settings/authentication/) 源返回用户。
 
-          	>**使用 AD 却找不到你的用户?**
+          	>**使用 AD 却找不到您的用户?**
           	>您的搜索属性配置可能存在问题.请参见 [配置Active Directory身份验证:步骤5](/docs/admin-settings/authentication/ad/).
 
     - 下拉菜单允许您添加组，而不是单个用户。下拉列表只列出登录用户所属的组。

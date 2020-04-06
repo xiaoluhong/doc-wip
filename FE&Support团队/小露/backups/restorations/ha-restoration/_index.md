@@ -10,7 +10,7 @@ title: HA安装恢复
 
 恢复集群时将需要使用[RKE](https://docs.rancher.cn/rancher2x/install-prepare/download/rke.html)和[kubectl](https://docs.rancher.cn/rancher2x/install-prepare/download/kubernetes.html)CLI工具，请提前下载。
 
-你可以在原K8S集群中选择一台主机用于集群恢复的目标主机，然后通过[节点清理](https://docs.rancher.cn/rancher2x/install-prepare/remove-node.html)的方法初始化节点。或者使用一台全新的节点用于集群恢复的目标主机。
+您可以在原K8S集群中选择一台主机用于集群恢复的目标主机，然后通过[节点清理](https://docs.rancher.cn/rancher2x/install-prepare/remove-node.html)的方法初始化节点。或者使用一台全新的节点用于集群恢复的目标主机。
 
 > **重要:** 在开始恢复之前，请确保已停止旧集群所有节点上的所有kubernetes服务。
 

@@ -8,7 +8,7 @@ _v2.1.0版本可用_
 
 ### 先决条件
 
-- 你必须有一个[Keycloak IdP服务器](https://www.keycloak.org/docs/latest/server_installation/)。
+- 您必须有一个[Keycloak IdP服务器](https://www.keycloak.org/docs/latest/server_installation/)。
 - 在Keycloak中，创建一个[新的SAML客户端](https://www.keycloak.org/docs/latest/server_admin/#saml-clients)，设置如下。参见[Keycloak文档](keycloak.org/docs/latest/server_admin/#saml-clients)获得帮助。 
 
 
@@ -44,7 +44,7 @@ _v2.1.0版本可用_
     | Groups Field              | 为管理组成员身份创建的条目。                                                  |
     | Rancher API Host          | Rancher服务器的URL地址                                                        |
     | Private Key / Certificate | 密钥/证书对，用于在Rancher和IdP之间创建安全shell。                            |
-    | IDP-metadata              | 从你的IdP服务器导出的`metadata.xml`文件。                                     |
+    | IDP-metadata              | 从您的IdP服务器导出的`metadata.xml`文件。                                     |
 
     >**提示:** 您可以使用openssl命令生成密钥/证书对。例如:
     >
@@ -80,7 +80,7 @@ Rancher将重定向到IdP登录页面。输入Keycloak IdP系统的身份验证�
 When you click on **Authenticate with Keycloak**, your are not redirected to your IdP.
 当您点击**启用Keycloak认证**时，没有被重定向到Keycloak IdP。
 
-- 验证你的Keycloak客户端配置。
+- 验证您的Keycloak客户端配置。
 - 确保“Force Post Binding”设置为“OFF”。
 
 
@@ -107,7 +107,7 @@ When you click on **Authenticate with Keycloak**, your are not redirected to you
 Keycloak versions 6.0.0 and up no longer provide the IDP metadata under the `Installation` tab.
 You can still get the XML from the following url:
 Keycloak 6.0.0及以上版本在“安装”选项卡下不再提供IDP元数据。
-你仍然可以从以下网址获取XML:
+您仍然可以从以下网址获取XML:
 
 `https://{KEYCLOAK-URL}/auth/realms/{REALM-NAME}/protocol/saml/descriptor`
 

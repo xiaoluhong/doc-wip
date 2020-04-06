@@ -100,7 +100,7 @@ Rancher server 默认设计为安全的，需要使用 SSL / TLS 配置。
    ```plain
    curl -L -o cert-manager/cert-manager-crd.yaml https://raw.githubusercontent.com/jetstack/cert-manager/release-0.12/deploy/manifests/00-crds.yaml
    ```
-1. 渲染 Rancher 模板，声明你选择的选项。 使用下面的参考表替换每个占位符。 为了配置任何由 Rancher 启动的 Kubernetes 集群或 Rancher 工具，需要将 Rancher 配置使用专用注册表。
+1. 渲染 Rancher 模板，声明您选择的选项。 使用下面的参考表替换每个占位符。 为了配置任何由 Rancher 启动的 Kubernetes 集群或 Rancher 工具，需要将 Rancher 配置使用专用注册表。
 
 
     Placeholder | Description

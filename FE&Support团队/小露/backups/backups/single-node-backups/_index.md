@@ -65,4 +65,4 @@ tar pzcvf /backup/rancher-data-backup-${RANCHER_VERSION}-${DATE}.tar.gz /var/lib
    docker start ${RANCHER_CONTAINER_NAME}
    ```
 
-1. 如果需要恢复数据，请访问[Docker单容器安装恢复](/docs/backups/restorations/single-node-restoration)
+1. 如果需要恢复数据，请访问[Docker单容器安装恢复](/docs/rancher/v2.x/en/backups/restorations/single-node-restoration/)

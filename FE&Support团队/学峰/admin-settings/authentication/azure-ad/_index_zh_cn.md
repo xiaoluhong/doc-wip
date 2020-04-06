@@ -4,7 +4,7 @@
 
 _从v2.0.3开始提供_
 
-如果你在Azure中托管了一个Active Directory(AD)实例，你可以将Rancher配置为允许你的用户使用他们的AD帐户登录。Azure AD外部身份验证的配置要求您在Azure和Rancher中进行配置。
+如果您在Azure中托管了一个Active Directory(AD)实例，您可以将Rancher配置为允许您的用户使用他们的AD帐户登录。Azure AD外部身份验证的配置要求您在Azure和Rancher中进行配置。
 
 > **注意:** Azure AD集成仅支持服务提供商发起的登录。
 
@@ -149,7 +149,7 @@ _从v2.0.3开始提供_
 
       ![Open App Registrations](/img/rancher/search-app-registrations.png)
 
-   1. 找到你为Rancher创建的条目。
+   1. 找到您为Rancher创建的条目。
 
    1. 复制**应用程序ID**并粘贴到[文本文件](#提示)。
 

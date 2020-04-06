@@ -8,7 +8,7 @@ title: 升级和回滚
 
 #### 回滚不成功的升级
 
-如果你的Rancher Server没有成功升级, 你可以回滚到升级之前的版本：
+如果您的Rancher Server没有成功升级, 您可以回滚到升级之前的版本：
 
 - [回滚使用Docker安装的Rancher](/docs/upgrades/single-node-rollbacks)
 - [回滚安装在Kubernetes集群上的Rancher](/docs/upgrades/ha-server-rollbacks)

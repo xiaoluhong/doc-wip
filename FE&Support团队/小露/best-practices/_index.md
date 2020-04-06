@@ -17,4 +17,4 @@ title: 最佳实践指南
   - [Kubernetes的101个安全最佳实践](https://rancher.com/blog/2019/2019-01-17-101-more-kubernetes-security-best-practices/)
 - [Rancher 论坛](https://forums.rancher.com/)
 - [Rancher Users Slack](https://slack.rancher.io/)
-- [Rancher Labs YouTube Channel - Online Meetups, Demos, Training, and Webinars](https://www.youtube.com/channel/UCh5Xtp82q8wjijP8npkVTBA/featured)
+- [Rancher Labs YouTube频道-在线活动、演示、培训和网络研讨会](https://www.youtube.com/channel/UCh5Xtp82q8wjijP8npkVTBA/featured)

@@ -6,7 +6,7 @@ _可用于 v2.1.0 到 v2.1.9 和 v2.2.0 到 v2.2.3_
 
 本节介绍如何在 Rancher v2.1.x 和 v2.2.x版本中配置 Windows 集群. 如果您正在使用 Rancher v2.3.0 或更高版本, 请参阅新的文档 [v2.3.0 或更高版本](/docs/cluster-provisioning/rke-clusters/windows-clusters/).
 
-当你创建一个 [自定义集群](/docs/cluster-provisioning/custom-clusters/), Rancher 使用 RKE (the Rancher Kubernetes Engine) 在现有的基础设施上配置 Kubernetes 集群.
+当您创建一个 [自定义集群](/docs/cluster-provisioning/custom-clusters/), Rancher 使用 RKE (the Rancher Kubernetes Engine) 在现有的基础设施上配置 Kubernetes 集群.
 
 您可以通过将 Linux 和 Windows 主机混合使用作为集群节点来使用 Rancher 设置自定义 Windows 集群.
 

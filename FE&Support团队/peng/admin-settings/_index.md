@@ -78,7 +78,7 @@ _v2.3.0版本可用_
 
 With this feature, you can upgrade to the latest version of Kubernetes as soon as it is released, without upgrading Rancher. This feature allows you to easily upgrade Kubernetes patch versions (i.e. `v1.15.X`), but not intended to upgrade Kubernetes minor versions (i.e. `v1.X.0`) as Kubernetes tends to deprecate or add APIs between minor versions.
 
-基于此特性，您可以在Kubernetes发布后立即升级到最新版本，而无需升级Rancher。这个功能可以让你轻松升级Kubernetes的补丁版本（例如：`v1.15.X`)，但不升级Kubernetes的小版本(例如：`v1.X.0`)。因为Kubernetes倾向于在较小的版本之间不支持或添加api。
+基于此特性，您可以在Kubernetes发布后立即升级到最新版本，而无需升级Rancher。这个功能可以让您轻松升级Kubernetes的补丁版本（例如：`v1.15.X`)，但不升级Kubernetes的小版本(例如：`v1.X.0`)。因为Kubernetes倾向于在较小的版本之间不支持或添加api。
 
 The information that Rancher uses to provision [RKE clusters](/docs/cluster-provisioning/rke-clusters/) is now located in the Rancher Kubernetes Metadata. For details on metadata configuration and how to change the Kubernetes version used for provisioning RKE clusters, see [Rancher Kubernetes Metadata.](/docs/admin-settings/k8s-metadata/)
 

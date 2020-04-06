@@ -12,11 +12,11 @@ title: 运行Rancher的提示
 
 当Rancher server安装在Kubernetes集群上时，它不应该在托管的Kubernetes环境中运行，比如谷歌的GKE、Amazon的EKS或Microsoft的AKS。这些托管的Kubernetes解决方案没有将etcd公开到Rancher可以管理的程度，并且它们的自定义可能会干扰Rancher的操作。
 
-强烈建议使用托管基础设施，如Amazon的EC2或谷歌的GCE。在基础设施提供者上使用RKE创建集群时，可以将集群配置为创建etcd快照作为备份。然后，您可以[使用RKE]({{<baseurl>}}/ RKE /latest/en/etcd-snapshot /)或[Rancher](/docs/backup /restorations/)从这些快照之一恢复您的集群。在托管的Kubernetes环境中，不支持这种备份和恢复功能。
+强烈建议使用托管基础设施，如Amazon的EC2或谷歌的GCE。在基础设施提供者上使用RKE创建集群时，可以将集群配置为创建etcd快照作为备份。然后，您可以[使用RKE]({{<baseurl>}}/rke/latest/en/etcd-snapshot/)或[Rancher]({{<baseurl>}}/rancher/v2.x/en/backups/restorations/)从这些快照之一恢复您的集群。在托管的Kubernetes环境中，不支持这种备份和恢复功能。
 
 ## 确保Kubernetes的节点配置正确
 
-当你部署节点时需要遵循k8和etcd最佳实践，比如：禁用互换、反复检查你有完整的集群中的所有机器之间的网络连接、使用唯一的主机名、MAC地址、每个节点product_uuids、检查所有正确的端口被打开，和部署与ssd etcd支持。更多的细节可以在[kubernetes docs](https://kubernetes.io/docs/setup/producenvironment/tools/kubeadm/install-kubeadm/#before-you-begin)和[etcd的性能操作指南](https://github.com/etcd-io/etcd/blob/master/Documentation/op-guide/performance.md)中找到。
+当您部署节点时需要遵循k8和etcd最佳实践，比如：禁用互换、反复检查您有完整的集群中的所有机器之间的网络连接、使用唯一的主机名、MAC地址、每个节点product_uuids、检查所有正确的端口被打开，和部署与ssd etcd支持。更多的细节可以在[kubernetes docs](https://kubernetes.io/docs/setup/producenvironment/tools/kubeadm/install-kubeadm/#before-you-begin)和[etcd的性能操作指南](https://github.com/etcd-io/etcd/blob/master/Documentation/op-guide/performance.md)中找到。
 
 ## 使用RKE备份状态文件
 
@@ -36,11 +36,10 @@ title: 运行Rancher的提示
 
 ## 监视集群以计划容量
 
-Rancher server的 Local Kubernetes集群应该尽可能符合[系统和硬件需求](/docs/installation/requirements/)。您越偏离系统和硬件需求，您承担的风险就越大。
+Rancher server的 Local Kubernetes集群应该尽可能符合[系统和硬件需求]({{<baseurl>}}/rancher/v2.x/en/installation/requirements/)。您越偏离系统和硬件需求，您承担的风险就越大。
 
 但是，metrics-driven的容量规划分析应该是扩展Rancher的最终指导，因为发布的需求考虑了各种工作负载类型。
 
 使用Rancher，您可以通过与领先的开源监控解决方案Prometheus和Grafana的集成来监视集群节点、Kubernetes组件和软件部署的状态和过程，Grafana可以可视化来自Prometheus的指标。
 
-在集群中[启用监控](/docs/cluster-admin/tools/monitoring/)之后，您可以设置[通知通道](/docs/cluster-admin/tools/notifiers/)和[集群警报](/docs/cluster-admin/tools/alerts/)，让您知道您的集群是否接近其容量。您还可以使用Prometheus和Grafana监控框架来建立关键指标的基准。
-
+在集群中[启用监控](/docs/cluster-admin/tools/monitoring/)之后，您可以设置[通知通道](/docs/rancher/v2.x/en/cluster-admin/tools/notifiers/)和[集群警报](/docs/rancher/v2.x/en/cluster-admin/tools/alerts/)，让您知道您的集群是否接近其容量。您还可以使用Prometheus和Grafana监控框架来建立关键指标的基准。

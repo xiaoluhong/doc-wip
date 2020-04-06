@@ -25,13 +25,13 @@ API通常是RESTful，但有几个功能可以定义客户端可发现的所有�
 
 * So the theory is that you can load just the list of schemas and know everything about the API. This is in fact how the UI for the API works, it contains no code specific to Rancher itself. The URL to get Schemas is sent in every HTTP response as a `X-Api-Schemas` header. From there you can follow the `collection` link on each schema to know where to list resources, and other `links` inside of the returned resources to get any other information.
 
-* In practice, you will probably just want to construct URL strings. We highly suggest limiting this to the top-level to list a collection (`/v3/<type>`) or get a specific resource (`/v3/<type>/<id>`). Anything deeper than that is subject to change in future releases.
+* 实际上，您可能只想拼接URL字符串。我们强烈建议将其限制在顶层，以列出一个集合('/v3/<type>')或获得一个特定的资源('/v3/<type>/<id>')。任何更深入的层级内容都可能在未来的版本中发生变化。
 
-* Resources have relationships between each other called links. Each resource includes a map of `links` with the name of the link and the URL to retrieve that information. Again you should `GET` the resource and then follow the URL in the `links` map, not construct these strings yourself.
+* 资源之间有相互关系，称为链接。每个资源都包含一个`链接映射`，其中包含`链接`的名称和检索信息的URL。同样，您应该`GET`资源，然后在`链接映射`中跟随URL，而不是自己构造这些字符串。
 
-* Most resources have actions, which do something or change the state of the resource. To use these, send a HTTP `POST` to the URL in the `actions` map for the action you want. Some actions require input or produce output, see the individual documentation for each type or the schemas for specific information.
+* 大多数资源都有actions操作，这些actions执行某些操作或更改资源的状态。发送一个HTTP `POST`请求到`action`映射的URL，执行您想要的操作。有些操作需要输入或产生输出，请参阅每种类型的单独文档或特定信息的schemas。
 
-* To edit a resource, send a HTTP `PUT` to the `links.update` link on the resource with the fields that you want to change. If the link is missing then you don't have permission to update the resource. Unknown fields and ones that are not editable are ignored.
+* 要更新资源，发送一个HTTP `PUT`请求到想要更改的字段的`links.update`链接上。如果链接丢失，则您没有更新资源的权限。未知字段和不可编辑的字段将被忽略。
 
 * 要删除资源，发送HTTP `DELETE` 到资源的 `links.remove` 链接。如果链接丢失，则您没有更新资源的权限。
 
@@ -39,7 +39,7 @@ API通常是RESTful，但有几个功能可以定义客户端可发现的所有�
 
 ## 过滤
 
-大多数集合可以使用HTTP查询参数在服务端通过公共字段进行过滤。The `filters` map shows you what fields can be filtered on and what the filtered values were for the request you made. The API UI has controls to setup filtering and show you the appropriate request. For simple "equals" matches it's just `field=value`. Modifiers can be added to the field name, e.g. `field_gt=42` for "field is greater than 42". See the [API spec](https://github.com/rancher/api-spec/blob/master/specification.md#filtering) for full details.
+大多数集合可以使用HTTP查询参数在服务端通过公共字段进行过滤。`过滤器`映射向您显示可以对哪些字段进行过滤，以及您所发出的请求的过滤值。 API UI具有设置筛选并向您显示适当请求的控件。对于简单的`equals`匹配，它只需要设置`field=value`。可以将修饰符添加到字段名中, 例如：`field_gt=42`表示`字段大于42`。更多信息请查看[API spec](https://github.com/rancher/api-spec/blob/master/specification.md#filtering)。
 
 ## 排序
 

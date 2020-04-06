@@ -11,7 +11,7 @@ Rancher v2.x建立在[Kubernetes](https://kubernetes.io/docs/home/?path=users&pe
 | 集群        | 运行Kubernetes管理的容器化应用程序的机器的集合。                                                                                                           |
 | 命名空间    | 一个虚拟集群，单个物理集群可以支持多个集群。                                                                                                           |
 | 节点        | 组成集群的物理机或虚拟机之一。                                                                                                                               |
-| Pod         | 最小最简单的Kubernetes对象。 一个pod代表一套正在你的集群上运行的 [容器](https://kubernetes.io/docs/concepts/overview/what-is-kubernetes/#why-containers) | 
+| Pod         | 最小最简单的Kubernetes对象。 一个pod代表一套正在您的集群上运行的 [容器](https://kubernetes.io/docs/concepts/overview/what-is-kubernetes/#why-containers) | 
 | Deployment  | 管理复制的应用程序的API对象。                                                                                                                                          |
 | 工作负载    | 工作负载是为pods各项设置部署规则的对象。                                                                                                                                  |
 

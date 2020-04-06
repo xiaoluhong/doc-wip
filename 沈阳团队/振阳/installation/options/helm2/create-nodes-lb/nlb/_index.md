@@ -8,11 +8,11 @@ title: Amazon NLB
 
 1. [创建目标群组](#create-target-groups)
 
-   首先为 **TCP** 协议创建两个目标群组，一个是TCP端口443，一个是TCP端口80（提供到TCP端口443的重定向）。你将添加你的Linux节点到这些组中。
+   首先为 **TCP** 协议创建两个目标群组，一个是TCP端口443，一个是TCP端口80（提供到TCP端口443的重定向）。您将添加您的Linux节点到这些组中。
 
 2. [注册目标](#register-targets)
 
-   添加你的Linux节点到这些目标群组中。
+   添加您的Linux节点到这些目标群组中。
 
 3. [创建NLB](#create-your-nlb)
 
@@ -24,7 +24,7 @@ title: Amazon NLB
 
 第一个NLB配置步骤是创建两个目标群组。 从技术上讲，只需要端口443即可访问Rancher，但为了提升易用性通常会为端口80添加侦听器，该端口将自动重定向到端口443。 节点上的NGINX ingress controller将确保将端口80重定向到端口443。
 
-登陆 [亚马逊 AWS 控制台](https://console.aws.amazon.com/ec2/) , 确保选择指定的 **Region** 来创建你的EC2实例（Linux主机）。
+登陆 [亚马逊 AWS 控制台](https://console.aws.amazon.com/ec2/) , 确保选择指定的 **Region** 来创建您的EC2实例（Linux主机）。
 
 目标群组配置位于**EC2** **服务** **负载平衡** 部分中。选择 **服务** 然后选择 **EC2**, 找到 **负载平衡** 然后选择 **目标群组**。
 
@@ -124,7 +124,7 @@ title: Amazon NLB
 
 重复这些步骤， 将 **rancher-tcp-443** 替换成 **rancher-tcp-80**。 需要将相同的实例作为目标添加到该目标组。
 
-### 创建你的NLB
+### 创建您的NLB
 
 使用Amazon的向导创建网络负载均衡器。 作为此过程的一部分，您将添加在[创建目标组](#create-target-groups)中已创建的目标组。 
 

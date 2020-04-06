@@ -45,7 +45,7 @@ _v2.3.0版本可用_
 1. 输入一个名称。
 1. 填写**授权的JavaScript源**和**授权的重定向uri**。注意:设置Google OAuth的Rancher UI页面(可在**Security > Authentication >Google**下的全局视图中获得)为您提供了这一步要输入的准确链接。
 
-- 在**授权的JavaScript源**一栏，输入你的Rancher服务器的URL。
+- 在**授权的JavaScript源**一栏，输入您的Rancher服务器的URL。
 - 在**授权的重定向uri**一栏，输入您的Rancher服务器的URL并附加路径'verify-auth'。例如，如果您的URI是'https://rancherServer'，您需要输入'https://rancherServer/verify-auth'。
 
 1. 点击* *创建**。

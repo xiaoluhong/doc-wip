@@ -165,7 +165,7 @@ Configuration of external authentication affects how principal users are managed
 
 (/img/rancher/sign-out-local.png)
 
-4. 然后，Rancher会自动将你登录回外部主体。
+4. 然后，Rancher会自动将您登录回外部主体。
 
 (/img/rancher/sign-in-external.png)
 

@@ -176,7 +176,7 @@ Waiting for deployment "rancher" rollout to finish: 0 of 3 updated replicas are 
 deployment "rancher" successfully rolled out
 ```
 
-如果你看到了错误：`error: deployment "rancher" exceeded its progress deadline`，您可以使用下面的命令来检查deployment的状态：
+如果您看到了错误：`error: deployment "rancher" exceeded its progress deadline`，您可以使用下面的命令来检查deployment的状态：
 
 ```
 kubectl -n cattle-system get deploy rancher

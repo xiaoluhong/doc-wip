@@ -4,11 +4,11 @@ title: 初始化Windows初始化
 
 _从v2.3.0开始支持_
 
-当使用Rancher初始化一个[自定义集群](/docs/cluster-provisioning/custom-clusters/)时，Rancher会在你的基础架构资源上，使用RKE(the Rancher Kubernetes Engine)进行Kubernetes集群初始化。
+当使用Rancher初始化一个[自定义集群](/docs/cluster-provisioning/custom-clusters/)时，Rancher会在您的基础架构资源上，使用RKE(the Rancher Kubernetes Engine)进行Kubernetes集群初始化。
 
-你可以同时使用Linux以及Windows的主机组成你的集群。Windows节点只能作为工作负载节点使用，Linux则需要作为管理节点。
+您可以同时使用Linux以及Windows的主机组成您的集群。Windows节点只能作为工作负载节点使用，Linux则需要作为管理节点。
 
-你只能在集群是启用Windows支持的情况下才可以将一个Windows节点添加到集群当中。Windows支持只能适用于自定义集群并且Kubernetes版本1.15+以及Flannel网络插件。Windows不能在已创建的集群中打开。
+您只能在集群是启用Windows支持的情况下才可以将一个Windows节点添加到集群当中。Windows支持只能适用于自定义集群并且Kubernetes版本1.15+以及Flannel网络插件。Windows不能在已创建的集群中打开。
 
 > Windows集群比Linux集群有需要有更多的前提田间。例如，Windows节点必须有50GB的磁盘空间，并且需要保证满足所有一下的节点[需求](#requirements-for-windows-clusters)。
 
@@ -49,7 +49,7 @@ Kubernetes的Windows节点支持特性汇总如[文档 supported functionality a
 > **注意事项：**
 >
 > - 如果您使用的是AWS，Rancher建议将 _Microsoft Windows Server 2019 Base with Containers_ 作为Amazon Machine Image（AMI）。
-> - 如果您使用的是GCE，Rancher建议将 _Windows Server 2019 Datacenter for Containers_ 作为OS映像。
+> - 如果您使用的是GCE，Rancher建议将 _Windows Server 2019 Datacenter for Containers_ 作为OS镜像。
 
 #### 节点
 

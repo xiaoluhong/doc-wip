@@ -20,7 +20,7 @@ Ubuntu、Fedora和CentOS等流行的发行版经过了更多的实地测试，�
 
 如果您的微服务是一个独立的静态二进制文件，那么应该使用从scratch容器开始。
 
-从scratch开始的容器是一个[官方Docker映像](https://hub.docker.com/_/scratch)，它是空的，因此您可以使用它来设计最小的镜像。
+[docker scratch](https://hub.docker.com/_/scratch)镜像它是空的，因此您可以使用它来设计最小的镜像。
 
 这将有最小的攻击面和最小的镜像大小。
 
@@ -30,7 +30,7 @@ Ubuntu、Fedora和CentOS等流行的发行版经过了更多的实地测试，�
 
 ## 资源限制
 
-对你的Pods应用配置CPU和内存限制，这可以帮助管理工作节点上的资源，并避免异常的微服务（比如内存溢出）影响其他微服务。
+对您的Pods应用配置CPU和内存限制，这可以帮助管理工作节点上的资源，并避免异常的微服务（比如内存溢出）影响其他微服务。
 
 在标准Kubernetes中，可以在命名空间级别设置资源限制。在Rancher中，您可以在项目级别设置资源限制，它们将同步到项目中的所有命名空间，具体配置请查阅Rancher文档。
 
@@ -40,11 +40,11 @@ Kubernetes文档提供了更多关于如何在[容器级别](https://kubernetes.
 
 ## 资源预留
 
-你应该将CPU和内存需求配置到你的Pod上。这对于通知调度器需要将pod放置在哪种类型的计算节点上，并确保它不会过度调度到该节点非常重要。在Kubernetes中，您可以在Pods容器的`spec`的`resources.requests` 请求字段中配置资源请求。有关详细信息，请参考[Kubernetes docs](https://kubernetes.io/docs/concepts/configuration/manage-comput-resources-container/#资源请求-限制-点和容器)。
+您应该将CPU和内存需求配置到您的Pod上。这对于通知调度器需要将pod放置在哪种类型的计算节点上，并确保它不会过度调度到该节点非常重要。在Kubernetes中，您可以在Pods容器的`spec`的`resources.requests` 请求字段中配置资源请求。有关详细信息，请参考[Kubernetes docs](https://kubernetes.io/docs/concepts/configuration/manage-comput-resources-container/#资源请求-限制-点和容器)。
 
 > **注意:** 如果您为部署Pod的命名空间设置了资源限制，而Pod没有设置资源预留和资源限制，那么将不允许启动pod。为了避免在工作负载创建期间在每个容器上设置这些字段，可以在命名空间上指定缺省资源预留和资源限制。
 
-建议为容器/Pod定义资源需求，这样可以相对精确的镜像调度。否则，可能会出现调度不均匀导致某些节点资源使用率过高，从而无法充分利用机器资源。
+建议为`容器/Pod`定义资源需求，这样可以相对精确的镜像调度。否则，可能会出现调度不均匀导致某些节点资源使用率过高，从而无法充分利用机器资源。
 
 ## 配置健康检查（存活和就绪）
 

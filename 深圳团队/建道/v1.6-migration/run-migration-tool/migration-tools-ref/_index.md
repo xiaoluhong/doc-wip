@@ -2,11 +2,11 @@
 标题: 迁移工具CLI参考
 ---
 
-迁移工具CLI含有多种命令和选项，以帮助你从Rancher v1.6迁移到Rancherv2.x。
+迁移工具CLI含有多种命令和选项，以帮助您从Rancher v1.6迁移到Rancherv2.x。
 
 ### 下载
 
-可以从我们的平台下载适用于你平台的迁移工具CLI [GitHub发布页面](https://github.com/rancher/migration-tools/releases). 该工具可用于Linux，Mac和Windows平台。
+可以从我们的平台下载适用于您平台的迁移工具CLI [GitHub发布页面](https://github.com/rancher/migration-tools/releases). 该工具可用于Linux，Mac和Windows平台。
 
 ### 用法
 
@@ -21,7 +21,7 @@ migration-tools [global options] command [command options] [arguments...]
 | 全局选项          | 描述                                       |
 | ----------------- | ------------------------------------------- |
 | `--debug`         | 启用调试日志记录。                           |
-| `--log <VALUE>`   | 将日志输出到你输入的路径。              |
+| `--log <VALUE>`   | 将日志输出到您输入的路径。              |
 | `--help`, `-h`    | 显示所有可用命令的列表。            |
 | `--version`, `-v` | 打印正在使用的迁移工具CLI的版本。          |
 
@@ -44,7 +44,7 @@ migration-tools [global options] command [command options] [arguments...]
 
 ##### 用法
 
-执行以下命令，将每个占位符替换为您的值。访问密钥和密钥令牌是帐户API密钥，可让你从所有Cattle环境中导出。
+执行以下命令，将每个占位符替换为您的值。访问密钥和密钥令牌是帐户API密钥，可让您从所有Cattle环境中导出。
 
 ```
 migration-tools export --url <RANCHER_URL> --access-key <RANCHER_ACCESS_KEY> --secret-key <RANCHER_SECRET_KEY> --export-dir <EXPORT_DIR>
@@ -72,12 +72,12 @@ migration-tools export --url <RANCHER_URL> --access-key <RANCHER_ACCESS_KEY> --s
 
 ##### 用法
 
-执行以下命令，将每个占位符替换为堆栈的Compose文件的绝对路径。 对于每个堆栈，你必须为导出的每对Compose文件重新运行该命令。
+执行以下命令，将每个占位符替换为堆栈的Compose文件的绝对路径。 对于每个堆栈，您必须为导出的每对Compose文件重新运行该命令。
 
 ```
 migration-tools parse --docker-file <DOCKER_COMPOSE_ABSOLUTE_PATH> --rancher-file <RANCHER_COMPOSE_ABSOLUTE_PATH>
 ```
 
-> **注意:** 如果你在命令中省略了`--docker-file`和`--rancher-file`选项，则迁移工具CLI会在其主目录中检查这些Compose文件。
+> **注意:** 如果您在命令中省略了`--docker-file`和`--rancher-file`选项，则迁移工具CLI会在其主目录中检查这些Compose文件。
 
-**结果:** 迁移工具CLI会解析你的Compose文件并输出Kubernetes清单规范以及一个`output.txt`文件。 对于堆栈中的每个服务，都将创建一个Kubernetes清单，并将其命名为与你的服务相同的名称。`output.txt`文件列出了 `docker-compose.yml`中每个服务的所有结构，需要特殊处理才能成功迁移到Rancherv2.x。 每个结构都链接到有关如何在Rancher v2.x中实现它的相关博客文章。
+**结果:** 迁移工具CLI会解析您的Compose文件并输出Kubernetes清单规范以及一个`output.txt`文件。 对于堆栈中的每个服务，都将创建一个Kubernetes清单，并将其命名为与您的服务相同的名称。`output.txt`文件列出了 `docker-compose.yml`中每个服务的所有结构，需要特殊处理才能成功迁移到Rancherv2.x。 每个结构都链接到有关如何在Rancher v2.x中实现它的相关博客文章。

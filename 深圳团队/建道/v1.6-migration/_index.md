@@ -19,13 +19,13 @@ Rancher v2.x 经过重新整理和编写，旨在为Kubernetes和Docker提供一
 
   > **在版本v1.6时已经是Kubernetes的使用者?**
   >
-  > _开始使用_ 是你为迁移到v2.x唯一需要看的部分。您可以跳过其他所有内容
+  > _开始使用_ 是您为迁移到v2.x唯一需要看的部分。您可以跳过其他所有内容
 
 
-- [2. 迁移你的服务](/docs/v1.6-migration/run-migration-tool/)
-- [3. 暴露你的服务](/docs/v1.6-migration/expose-services/)
+- [2. 迁移您的服务](/docs/v1.6-migration/run-migration-tool/)
+- [3. 暴露您的服务](/docs/v1.6-migration/expose-services/)
 - [4. 配置运行状况健康检查](/docs/v1.6-migration/monitor-apps)
-- [5. 调度你的服务](/docs/v1.6-migration/schedule-workloads/)
+- [5. 调度您的服务](/docs/v1.6-migration/schedule-workloads/)
 - [6. 服务发现](/docs/v1.6-migration/discover-services/)
 - [7. 负载均衡](/docs/v1.6-migration/load-balancing/)
 

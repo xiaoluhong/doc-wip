@@ -10,7 +10,7 @@
 
 - **kubectl**
 
-  您可以使用Kubernetes命令行工具[kubectl](https://kubernetes.io/docs/reference/kubectl/overview/)来管理你的集群，使用kubectl有两种选择:
+  您可以使用Kubernetes命令行工具[kubectl](https://kubernetes.io/docs/reference/kubectl/overview/)来管理您的集群，使用kubectl有两种选择:
 
   - **Rancher kubectl shell**
 

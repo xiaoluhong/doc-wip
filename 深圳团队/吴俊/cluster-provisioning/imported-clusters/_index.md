@@ -10,7 +10,7 @@ title: 将现有集群导入 Rancher
 
 如果您现有的 Kubernetes 集群已经定义了一个`集群管理员`角色, 那么您必须拥有这个`集群管理员`特权才能将集群导入Rancher.
 
-为了获得特权, 你需要运行:
+为了获得特权, 您需要运行:
 
 ```plain
 kubectl create clusterrolebinding cluster-admin-binding \
@@ -36,4 +36,4 @@ kubectl create clusterrolebinding cluster-admin-binding \
    {{< result_import-cluster >}}
 
 > **注意:**
-> 你不能重新导入当前在 Rancher 设置中处于活动状态的集群.
+> 您不能重新导入当前在 Rancher 设置中处于活动状态的集群.

@@ -132,7 +132,7 @@ Rancher的性能取决于etcd在集群中的性能。为了确保最佳速度，
 
 #### HA/Kubernetes集群中节点的其他端口需求
 
-启动Kubernetes集群你还需要开放其他的端口，这是Rancher高可用安装所必须的。
+启动Kubernetes集群您还需要开放其他的端口，这是Rancher高可用安装所必须的。
 
 如果您按照Rancher安装文档来使用RKE设置Kubernetes集群，您将设置一个集群，其中所有三个节点都具有所有三个角色:etcd、controlplane和worker。在这种情况下，您可以参考具有所有三个角色的每个节点的需求列表:
 

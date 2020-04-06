@@ -41,9 +41,9 @@ tar pzxvf /backup/rancher-data-backup-${RANCHER_VERSION}-${DATE}"
    docker stop $RANCHER_CONTAINER_NAME
    ```
 
-1. 将[Docker单容器安装备份](/docs/backups/backups/single-node-backups/)保存的的压缩文件拷贝到rancher server所在主机上，通过`cd`命令切换到压缩文件所在的目录，并执行以下命令：
+1. 将[Docker单容器安装备份](/docs/rancher/v2.x/en/backups/backups/single-node-backups/)保存的的压缩文件拷贝到rancher server所在主机上，通过`cd`命令切换到压缩文件所在的目录，并执行以下命令：
 
-   > 如果您按照我们在[Docker单容器安装备份](/docs/backups/backups/single-node-backups/)中建议的命名约定，它的名称将类似于`rancher-data-backup-<RANCHER_VERSION>-<DATE>.tar.gz`。
+   > 如果您按照我们在[Docker单容器安装备份](/docs/rancher/v2.x/en/backups/backups/single-node-backups/)中建议的命名约定，它的名称将类似于`rancher-data-backup-<RANCHER_VERSION>-<DATE>.tar.gz`。
 
 1. 输入以下命令删除当前集群数据，并将其替换为备份数据。
 
