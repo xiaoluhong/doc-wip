@@ -194,3 +194,5 @@ In the same way, we can observe that the value in the **memberOf** attribute in 
 ### Annex: Troubleshooting
 
 If you are experiencing issues while testing the connection to the Active Directory server, first double-check the credentials entered for the service account as well as the search base configuration. You may also inspect the Rancher logs to help pinpointing the problem cause. Debug logs may contain more detailed information about the error. Please refer to [How can I enable debug logging](/docs/faq/technical/#how-can-i-enable-debug-logging) in this documentation.
+
+
